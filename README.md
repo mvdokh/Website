@@ -1,7 +1,7 @@
 <table>
   <tr>
-    <td width="160">
-      <img src="unnamed.jpg" width="150" style="border-radius: 10px;">
+    <td width="190">
+      <img src="unnamed.jpg" width="180" style="border-radius: 10px;">
     </td>
     <td>
       <h1>Martin Dokholyan</h1>
