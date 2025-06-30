@@ -10,6 +10,10 @@
         <a href="https://www.linkedin.com/in/mvdokh/">
           <img src="https://img.shields.io/badge/LinkedIn-mvdokh-blue?style=flat&logo=linkedin" alt="LinkedIn">
         </a>
+        <br>
+        <a href="https://github.com/mvdokh">
+          <img src="https://img.shields.io/badge/GitHub-mvdokh-black?style=flat&logo=github" alt="GitHub">
+        </a>
       </p>
     </td>
   </tr>
@@ -24,4 +28,5 @@ Interested in the neural basis of behavior
 
 📍 Boston, MA  
 🎓 BMB @ BU  
-🔗 [linkedin.com/in/mvdokh](https://www.linkedin.com/in/mvdokh/)
+🔗 [linkedin.com/in/mvdokh](https://www.linkedin.com/in/mvdokh/)  
+💻 [github.com/mvdokh](https://github.com/mvdokh)
