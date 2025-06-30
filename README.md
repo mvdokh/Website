@@ -26,7 +26,6 @@ Interested in the neural basis of behavior
 
 ---
 
-📍 Boston, MA  
-🎓 BMB @ BU  
-🔗 [linkedin.com/in/mvdokh](https://www.linkedin.com/in/mvdokh/)  
-💻 [github.com/mvdokh](https://github.com/mvdokh)
+📍 Allston, MA  
+🎓 BMB @ BU 2026
+
