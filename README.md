@@ -1,6 +1,6 @@
 # Martin Dokholyan
 
-![Profile Picture](unnamed.jpeg)
+![Profile Picture](unnamed.jpg)
 
 Biochemistry & Molecular Biology major at Boston University
 
