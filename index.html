@@ -1,55 +1,159 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" >
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Debug Profile Overlay</title>
-<style>
-  html, body {
-    margin: 0; padding: 0; height: 100%; overflow: hidden;
-    background: black;
-  }
-  canvas {
-    position: fixed;
-    top: 0; left: 0;
-    width: 100%; height: 100%;
-    z-index: 0;
-  }
-  #profile {
-    position: fixed;
-    top: 30px;
-    left: 30px;
-    max-width: 480px;
-    background: hotpink;
-    color: black;
-    font-family: monospace;
-    border: 5px solid yellow;
-    padding: 20px;
-    z-index: 99999;
-  }
-  #profile img {
-    width: 100px;
-    border: 1px solid black;
-    border-radius: 8px;
-  }
-</style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Martin Dokholyan - 90s Hacker Vibe</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=VT323&display=swap');
+    
+    html, body {
+      margin: 0; padding: 0; height: 100%; overflow: hidden;
+      background: black;
+      font-family: 'VT323', monospace;
+      color: #39ff14; /* neon green */
+      user-select: none;
+    }
+    canvas {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      z-index: 0;
+    }
+    #profile {
+      position: fixed;
+      top: 30px;
+      left: 30px;
+      max-width: 500px;
+      background: rgba(0,0,0,0.9);
+      border: 2px solid #39ff14;
+      border-radius: 8px;
+      padding: 20px;
+      z-index: 10000;
+      box-shadow: 0 0 15px #39ff14aa;
+    }
+    #profile img {
+      width: 100px;
+      border: 1px solid #39ff14;
+      border-radius: 8px;
+      vertical-align: middle;
+      margin-right: 15px;
+    }
+    #header {
+      font-size: 2.5em;
+      letter-spacing: 0.1em;
+      position: relative;
+      display: inline-block;
+      color: #39ff14;
+      animation: glitch 1.5s infinite;
+    }
+    @keyframes glitch {
+      0% {
+        text-shadow:
+          2px 0 #39ff14,
+          -2px 0 #00ff99,
+          0 0 5px #39ff14;
+      }
+      50% {
+        text-shadow:
+          -2px 0 #39ff14,
+          2px 0 #00ff99,
+          0 0 10px #00ff99;
+      }
+      100% {
+        text-shadow:
+          2px 0 #39ff14,
+          -2px 0 #00ff99,
+          0 0 5px #39ff14;
+      }
+    }
+    #description {
+      margin-top: 12px;
+      line-height: 1.4;
+      font-size: 1.1em;
+    }
+    #terminal {
+      margin-top: 20px;
+      background: #001100;
+      border: 1px solid #39ff14;
+      border-radius: 6px;
+      padding: 15px;
+      font-size: 1.1em;
+      min-height: 120px;
+      overflow-y: auto;
+      white-space: pre-wrap;
+    }
+    #input-line {
+      display: flex;
+      align-items: center;
+    }
+    #prompt {
+      margin-right: 10px;
+      color: #00ff00;
+      font-weight: bold;
+    }
+    #cmdline {
+      background: transparent;
+      border: none;
+      color: #39ff14;
+      font-family: 'VT323', monospace;
+      font-size: 1.1em;
+      outline: none;
+      flex-grow: 1;
+    }
+    /* Blinking cursor */
+    #cmdline::after {
+      content: '|';
+      animation: blink 1s steps(1) infinite;
+      color: #39ff14;
+      margin-left: 2px;
+    }
+    @keyframes blink {
+      0%, 50% { opacity: 1; }
+      51%, 100% { opacity: 0; }
+    }
+    /* Scrollbar styling for terminal */
+    #terminal::-webkit-scrollbar {
+      width: 8px;
+    }
+    #terminal::-webkit-scrollbar-track {
+      background: #001100;
+    }
+    #terminal::-webkit-scrollbar-thumb {
+      background: #39ff14;
+    }
+  </style>
 </head>
 <body>
 
-<canvas id="glcanvas"></canvas>
+  <canvas id="glcanvas"></canvas>
 
-<div id="profile">
-  <img src="unnamed.jpg" alt="Martin" />
-  <h1>Martin Dokholyan</h1>
-  <p>Biochemistry & Molecular Biology major at Boston University.</p>
-</div>
+  <div id="profile">
+    <div style="display:flex; align-items:center;">
+      <img src="unnamed.jpg" alt="Martin" />
+      <div id="header">MARTIN DOKHOLYAN</div>
+    </div>
+    <div id="description">
+      Biochemistry & Molecular Biology major at Boston University.<br/>
+      Interested in the neural basis of behavior and active sensing.<br/>
+      📍 Allston, MA<br/>
+      🎓 BMB @ BU 2026
+    </div>
+
+    <div id="terminal" aria-live="polite" aria-label="Interactive terminal">
+      <div>Welcome to my 90's style terminal! Type <code>help</code> for commands.</div>
+      <div id="output"></div>
+      <div id="input-line">
+        <span id="prompt">user&gt;</span>
+        <input id="cmdline" autocomplete="off" autofocus spellcheck="false" />
+      </div>
+    </div>
+  </div>
 
 <script>
   const canvas = document.getElementById('glcanvas');
   const gl = canvas.getContext('webgl');
-  if (!gl) {
-    alert('WebGL not supported');
-  }
+  if (!gl) alert('WebGL not supported');
 
   function resize() {
     canvas.width = window.innerWidth;
@@ -135,7 +239,7 @@
   gl.vertexAttribPointer(positionLocation, 2, gl.FLOAT, false, 0, 0);
 
   const iTimeLoc = gl.getUniformLocation(program, 'iTime');
-  const iResLoc = gl.getUniformLocation(program, 'iResolution');
+  const iResLoc = gl.getUniformLocation(program, 'iResolution);
 
   let startTime = performance.now();
 
@@ -147,8 +251,47 @@
     gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
     requestAnimationFrame(render);
   }
-
   render();
+
+  // Terminal interaction
+  const cmdline = document.getElementById('cmdline');
+  const output = document.getElementById('output');
+
+  function printOutput(text) {
+    const div = document.createElement('div');
+    div.textContent = text;
+    output.appendChild(div);
+    output.scrollTop = output.scrollHeight;
+  }
+
+  function processCommand(cmd) {
+    cmd = cmd.trim().toLowerCase();
+    switch(cmd) {
+      case 'help':
+        printOutput('Commands:\nhelp - Show this help\nabout - About Martin\ncontact - Show contact info\nclear - Clear the terminal');
+        break;
+      case 'about':
+        printOutput('Martin Dokholyan is a Biochemistry & Molecular Biology major at Boston University, interested in neural basis of behavior and active sensing.');
+        break;
+      case 'contact':
+        printOutput('LinkedIn: https://www.linkedin.com/in/mvdokh/\nGitHub: https://github.com/mvdokh');
+        break;
+      case 'clear':
+        output.innerHTML = '';
+        break;
+      default:
+        printOutput(`Command not found: ${cmd}`);
+    }
+  }
+
+  cmdline.addEventListener('keydown', e => {
+    if (e.key === 'Enter') {
+      printOutput('> ' + cmdline.value);
+      processCommand(cmdline.value);
+      cmdline.value = '';
+      e.preventDefault();
+    }
+  });
 </script>
 
 </body>
