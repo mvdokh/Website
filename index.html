@@ -1,414 +1,510 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Martin Dokholyan</title>
-<style>
-  html, body {
-    margin: 0;
-    padding: 0;
-    height: 100%;
-    background: #f5f5f5;
-    font-family: "Times New Roman", serif;
-    color: #222;
-  }
-  body {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 40px;
-  }
-  nav {
-    margin-bottom: 30px;
-    font-size: 1rem;
-  }
-  nav a {
-    text-decoration: none;
-    color: #222;
-    border: 1px solid #222;
-    padding: 6px 14px;
-    margin-right: 10px;
-    transition: background 0.2s, color 0.2s;
-  }
-  nav a:hover {
-    background: #222;
-    color: #fff;
-  }
-  .tab-content {
-    display: none;
-  }
-  .active {
-    display: flex;
-  }
-  #content-wrapper {
-    display: flex;
-    background: #fff;
-    border: 1px solid #ccc;
-    border-radius: 6px;
-    padding: 30px;
-    max-width: 800px;
-    gap: 30px;
-    box-shadow: 0 0 5px rgba(0,0,0,0.1);
-  }
-  #photo {
-    width: 160px;
-    height: auto;
-    border: 1px solid #aaa;
-    border-radius: 3px;
-    overflow: hidden;
-    flex-shrink: 0;
-  }
-  #photo img {
-    width: 100%;
-    height: auto;
-    display: block;
-  }
-  #text-block {
-    max-width: 600px;
-    white-space: pre-wrap;
-    font-size: 1rem;
-    line-height: 1.6;
-  }
-  #name {
-    font-size: 1.6rem;
-    margin-bottom: 15px;
-    font-weight: bold;
-  }
-  #telos-content {
-    flex-direction: column;
-    font-size: 1rem;
-    line-height: 1.6;
-    max-width: 800px;
-    background: #fff;
-    padding: 30px;
-    border: 1px solid #ccc;
-    border-radius: 6px;
-    box-shadow: 0 0 5px rgba(0,0,0,0.05);
-    min-height: 300px;
-  }
-  #widgets-content {
-    flex-direction: column;
-    font-size: 1rem;
-    line-height: 1.6;
-    max-width: 800px;
-    background: #fff;
-    padding: 30px;
-    border: 1px solid #ccc;
-    border-radius: 6px;
-    box-shadow: 0 0 5px rgba(0,0,0,0.05);
-    min-height: 300px;
-    gap: 20px;
-  }
-  .widget {
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    padding: 20px;
-    background: #fafafa;
-    margin-bottom: 20px;
-  }
-  .widget h3 {
-    margin: 0 0 15px 0;
-    font-size: 1.2rem;
-    color: #333;
-  }
-  .color-picker {
-    display: flex;
-    gap: 10px;
-    align-items: center;
-    margin: 10px 0;
-  }
-  .color-box {
-    width: 40px;
-    height: 40px;
-    border: 2px solid #000;
-    cursor: pointer;
-    border-radius: 4px;
-  }
-  .calculator {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 5px;
-    max-width: 300px;
-    margin: 10px 0;
-  }
-  .calc-button {
-    padding: 15px;
-    border: 1px solid #333;
-    background: #fff;
-    cursor: pointer;
-    font-size: 1rem;
-    transition: background 0.2s;
-  }
-  .calc-button:hover {
-    background: #f0f0f0;
-  }
-  .calc-display {
-    grid-column: span 4;
-    padding: 15px;
-    border: 1px solid #333;
-    background: #fff;
-    text-align: right;
-    font-size: 1.2rem;
-    margin-bottom: 5px;
-  }
-  .clock {
-    font-size: 2rem;
-    font-family: monospace;
-    text-align: center;
-    padding: 20px;
-    background: #000;
-    color: #0f0;
-    border-radius: 4px;
-    margin: 10px 0;
-  }
-  .drawing-canvas {
-    border: 2px solid #333;
-    cursor: crosshair;
-    margin: 10px 0;
-  }
-  .canvas-controls {
-    margin: 10px 0;
-    display: flex;
-    gap: 10px;
-    align-items: center;
-  }
-  .canvas-controls button {
-    padding: 8px 16px;
-    border: 1px solid #333;
-    background: #fff;
-    cursor: pointer;
-  }
-  .canvas-controls button:hover {
-    background: #f0f0f0;
-  }
-  .counter {
-    text-align: center;
-    padding: 20px;
-  }
-  .counter-display {
-    font-size: 3rem;
-    font-family: monospace;
-    margin: 20px 0;
-  }
-  .counter-buttons {
-    display: flex;
-    gap: 10px;
-    justify-content: center;
-  }
-  .counter-buttons button {
-    padding: 10px 20px;
-    border: 1px solid #333;
-    background: #fff;
-    cursor: pointer;
-    font-size: 1rem;
-  }
-  .counter-buttons button:hover {
-    background: #f0f0f0;
-  }
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Martin Dokholyan</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: "Times New Roman", serif;
+            background: #f5f5f5;
+            color: #222;
+            padding: 40px 20px;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        nav {
+            margin-bottom: 30px;
+        }
+        
+        nav a {
+            text-decoration: none;
+            color: #222;
+            border: 1px solid #222;
+            padding: 8px 16px;
+            margin-right: 10px;
+            display: inline-block;
+            transition: all 0.2s ease;
+        }
+        
+        nav a:hover, nav a.active {
+            background: #222;
+            color: #fff;
+        }
+        
+        .tab-content {
+            display: none;
+            max-width: 800px;
+            width: 100%;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        .content-box {
+            background: #fff;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            padding: 30px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        /* Intro Tab Styles */
+        .intro-content {
+            display: flex;
+            gap: 30px;
+            align-items: flex-start;
+        }
+        
+        .photo {
+            width: 160px;
+            height: 200px;
+            border: 1px solid #aaa;
+            border-radius: 3px;
+            overflow: hidden;
+            flex-shrink: 0;
+            background: #eee;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #999;
+        }
+        
+        .photo img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .info h1 {
+            font-size: 1.6rem;
+            margin-bottom: 15px;
+            font-weight: bold;
+        }
+        
+        .info p {
+            line-height: 1.6;
+            margin-bottom: 8px;
+        }
+        
+        /* Widget Styles */
+        .widget {
+            background: #fafafa;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            padding: 20px;
+            margin-bottom: 25px;
+        }
+        
+        .widget h3 {
+            margin-bottom: 15px;
+            color: #333;
+            font-size: 1.2rem;
+        }
+        
+        .color-picker {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin: 10px 0;
+        }
+        
+        .color-box {
+            width: 40px;
+            height: 40px;
+            border: 2px solid #000;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        
+        .color-box:hover {
+            transform: scale(1.1);
+        }
+        
+        .calculator-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 5px;
+            max-width: 280px;
+            margin: 15px 0;
+        }
+        
+        .calc-display {
+            grid-column: span 4;
+            padding: 15px;
+            background: #fff;
+            border: 2px solid #333;
+            text-align: right;
+            font-size: 1.2rem;
+            font-family: monospace;
+            margin-bottom: 10px;
+            border-radius: 4px;
+        }
+        
+        .calc-btn {
+            padding: 15px;
+            border: 1px solid #333;
+            background: #fff;
+            cursor: pointer;
+            font-size: 1rem;
+            border-radius: 4px;
+            transition: background 0.2s;
+        }
+        
+        .calc-btn:hover {
+            background: #f0f0f0;
+        }
+        
+        .calc-btn.equals {
+            background: #4ecdc4;
+            color: white;
+        }
+        
+        .calc-btn.wide {
+            grid-column: span 2;
+        }
+        
+        .calc-btn.tall {
+            grid-row: span 2;
+        }
+        
+        .clock {
+            font-family: 'Courier New', monospace;
+            font-size: 2.5rem;
+            text-align: center;
+            padding: 20px;
+            background: #000;
+            color: #0f0;
+            border-radius: 6px;
+            margin: 15px 0;
+            letter-spacing: 2px;
+        }
+        
+        .drawing-area {
+            margin: 15px 0;
+        }
+        
+        .canvas {
+            border: 2px solid #333;
+            border-radius: 4px;
+            cursor: crosshair;
+            display: block;
+        }
+        
+        .canvas-controls {
+            margin-top: 10px;
+            display: flex;
+            gap: 15px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        
+        .canvas-controls button {
+            padding: 8px 16px;
+            border: 1px solid #333;
+            background: #fff;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        
+        .canvas-controls button:hover {
+            background: #f0f0f0;
+        }
+        
+        .counter-widget {
+            text-align: center;
+            padding: 20px;
+        }
+        
+        .counter-display {
+            font-size: 3rem;
+            font-family: monospace;
+            margin: 20px 0;
+            color: #333;
+        }
+        
+        .counter-buttons {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        
+        .counter-btn {
+            padding: 12px 20px;
+            border: 1px solid #333;
+            background: #fff;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: background 0.2s;
+        }
+        
+        .counter-btn:hover {
+            background: #f0f0f0;
+        }
+        
+        @media (max-width: 600px) {
+            .intro-content {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .photo {
+                margin: 0 auto;
+            }
+        }
+    </style>
 </head>
 <body>
-<nav>
-  <a href="#" onclick="showTab('intro')">Intro</a>
-  <a href="#" onclick="showTab('telos')">τέλος</a>
-  <a href="#" onclick="showTab('widgets')">Widgets</a>
-</nav>
-<div id="intro" class="tab-content active">
-  <div id="content-wrapper">
-    <div id="photo">
-      <img src="unnamed.jpg" alt="Martin Dokholyan" />
-    </div>
-    <div id="text-block">
-      <div id="name">Martin Dokholyan</div>
-      Biochemistry & Molecular Biology major at Boston University.<br />
-      Interested in the neural basis of behavior and active sensing.<br />
-      📍 Allston, MA<br />
-      🎓 BMB @ BU 2026
-    </div>
-  </div>
-</div>
-<div id="telos" class="tab-content">
-  <div id="telos-content">
-    <!-- Quotes will go here -->
-  </div>
-</div>
-<div id="widgets" class="tab-content">
-  <div id="widgets-content">
-    <div class="widget">
-      <h3>🎨 Color Picker</h3>
-      <p>Click a color to change the page background:</p>
-      <div class="color-picker">
-        <div class="color-box" style="background: #ff6b6b" onclick="changeBackground('#ff6b6b')"></div>
-        <div class="color-box" style="background: #4ecdc4" onclick="changeBackground('#4ecdc4')"></div>
-        <div class="color-box" style="background: #45b7d1" onclick="changeBackground('#45b7d1')"></div>
-        <div class="color-box" style="background: #96ceb4" onclick="changeBackground('#96ceb4')"></div>
-        <div class="color-box" style="background: #ffeaa7" onclick="changeBackground('#ffeaa7')"></div>
-        <div class="color-box" style="background: #f5f5f5" onclick="changeBackground('#f5f5f5')"></div>
-      </div>
-    </div>
+    <nav>
+        <a href="#" onclick="showTab('intro')" class="active" id="intro-tab">Intro</a>
+        <a href="#" onclick="showTab('telos')" id="telos-tab">τέλος</a>
+        <a href="#" onclick="showTab('widgets')" id="widgets-tab">Widgets</a>
+    </nav>
 
-    <div class="widget">
-      <h3>🧮 Calculator</h3>
-      <div class="calculator">
-        <div class="calc-display" id="calc-display">0</div>
-        <button class="calc-button" onclick="clearCalc()">C</button>
-        <button class="calc-button" onclick="calcInput('/')">/</button>
-        <button class="calc-button" onclick="calcInput('*')">×</button>
-        <button class="calc-button" onclick="deleteLast()">⌫</button>
-        <button class="calc-button" onclick="calcInput('7')">7</button>
-        <button class="calc-button" onclick="calcInput('8')">8</button>
-        <button class="calc-button" onclick="calcInput('9')">9</button>
-        <button class="calc-button" onclick="calcInput('-')">-</button>
-        <button class="calc-button" onclick="calcInput('4')">4</button>
-        <button class="calc-button" onclick="calcInput('5')">5</button>
-        <button class="calc-button" onclick="calcInput('6')">6</button>
-        <button class="calc-button" onclick="calcInput('+')">+</button>
-        <button class="calc-button" onclick="calcInput('1')">1</button>
-        <button class="calc-button" onclick="calcInput('2')">2</button>
-        <button class="calc-button" onclick="calcInput('3')">3</button>
-        <button class="calc-button" onclick="calculate()" style="grid-row: span 2; background: #4ecdc4;">=</button>
-        <button class="calc-button" onclick="calcInput('0')" style="grid-column: span 2;">0</button>
-        <button class="calc-button" onclick="calcInput('.')">.</button>
-      </div>
-    </div>
-
-    <div class="widget">
-      <h3>🕒 Live Clock</h3>
-      <div class="clock" id="clock">00:00:00</div>
-    </div>
-
-    <div class="widget">
-      <h3>✏️ Drawing Canvas</h3>
-      <canvas class="drawing-canvas" id="canvas" width="400" height="200"></canvas>
-      <div class="canvas-controls">
-        <button onclick="clearCanvas()">Clear</button>
-        <label>Color: <input type="color" id="brush-color" value="#000000"></label>
-        <label>Size: <input type="range" id="brush-size" min="1" max="10" value="3"></label>
-      </div>
-    </div>
-
-    <div class="widget">
-      <h3>🔢 Counter</h3>
-      <div class="counter">
-        <div class="counter-display" id="counter-display">0</div>
-        <div class="counter-buttons">
-          <button onclick="changeCounter(-10)">-10</button>
-          <button onclick="changeCounter(-1)">-1</button>
-          <button onclick="resetCounter()">Reset</button>
-          <button onclick="changeCounter(1)">+1</button>
-          <button onclick="changeCounter(10)">+10</button>
+    <!-- Intro Tab -->
+    <div id="intro" class="tab-content active">
+        <div class="content-box">
+            <div class="intro-content">
+                <div class="photo">
+                    <img src="unnamed.jpg" alt="Martin Dokholyan" onerror="this.style.display='none'; this.parentElement.innerHTML='Photo';">
+                </div>
+                <div class="info">
+                    <h1>Martin Dokholyan</h1>
+                    <p>Biochemistry & Molecular Biology major at Boston University.</p>
+                    <p>Interested in the neural basis of behavior and active sensing.</p>
+                    <p>📍 Allston, MA</p>
+                    <p>🎓 BMB @ BU 2026</p>
+                </div>
+            </div>
         </div>
-      </div>
     </div>
-  </div>
-</div>
-<script>
-// Tab switching
-function showTab(tabId) {
-  document.querySelectorAll('.tab-content').forEach(tab => {
-    tab.classList.remove('active');
-  });
-  document.getElementById(tabId).classList.add('active');
-}
 
-// Color picker
-function changeBackground(color) {
-  document.body.style.background = color;
-}
+    <!-- Telos Tab -->
+    <div id="telos" class="tab-content">
+        <div class="content-box">
+            <h2>τέλος</h2>
+            <p>Content for the telos section will go here.</p>
+        </div>
+    </div>
 
-// Calculator
-let calcExpression = '';
-let calcDisplay = document.getElementById('calc-display');
+    <!-- Widgets Tab -->
+    <div id="widgets" class="tab-content">
+        <div class="content-box">
+            
+            <!-- Color Picker Widget -->
+            <div class="widget">
+                <h3>🎨 Color Picker</h3>
+                <p>Click a color to change the page background:</p>
+                <div class="color-picker">
+                    <div class="color-box" style="background: #ff6b6b" onclick="changeBackground('#ff6b6b')"></div>
+                    <div class="color-box" style="background: #4ecdc4" onclick="changeBackground('#4ecdc4')"></div>
+                    <div class="color-box" style="background: #45b7d1" onclick="changeBackground('#45b7d1')"></div>
+                    <div class="color-box" style="background: #96ceb4" onclick="changeBackground('#96ceb4')"></div>
+                    <div class="color-box" style="background: #ffeaa7" onclick="changeBackground('#ffeaa7')"></div>
+                    <div class="color-box" style="background: #f5f5f5" onclick="changeBackground('#f5f5f5')"></div>
+                </div>
+            </div>
 
-function calcInput(value) {
-  if (calcExpression === '0') calcExpression = '';
-  calcExpression += value;
-  updateCalcDisplay();
-}
+            <!-- Calculator Widget -->
+            <div class="widget">
+                <h3>🧮 Calculator</h3>
+                <div class="calculator-grid">
+                    <div class="calc-display" id="calc-display">0</div>
+                    <button class="calc-btn" onclick="clearCalc()">C</button>
+                    <button class="calc-btn" onclick="calcInput('/')">/</button>
+                    <button class="calc-btn" onclick="calcInput('*')">×</button>
+                    <button class="calc-btn" onclick="deleteLast()">⌫</button>
+                    <button class="calc-btn" onclick="calcInput('7')">7</button>
+                    <button class="calc-btn" onclick="calcInput('8')">8</button>
+                    <button class="calc-btn" onclick="calcInput('9')">9</button>
+                    <button class="calc-btn" onclick="calcInput('-')">-</button>
+                    <button class="calc-btn" onclick="calcInput('4')">4</button>
+                    <button class="calc-btn" onclick="calcInput('5')">5</button>
+                    <button class="calc-btn" onclick="calcInput('6')">6</button>
+                    <button class="calc-btn" onclick="calcInput('+')">+</button>
+                    <button class="calc-btn" onclick="calcInput('1')">1</button>
+                    <button class="calc-btn" onclick="calcInput('2')">2</button>
+                    <button class="calc-btn" onclick="calcInput('3')">3</button>
+                    <button class="calc-btn equals tall" onclick="calculate()">=</button>
+                    <button class="calc-btn wide" onclick="calcInput('0')">0</button>
+                    <button class="calc-btn" onclick="calcInput('.')">.</button>
+                </div>
+            </div>
 
-function clearCalc() {
-  calcExpression = '';
-  updateCalcDisplay();
-}
+            <!-- Clock Widget -->
+            <div class="widget">
+                <h3>🕒 Live Clock</h3>
+                <div class="clock" id="clock">00:00:00</div>
+            </div>
 
-function deleteLast() {
-  calcExpression = calcExpression.slice(0, -1);
-  updateCalcDisplay();
-}
+            <!-- Drawing Widget -->
+            <div class="widget">
+                <h3>✏️ Drawing Canvas</h3>
+                <div class="drawing-area">
+                    <canvas class="canvas" id="canvas" width="400" height="200"></canvas>
+                    <div class="canvas-controls">
+                        <button onclick="clearCanvas()">Clear</button>
+                        <label>Color: <input type="color" id="brush-color" value="#000000"></label>
+                        <label>Size: <input type="range" id="brush-size" min="1" max="10" value="3"></label>
+                    </div>
+                </div>
+            </div>
 
-function calculate() {
-  try {
-    let result = eval(calcExpression.replace('×', '*'));
-    calcExpression = result.toString();
-    updateCalcDisplay();
-  } catch (e) {
-    calcDisplay.textContent = 'Error';
-    calcExpression = '';
-  }
-}
+            <!-- Counter Widget -->
+            <div class="widget">
+                <h3>🔢 Counter</h3>
+                <div class="counter-widget">
+                    <div class="counter-display" id="counter-display">0</div>
+                    <div class="counter-buttons">
+                        <button class="counter-btn" onclick="changeCounter(-10)">-10</button>
+                        <button class="counter-btn" onclick="changeCounter(-1)">-1</button>
+                        <button class="counter-btn" onclick="resetCounter()">Reset</button>
+                        <button class="counter-btn" onclick="changeCounter(1)">+1</button>
+                        <button class="counter-btn" onclick="changeCounter(10)">+10</button>
+                    </div>
+                </div>
+            </div>
 
-function updateCalcDisplay() {
-  calcDisplay.textContent = calcExpression || '0';
-}
+        </div>
+    </div>
 
-// Clock
-function updateClock() {
-  const now = new Date();
-  const time = now.toLocaleTimeString();
-  document.getElementById('clock').textContent = time;
-}
-setInterval(updateClock, 1000);
-updateClock();
+    <script>
+        // Global variables
+        let calcExpression = '';
+        let counterValue = 0;
+        let isDrawing = false;
 
-// Drawing canvas
-const canvas = document.getElementById('canvas');
-const ctx = canvas.getContext('2d');
-let isDrawing = false;
+        // Tab Management
+        function showTab(tabName) {
+            // Hide all tabs
+            const tabs = document.querySelectorAll('.tab-content');
+            tabs.forEach(tab => tab.classList.remove('active'));
+            
+            // Remove active class from nav links
+            const navLinks = document.querySelectorAll('nav a');
+            navLinks.forEach(link => link.classList.remove('active'));
+            
+            // Show selected tab
+            document.getElementById(tabName).classList.add('active');
+            document.getElementById(tabName + '-tab').classList.add('active');
+        }
 
-canvas.addEventListener('mousedown', (e) => {
-  isDrawing = true;
-  draw(e);
-});
+        // Color Picker
+        function changeBackground(color) {
+            document.body.style.background = color;
+        }
 
-canvas.addEventListener('mousemove', draw);
-canvas.addEventListener('mouseup', () => isDrawing = false);
-canvas.addEventListener('mouseout', () => isDrawing = false);
+        // Calculator Functions
+        function calcInput(value) {
+            const display = document.getElementById('calc-display');
+            if (calcExpression === '0' || calcExpression === 'Error') {
+                calcExpression = '';
+            }
+            calcExpression += value;
+            display.textContent = calcExpression || '0';
+        }
 
-function draw(e) {
-  if (!isDrawing) return;
-  
-  const rect = canvas.getBoundingClientRect();
-  const x = e.clientX - rect.left;
-  const y = e.clientY - rect.top;
-  
-  ctx.lineWidth = document.getElementById('brush-size').value;
-  ctx.lineCap = 'round';
-  ctx.strokeStyle = document.getElementById('brush-color').value;
-  
-  ctx.lineTo(x, y);
-  ctx.stroke();
-  ctx.beginPath();
-  ctx.moveTo(x, y);
-}
+        function clearCalc() {
+            calcExpression = '';
+            document.getElementById('calc-display').textContent = '0';
+        }
 
-function clearCanvas() {
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
-  ctx.beginPath();
-}
+        function deleteLast() {
+            calcExpression = calcExpression.slice(0, -1);
+            document.getElementById('calc-display').textContent = calcExpression || '0';
+        }
 
-// Counter
-let counterValue = 0;
+        function calculate() {
+            const display = document.getElementById('calc-display');
+            try {
+                const result = eval(calcExpression.replace('×', '*'));
+                calcExpression = result.toString();
+                display.textContent = calcExpression;
+            } catch (e) {
+                display.textContent = 'Error';
+                calcExpression = 'Error';
+            }
+        }
 
-function changeCounter(amount) {
-  counterValue += amount;
-  document.getElementById('counter-display').textContent = counterValue;
-}
+        // Clock
+        function updateClock() {
+            const now = new Date();
+            const time = now.toLocaleTimeString();
+            const clockElement = document.getElementById('clock');
+            if (clockElement) {
+                clockElement.textContent = time;
+            }
+        }
 
-function resetCounter() {
-  counterValue = 0;
-  document.getElementById('counter-display').textContent = counterValue;
-}
-</script>
+        // Drawing Canvas
+        function initCanvas() {
+            const canvas = document.getElementById('canvas');
+            const ctx = canvas.getContext('2d');
+
+            canvas.addEventListener('mousedown', (e) => {
+                isDrawing = true;
+                draw(e);
+            });
+
+            canvas.addEventListener('mousemove', draw);
+            canvas.addEventListener('mouseup', () => isDrawing = false);
+            canvas.addEventListener('mouseout', () => isDrawing = false);
+
+            function draw(e) {
+                if (!isDrawing) return;
+                
+                const rect = canvas.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                
+                ctx.lineWidth = document.getElementById('brush-size').value;
+                ctx.lineCap = 'round';
+                ctx.strokeStyle = document.getElementById('brush-color').value;
+                
+                ctx.lineTo(x, y);
+                ctx.stroke();
+                ctx.beginPath();
+                ctx.moveTo(x, y);
+            }
+        }
+
+        function clearCanvas() {
+            const canvas = document.getElementById('canvas');
+            const ctx = canvas.getContext('2d');
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.beginPath();
+        }
+
+        // Counter Functions
+        function changeCounter(amount) {
+            counterValue += amount;
+            document.getElementById('counter-display').textContent = counterValue;
+        }
+
+        function resetCounter() {
+            counterValue = 0;
+            document.getElementById('counter-display').textContent = counterValue;
+        }
+
+        // Initialize everything when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            updateClock();
+            setInterval(updateClock, 1000);
+            initCanvas();
+        });
+    </script>
 </body>
 </html>
