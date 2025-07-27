@@ -1,122 +1,166 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Martin Dokholyan</title>
+  <meta charset="UTF-8" />
+  <title>Martin Dokholyan - Shader Playground</title>
   <style>
     html, body {
-      margin: 0;
-      padding: 0;
+      margin: 0; padding: 0; height: 100%; width: 100%; font-family: Arial, sans-serif; color: white;
+      background: #000;
       overflow: hidden;
-      height: 100%;
-      width: 100%;
-      font-family: Arial, sans-serif;
-      color: white;
     }
-
-    canvas {
-      position: fixed;
-      top: 0;
-      left: 0;
-      z-index: -1;
+    #shaderCanvas {
+      position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1;
+      display: block;
     }
-
     .content {
-      position: relative;
-      z-index: 1;
-      padding: 40px;
+      position: relative; z-index: 2; padding: 20px; max-width: 600px;
+      background: rgba(0,0,0,0.6); border-radius: 15px; margin: 20px;
     }
-
     table {
-      background-color: rgba(0, 0, 0, 0.6);
-      border-radius: 15px;
-      padding: 20px;
+      margin-bottom: 20px;
     }
-
     a {
       color: #aad;
+    }
+    textarea {
+      position: fixed;
+      top: 20px; right: 20px;
+      width: 600px; height: 400px;
+      background: rgba(0,0,0,0.85);
+      color: #0f0;
+      font-family: monospace;
+      font-size: 14px;
+      border: none;
+      border-radius: 8px;
+      padding: 12px;
+      resize: vertical;
+      z-index: 3;
+    }
+    button {
+      position: fixed;
+      top: 440px; right: 20px;
+      width: 600px;
+      padding: 10px;
+      font-size: 16px;
+      font-weight: bold;
+      background: #2288cc;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      z-index: 3;
+    }
+    button:hover {
+      background: #005fa3;
+    }
+    #errorMsg {
+      position: fixed;
+      top: 490px; right: 20px;
+      width: 600px;
+      max-height: 100px;
+      overflow-y: auto;
+      background: rgba(255,0,0,0.8);
+      color: white;
+      font-family: monospace;
+      font-size: 13px;
+      border-radius: 8px;
+      padding: 10px;
+      white-space: pre-wrap;
+      display: none;
+      z-index: 4;
     }
   </style>
 </head>
 <body>
+
   <canvas id="shaderCanvas"></canvas>
 
   <div class="content">
     <table>
       <tr>
         <td width="250">
-          <img src="unnamed.jpg" width="240" style="border-radius: 10px;">
+          <img src="unnamed.jpg" width="240" style="border-radius: 10px;" alt="Profile picture">
         </td>
         <td>
           <h1>Martin Dokholyan</h1>
           <p>Biochemistry & Molecular Biology major at Boston University.</p>
           <p>
             <a href="https://www.linkedin.com/in/mvdokh/">
-              <img src="https://img.shields.io/badge/LinkedIn-mvdokh-blue?style=flat&logo=linkedin" alt="LinkedIn">
+              <img src="https://img.shields.io/badge/LinkedIn-mvdokh-blue?style=flat&logo=linkedin" alt="LinkedIn" />
             </a>
-            <br>
+            <br />
             <a href="https://github.com/mvdokh">
-              <img src="https://img.shields.io/badge/GitHub-mvdokh-black?style=flat&logo=github" alt="GitHub">
+              <img src="https://img.shields.io/badge/GitHub-mvdokh-black?style=flat&logo=github" alt="GitHub" />
             </a>
           </p>
         </td>
       </tr>
     </table>
 
-    <hr>
+    <hr />
 
     <h3>About Me</h3>
     <p>Interested in the neural basis of behavior and active sensing.</p>
-    <p>📍 Allston, MA<br>🎓 BMB @ BU 2026</p>
+    <p>📍 Allston, MA<br />🎓 BMB @ BU 2026</p>
   </div>
 
-  <!-- Shader from https://www.shadertoy.com/view/w3KGRK -->
-  <script type="x-shader/x-fragment" id="fragShader">
-    precision mediump float;
-    uniform float iTime;
-    uniform vec2 iResolution;
+  <textarea id="shaderCode" spellcheck="false">
+// Edit the shader code here and press "Run Shader"!
 
-    float hash(vec2 p) {
-      return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453);
-    }
+precision mediump float;
+uniform float iTime;
+uniform vec2 iResolution;
 
-    float noise(vec2 p) {
-      vec2 i = floor(p);
-      vec2 f = fract(p);
-      float a = hash(i);
-      float b = hash(i + vec2(1.0, 0.0));
-      float c = hash(i + vec2(0.0, 1.0));
-      float d = hash(i + vec2(1.0, 1.0));
-      vec2 u = f * f * (3.0 - 2.0 * f);
-      return mix(a, b, u.x) +
-             (c - a) * u.y * (1.0 - u.x) +
-             (d - b) * u.x * u.y;
-    }
+float hash(vec2 p) {
+  return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453);
+}
 
-    void mainImage(out vec4 fragColor, in vec2 fragCoord) {
-      vec2 uv = fragCoord / iResolution.xy;
-      vec3 col = 0.5 + 0.5 * cos(iTime + uv.xyx + vec3(0, 2, 4));
-      float n = noise(uv * 10.0 + iTime * 0.1);
-      col *= n;
-      fragColor = vec4(col, 1.0);
-    }
+float noise(vec2 p) {
+  vec2 i = floor(p);
+  vec2 f = fract(p);
+  float a = hash(i);
+  float b = hash(i + vec2(1.0, 0.0));
+  float c = hash(i + vec2(0.0, 1.0));
+  float d = hash(i + vec2(1.0, 1.0));
+  vec2 u = f * f * (3.0 - 2.0 * f);
+  return mix(a, b, u.x) +
+         (c - a) * u.y * (1.0 - u.x) +
+         (d - b) * u.x * u.y;
+}
 
-    void main() {
-      mainImage(gl_FragColor, gl_FragCoord.xy);
-    }
-  </script>
+void mainImage(out vec4 fragColor, in vec2 fragCoord) {
+  vec2 uv = fragCoord / iResolution.xy;
+  vec3 col = 0.5 + 0.5 * cos(iTime + uv.xyx + vec3(0, 2, 4));
+  float n = noise(uv * 10.0 + iTime * 0.1);
+  col *= n;
+  fragColor = vec4(col, 1.0);
+}
+
+void main() {
+  mainImage(gl_FragColor, gl_FragCoord.xy);
+}
+  </textarea>
+
+  <button id="runButton">Run Shader</button>
+  <pre id="errorMsg"></pre>
 
   <script>
     const canvas = document.getElementById('shaderCanvas');
     const gl = canvas.getContext('webgl');
-    let time = 0;
+    const shaderCodeInput = document.getElementById('shaderCode');
+    const runButton = document.getElementById('runButton');
+    const errorMsg = document.getElementById('errorMsg');
+
+    let program, iTimeLoc, iResLoc;
+    let startTime = performance.now();
+    let animationFrameId;
 
     function resize() {
       canvas.width = window.innerWidth;
       canvas.height = window.innerHeight;
       gl.viewport(0, 0, gl.drawingBufferWidth, gl.drawingBufferHeight);
     }
-
     window.addEventListener('resize', resize);
     resize();
 
@@ -125,55 +169,90 @@
       gl.shaderSource(shader, source);
       gl.compileShader(shader);
       if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
-        console.error(gl.getShaderInfoLog(shader));
+        const err = gl.getShaderInfoLog(shader);
         gl.deleteShader(shader);
-        return null;
+        throw new Error(err);
       }
       return shader;
     }
 
-    const vertexShader = compileShader(gl.VERTEX_SHADER, `
-      attribute vec2 position;
-      void main() {
-        gl_Position = vec4(position, 0.0, 1.0);
+    function createProgram(fragmentShaderSource) {
+      if (program) {
+        gl.deleteProgram(program);
       }
-    `);
 
-    const fragSource = document.getElementById('fragShader').text;
-    const fragmentShader = compileShader(gl.FRAGMENT_SHADER, fragSource);
+      const vertexShaderSource = `
+        attribute vec2 position;
+        void main() {
+          gl_Position = vec4(position, 0.0, 1.0);
+        }
+      `;
 
-    const program = gl.createProgram();
-    gl.attachShader(program, vertexShader);
-    gl.attachShader(program, fragmentShader);
-    gl.linkProgram(program);
-    gl.useProgram(program);
+      try {
+        const vertexShader = compileShader(gl.VERTEX_SHADER, vertexShaderSource);
+        const fragmentShader = compileShader(gl.FRAGMENT_SHADER, fragmentShaderSource);
 
-    const positionLocation = gl.getAttribLocation(program, "position");
-    const buffer = gl.createBuffer();
-    gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
-    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([
-      -1, -1,
-      1, -1,
-      -1, 1,
-      -1, 1,
-      1, -1,
-      1, 1
-    ]), gl.STATIC_DRAW);
-    gl.enableVertexAttribArray(positionLocation);
-    gl.vertexAttribPointer(positionLocation, 2, gl.FLOAT, false, 0, 0);
+        const newProgram = gl.createProgram();
+        gl.attachShader(newProgram, vertexShader);
+        gl.attachShader(newProgram, fragmentShader);
+        gl.linkProgram(newProgram);
 
-    const iTimeLoc = gl.getUniformLocation(program, "iTime");
-    const iResLoc = gl.getUniformLocation(program, "iResolution");
-
-    function render() {
-      time += 0.016;
-      gl.uniform1f(iTimeLoc, time);
-      gl.uniform2f(iResLoc, canvas.width, canvas.height);
-      gl.drawArrays(gl.TRIANGLES, 0, 6);
-      requestAnimationFrame(render);
+        if (!gl.getProgramParameter(newProgram, gl.LINK_STATUS)) {
+          const err = gl.getProgramInfoLog(newProgram);
+          gl.deleteProgram(newProgram);
+          throw new Error(err);
+        }
+        return newProgram;
+      } catch (e) {
+        throw e;
+      }
     }
 
-    render();
+    function initBuffers(prog) {
+      const posLoc = gl.getAttribLocation(prog, 'position');
+      const buffer = gl.createBuffer();
+      gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
+      gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([
+        -1, -1,  1, -1,  -1, 1,
+        -1, 1,   1, -1,   1, 1
+      ]), gl.STATIC_DRAW);
+      gl.enableVertexAttribArray(posLoc);
+      gl.vertexAttribPointer(posLoc, 2, gl.FLOAT, false, 0, 0);
+    }
+
+    function render() {
+      animationFrameId = requestAnimationFrame(render);
+      const currentTime = (performance.now() - startTime) / 1000;
+      gl.uniform1f(iTimeLoc, currentTime);
+      gl.uniform2f(iResLoc, canvas.width, canvas.height);
+      gl.drawArrays(gl.TRIANGLES, 0, 6);
+    }
+
+    function runShader() {
+      errorMsg.style.display = 'none';
+      cancelAnimationFrame(animationFrameId);
+
+      try {
+        const fragSrc = shaderCodeInput.value;
+        program = createProgram(fragSrc);
+        gl.useProgram(program);
+        initBuffers(program);
+
+        iTimeLoc = gl.getUniformLocation(program, 'iTime');
+        iResLoc = gl.getUniformLocation(program, 'iResolution');
+
+        startTime = performance.now();
+        render();
+      } catch (e) {
+        errorMsg.textContent = 'Shader compile error:\n' + e.message;
+        errorMsg.style.display = 'block';
+      }
+    }
+
+    runButton.addEventListener('click', runShader);
+
+    // Run shader once on load
+    runShader();
   </script>
 </body>
 </html>
