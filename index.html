@@ -59,19 +59,24 @@
 
         .photo {
             width: 150px;
-            height: 180px;
+            max-height: 180px;
             background: #ddd;
             border: 1px solid #000;
             display: flex;
             align-items: center;
             justify-content: center;
             font-size: 14px;
+            overflow: hidden;
         }
 
         .photo img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
+            max-width: 100%;
+            max-height: 100%;
+            width: auto;
+            height: auto;
+            object-fit: contain;
+            display: block;
+            margin: 0 auto;
         }
 
         .info h1 {
@@ -221,8 +226,12 @@
                 </div>
                 <div class="info">
                     <h1>Martin Dokholyan</h1>
-                    <p>RA at MIT & Student at BU</p>
-                    <p>Interested in uncovering the logic of the brain and how it can orchestrate behavior and cognition. What influence does our internal state have on sensory processing?  How does the brain decide what matters most to guide our attention? Is it possible to predict ones actions or behaviors from only neural activity? Ultimately, I hope to bridge the gap between brain and behavior by identifying generalizable principles that govern how organisms sense, act, and adapt.</p>
+                    <p>RA @ MIT & Student @ BU</p>
+                    <p>Interested in uncovering the logic of the brain and how it can orchestrate behavior and cognition.</p>
+                    <p>What influence does our internal state have on sensory processing?</p>
+                    <p>How does the brain decide what matters most to guide our attention?</p>
+                    <p>Is it possible to predict ones actions or behaviors from only neural activity?</p>
+                    <p>Ultimately, I hope to bridge the gap between brain and behavior by identifying generalizable principles that govern how organisms sense, act, and adapt.</p>
                 </div>
             </div>
         </div>
@@ -231,7 +240,8 @@
     <div id="telos" class="tab-content">
         <div class="content-box">
             <h2>τέλος</h2>
-            <p>Content for the telos section will go here.</p>
+            <p>"The desire for “freedom of will” in the superlative, metaphysical sense, such as still holds sway, unfortunately, in the minds of the half-educated, the desire to bear the entire and ultimate responsibility for one’s actions oneself, and to absolve God, the world, ancestors, chance, and society therefrom, involves nothing less than to be precisely this CAUSA SUI, and, with more than Munchausen daring, to pull oneself up into existence by the hair, out of the slough of nothingness. If any one should find out in this manner the crass stupidity of the celebrated conception of “free will” and put it out of his head altogether, I beg of him to carry his “enlightenment” a step further, and also put out of his head the contrary of this monstrous conception of “free will”: I mean “non-free will,” which is tantamount to a misuse of cause and effect."</p>
+            <p>Friedrich Nietzsche - Beyond Good and Evil</p>
         </div>
     </div>
 
