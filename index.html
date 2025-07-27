@@ -11,7 +11,7 @@
       margin: 0; padding: 0; height: 100%; overflow: hidden;
       background: black;
       font-family: 'VT323', monospace;
-      color: #39ff14; /* neon green */
+      color: #39ff14;
       user-select: none;
     }
     canvas {
@@ -19,6 +19,7 @@
       top: 0; left: 0;
       width: 100%; height: 100%;
       z-index: 0;
+      display: block;
     }
     #profile {
       position: fixed;
@@ -26,46 +27,23 @@
       left: 30px;
       max-width: 500px;
       background: rgba(0,0,0,0.9);
-      border: 2px solid #39ff14;
-      border-radius: 8px;
+      border: 1.5px solid #39ff14;
+      border-radius: 6px;
       padding: 20px;
       z-index: 10000;
-      box-shadow: 0 0 15px #39ff14aa;
     }
     #profile img {
       width: 100px;
       border: 1px solid #39ff14;
-      border-radius: 8px;
+      border-radius: 6px;
       vertical-align: middle;
       margin-right: 15px;
     }
     #header {
       font-size: 2.5em;
       letter-spacing: 0.1em;
-      position: relative;
-      display: inline-block;
       color: #39ff14;
-      animation: glitch 1.5s infinite;
-    }
-    @keyframes glitch {
-      0% {
-        text-shadow:
-          2px 0 #39ff14,
-          -2px 0 #00ff99,
-          0 0 5px #39ff14;
-      }
-      50% {
-        text-shadow:
-          -2px 0 #39ff14,
-          2px 0 #00ff99,
-          0 0 10px #00ff99;
-      }
-      100% {
-        text-shadow:
-          2px 0 #39ff14,
-          -2px 0 #00ff99,
-          0 0 5px #39ff14;
-      }
+      margin: 0;
     }
     #description {
       margin-top: 12px;
@@ -82,6 +60,7 @@
       min-height: 120px;
       overflow-y: auto;
       white-space: pre-wrap;
+      color: #39ff14;
     }
     #input-line {
       display: flex;
@@ -89,8 +68,8 @@
     }
     #prompt {
       margin-right: 10px;
-      color: #00ff00;
-      font-weight: bold;
+      color: #39ff14;
+      font-weight: normal;
     }
     #cmdline {
       background: transparent;
@@ -112,7 +91,7 @@
       0%, 50% { opacity: 1; }
       51%, 100% { opacity: 0; }
     }
-    /* Scrollbar styling for terminal */
+    /* Scrollbar styling */
     #terminal::-webkit-scrollbar {
       width: 8px;
     }
@@ -128,10 +107,10 @@
 
   <canvas id="glcanvas"></canvas>
 
-  <div id="profile">
+  <div id="profile" role="main">
     <div style="display:flex; align-items:center;">
       <img src="unnamed.jpg" alt="Martin" />
-      <div id="header">MARTIN DOKHOLYAN</div>
+      <h1 id="header">MARTIN DOKHOLYAN</h1>
     </div>
     <div id="description">
       Biochemistry & Molecular Biology major at Boston University.<br/>
@@ -163,6 +142,7 @@
   window.addEventListener('resize', resize);
   resize();
 
+  // Simple grid background shader — black background with subtle moving grid lines
   const vertexSource = `
     attribute vec2 aPosition;
     void main() {
@@ -172,28 +152,19 @@
 
   const fragmentSource = `
     precision mediump float;
-    uniform float iTime;
     uniform vec2 iResolution;
-
-    float rand(vec2 co){
-        return fract(sin(dot(co.xy ,vec2(12.9898,78.233))) * 43758.5453);
-    }
-
-    void mainImage(out vec4 fragColor, in vec2 fragCoord){
-        vec2 uv = fragCoord / iResolution.xy;
-        uv += vec2(iTime * 0.1, iTime * 0.1);
-        float noise = rand(floor(uv * 20.0));
-        vec3 color = vec3(
-            0.5 + 0.5 * sin(iTime + uv.x * 10.0 + noise * 5.0),
-            0.5 + 0.5 * sin(iTime + uv.y * 10.0 + noise * 5.0 + 2.0),
-            0.5 + 0.5 * sin(iTime + (uv.x + uv.y) * 10.0 + noise * 5.0 + 4.0)
-        );
-        color = pow(color, vec3(1.5));
-        fragColor = vec4(color, 1.0);
-    }
+    uniform float iTime;
 
     void main() {
-      mainImage(gl_FragColor, gl_FragCoord.xy);
+      vec2 uv = gl_FragCoord.xy / iResolution.xy;
+      uv *= 20.0; // grid scale
+      vec2 grid = abs(fract(uv - 0.5) - 0.5) / fwidth(uv);
+      float line = min(grid.x, grid.y);
+      float move = mod(iTime * 0.3, 1.0); // grid scrolling animation
+      float gridLine = smoothstep(0.0, 1.0, 1.0 - line + move * 0.5);
+      vec3 color = vec3(0.0);
+      color += gridLine * 0.15; // faint green grid lines
+      gl_FragColor = vec4(color, 1.0);
     }
   `;
 
@@ -229,31 +200,31 @@
   gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
   gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([
     -1, -1,
-    1, -1,
-    -1, 1,
-    1, 1
+     1, -1,
+    -1,  1,
+     1,  1
   ]), gl.STATIC_DRAW);
 
   const positionLocation = gl.getAttribLocation(program, 'aPosition');
   gl.enableVertexAttribArray(positionLocation);
   gl.vertexAttribPointer(positionLocation, 2, gl.FLOAT, false, 0, 0);
 
+  const iResolutionLoc = gl.getUniformLocation(program, 'iResolution');
   const iTimeLoc = gl.getUniformLocation(program, 'iTime');
-  const iResLoc = gl.getUniformLocation(program, 'iResolution);
 
   let startTime = performance.now();
 
   function render() {
     resize();
     const currentTime = (performance.now() - startTime) / 1000;
+    gl.uniform2f(iResolutionLoc, canvas.width, canvas.height);
     gl.uniform1f(iTimeLoc, currentTime);
-    gl.uniform2f(iResLoc, canvas.width, canvas.height);
     gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
     requestAnimationFrame(render);
   }
   render();
 
-  // Terminal interaction
+  // Terminal interaction logic
   const cmdline = document.getElementById('cmdline');
   const output = document.getElementById('output');
 
@@ -271,7 +242,7 @@
         printOutput('Commands:\nhelp - Show this help\nabout - About Martin\ncontact - Show contact info\nclear - Clear the terminal');
         break;
       case 'about':
-        printOutput('Martin Dokholyan is a Biochemistry & Molecular Biology major at Boston University, interested in neural basis of behavior and active sensing.');
+        printOutput('Martin Dokholyan is a Biochemistry & Molecular Biology major at Boston University, interested in the neural basis of behavior and active sensing.');
         break;
       case 'contact':
         printOutput('LinkedIn: https://www.linkedin.com/in/mvdokh/\nGitHub: https://github.com/mvdokh');
@@ -286,9 +257,11 @@
 
   cmdline.addEventListener('keydown', e => {
     if (e.key === 'Enter') {
-      printOutput('> ' + cmdline.value);
-      processCommand(cmdline.value);
-      cmdline.value = '';
+      if(cmdline.value.trim() !== '') {
+        printOutput('> ' + cmdline.value);
+        processCommand(cmdline.value);
+        cmdline.value = '';
+      }
       e.preventDefault();
     }
   });
