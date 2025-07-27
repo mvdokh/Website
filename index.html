@@ -27,14 +27,14 @@
       padding: 40px;
     }
 
-    a {
-      color: #aad;
-    }
-
     table {
       background-color: rgba(0, 0, 0, 0.6);
       border-radius: 15px;
       padding: 20px;
+    }
+
+    a {
+      color: #aad;
     }
   </style>
 </head>
@@ -70,19 +70,39 @@
     <p>📍 Allston, MA<br>🎓 BMB @ BU 2026</p>
   </div>
 
+  <!-- Shader from https://www.shadertoy.com/view/w3KGRK -->
   <script type="x-shader/x-fragment" id="fragShader">
     precision mediump float;
     uniform float iTime;
     uniform vec2 iResolution;
 
+    float hash(vec2 p) {
+      return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453);
+    }
+
+    float noise(vec2 p) {
+      vec2 i = floor(p);
+      vec2 f = fract(p);
+      float a = hash(i);
+      float b = hash(i + vec2(1.0, 0.0));
+      float c = hash(i + vec2(0.0, 1.0));
+      float d = hash(i + vec2(1.0, 1.0));
+      vec2 u = f * f * (3.0 - 2.0 * f);
+      return mix(a, b, u.x) +
+             (c - a) * u.y * (1.0 - u.x) +
+             (d - b) * u.x * u.y;
+    }
+
     void mainImage(out vec4 fragColor, in vec2 fragCoord) {
-        vec2 uv = fragCoord / iResolution.xy;
-        vec3 col = 0.5 + 0.5*cos(iTime + uv.xyx + vec3(0,2,4));
-        fragColor = vec4(col,1.0);
+      vec2 uv = fragCoord / iResolution.xy;
+      vec3 col = 0.5 + 0.5 * cos(iTime + uv.xyx + vec3(0, 2, 4));
+      float n = noise(uv * 10.0 + iTime * 0.1);
+      col *= n;
+      fragColor = vec4(col, 1.0);
     }
 
     void main() {
-        mainImage(gl_FragColor, gl_FragCoord.xy);
+      mainImage(gl_FragColor, gl_FragCoord.xy);
     }
   </script>
 
@@ -146,7 +166,7 @@
     const iResLoc = gl.getUniformLocation(program, "iResolution");
 
     function render() {
-      time += 0.01;
+      time += 0.016;
       gl.uniform1f(iTimeLoc, time);
       gl.uniform2f(iResLoc, canvas.width, canvas.height);
       gl.drawArrays(gl.TRIANGLES, 0, 6);
