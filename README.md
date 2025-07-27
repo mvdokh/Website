@@ -22,7 +22,7 @@
 ---
 
 ### About Me
-Interested in the neural basis of behavior
+Interested in the neural basis of behavior and active sensing.
 
 ---
 
