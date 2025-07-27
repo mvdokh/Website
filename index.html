@@ -4,266 +4,179 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Martin Dokholyan</title>
+
+  <!-- Pixel font similar to y-n10.com -->
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet" />
+  
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=VT323&display=swap');
-    
+    /* Reset and base */
+    * {
+      box-sizing: border-box;
+    }
     html, body {
-      margin: 0; padding: 0; height: 100%; overflow: hidden;
-      background: black;
-      font-family: 'VT323', monospace;
-      color: #39ff14;
+      margin: 0; padding: 0; height: 100%;
+      background: #000;
+      color: #00ff00;
+      font-family: 'Press Start 2P', cursive;
       user-select: none;
     }
-    canvas {
-      position: fixed;
-      top: 0; left: 0;
-      width: 100%; height: 100%;
-      z-index: 0;
+    body {
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      padding: 40px 20px;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    #container {
+      display: flex;
+      max-width: 900px;
+      width: 100%;
+      gap: 40px;
+      border: 4px solid #00ff00;
+      padding: 30px;
+      background: #000;
+      filter: drop-shadow(0 0 1px #00ff00);
+    }
+
+    #photo {
+      flex-shrink: 0;
+      width: 200px;
+      height: 200px;
+      image-rendering: pixelated;
+      border: 3px solid #00ff00;
+      border-radius: 4px;
+      background: #002200;
+      overflow: hidden;
+    }
+    #photo img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      image-rendering: pixelated;
       display: block;
     }
-    #profile {
-      position: fixed;
-      top: 30px;
-      left: 30px;
-      max-width: 500px;
-      background: rgba(0,0,0,0.9);
-      border: 1.5px solid #39ff14;
-      border-radius: 6px;
-      padding: 20px;
-      z-index: 10000;
-    }
-    #profile img {
-      width: 100px;
-      border: 1px solid #39ff14;
-      border-radius: 6px;
-      vertical-align: middle;
-      margin-right: 15px;
-    }
-    #header {
-      font-size: 2.5em;
-      letter-spacing: 0.1em;
-      color: #39ff14;
-      margin: 0;
-    }
-    #description {
-      margin-top: 12px;
-      line-height: 1.4;
-      font-size: 1.1em;
-    }
-    #terminal {
-      margin-top: 20px;
-      background: #001100;
-      border: 1px solid #39ff14;
-      border-radius: 6px;
-      padding: 15px;
-      font-size: 1.1em;
-      min-height: 120px;
-      overflow-y: auto;
-      white-space: pre-wrap;
-      color: #39ff14;
-    }
-    #input-line {
-      display: flex;
-      align-items: center;
-    }
-    #prompt {
-      margin-right: 10px;
-      color: #39ff14;
-      font-weight: normal;
-    }
-    #cmdline {
-      background: transparent;
-      border: none;
-      color: #39ff14;
-      font-family: 'VT323', monospace;
-      font-size: 1.1em;
-      outline: none;
+
+    #content {
       flex-grow: 1;
+      display: flex;
+      flex-direction: column;
     }
-    /* Blinking cursor */
-    #cmdline::after {
-      content: '|';
-      animation: blink 1s steps(1) infinite;
-      color: #39ff14;
-      margin-left: 2px;
+
+    #name {
+      font-size: 2.5rem;
+      letter-spacing: 0.15em;
+      margin-bottom: 20px;
+      user-select: text;
     }
-    @keyframes blink {
-      0%, 50% { opacity: 1; }
-      51%, 100% { opacity: 0; }
+
+    #description {
+      font-size: 1rem;
+      line-height: 1.3;
+      white-space: pre-wrap;
+      background: #001100;
+      padding: 20px;
+      border: 3px solid #00ff00;
+      border-radius: 4px;
+      min-height: 160px;
+      margin-bottom: 30px;
+      user-select: text;
+      overflow-y: auto;
+      font-weight: normal;
+      image-rendering: pixelated;
     }
-    /* Scrollbar styling */
-    #terminal::-webkit-scrollbar {
+
+    #edit-area-label {
+      font-size: 0.8rem;
+      margin-bottom: 6px;
+      user-select: none;
+    }
+
+    #edit-area {
+      font-family: 'Press Start 2P', cursive;
+      font-size: 0.85rem;
+      background: #001100;
+      color: #00ff00;
+      border: 3px solid #00ff00;
+      border-radius: 4px;
+      padding: 12px;
+      resize: vertical;
+      min-height: 80px;
+      outline: none;
+      image-rendering: pixelated;
+      caret-color: #00ff00;
+      line-height: 1.2;
+    }
+
+    /* Scrollbar for description and textarea */
+    #description::-webkit-scrollbar,
+    #edit-area::-webkit-scrollbar {
       width: 8px;
     }
-    #terminal::-webkit-scrollbar-track {
+    #description::-webkit-scrollbar-track,
+    #edit-area::-webkit-scrollbar-track {
       background: #001100;
     }
-    #terminal::-webkit-scrollbar-thumb {
-      background: #39ff14;
+    #description::-webkit-scrollbar-thumb,
+    #edit-area::-webkit-scrollbar-thumb {
+      background: #00ff00;
+    }
+
+    /* Responsive tweaks */
+    @media (max-width: 600px) {
+      body {
+        padding: 20px 10px;
+      }
+      #container {
+        flex-direction: column;
+        align-items: center;
+        gap: 20px;
+      }
+      #photo {
+        width: 150px;
+        height: 150px;
+      }
+      #name {
+        font-size: 1.8rem;
+        text-align: center;
+      }
+      #content {
+        width: 100%;
+      }
     }
   </style>
 </head>
 <body>
 
-  <canvas id="glcanvas"></canvas>
-
-  <div id="profile" role="main">
-    <div style="display:flex; align-items:center;">
-      <img src="unnamed.jpg" alt="Martin" />
-      <h1 id="header">MARTIN DOKHOLYAN</h1>
+  <div id="container">
+    <div id="photo">
+      <img src="unnamed.jpg" alt="Martin Dokholyan" />
     </div>
-    <div id="description">
-      Biochemistry & Molecular Biology major at Boston University.<br/>
-      Interested in the neural basis of behavior and active sensing.<br/>
-      📍 Allston, MA<br/>
-      🎓 BMB @ BU 2026
-    </div>
-
-    <div id="terminal" aria-live="polite" aria-label="Interactive terminal">
-      <div>Terminal Type <code>help</code> for commands.</div>
-      <div id="output"></div>
-      <div id="input-line">
-        <span id="prompt">user&gt;</span>
-        <input id="cmdline" autocomplete="off" autofocus spellcheck="false" />
+    <div id="content">
+      <div id="name">MARTIN DOKHOLYAN</div>
+      <div id="description" spellcheck="false" aria-label="Description about Martin">
+Biochemistry & Molecular Biology major at Boston University.
+Interested in the neural basis of behavior and active sensing.
+📍 Allston, MA
+🎓 BMB @ BU 2026
       </div>
+
+      <label id="edit-area-label" for="edit-area">Edit your description here:</label>
+      <textarea id="edit-area" spellcheck="false" aria-describedby="edit-area-label">Biochemistry & Molecular Biology major at Boston University.
+Interested in the neural basis of behavior and active sensing.
+📍 Allston, MA
+🎓 BMB @ BU 2026</textarea>
     </div>
   </div>
 
 <script>
-  const canvas = document.getElementById('glcanvas');
-  const gl = canvas.getContext('webgl');
-  if (!gl) alert('WebGL not supported');
+  const descriptionDiv = document.getElementById('description');
+  const editArea = document.getElementById('edit-area');
 
-  function resize() {
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
-    gl.viewport(0, 0, canvas.width, canvas.height);
-  }
-  window.addEventListener('resize', resize);
-  resize();
-
-  // Simple grid background shader — black background with subtle moving grid lines
-  const vertexSource = `
-    attribute vec2 aPosition;
-    void main() {
-      gl_Position = vec4(aPosition, 0, 1);
-    }
-  `;
-
-  const fragmentSource = `
-    precision mediump float;
-    uniform vec2 iResolution;
-    uniform float iTime;
-
-    void main() {
-      vec2 uv = gl_FragCoord.xy / iResolution.xy;
-      uv *= 20.0; // grid scale
-      vec2 grid = abs(fract(uv - 0.5) - 0.5) / fwidth(uv);
-      float line = min(grid.x, grid.y);
-      float move = mod(iTime * 0.3, 1.0); // grid scrolling animation
-      float gridLine = smoothstep(0.0, 1.0, 1.0 - line + move * 0.5);
-      vec3 color = vec3(0.0);
-      color += gridLine * 0.15; // faint green grid lines
-      gl_FragColor = vec4(color, 1.0);
-    }
-  `;
-
-  function createShader(type, source) {
-    const shader = gl.createShader(type);
-    gl.shaderSource(shader, source);
-    gl.compileShader(shader);
-    if(!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
-      console.error(gl.getShaderInfoLog(shader));
-      return null;
-    }
-    return shader;
-  }
-
-  function createProgram(vsSource, fsSource) {
-    const vertexShader = createShader(gl.VERTEX_SHADER, vsSource);
-    const fragmentShader = createShader(gl.FRAGMENT_SHADER, fsSource);
-    const program = gl.createProgram();
-    gl.attachShader(program, vertexShader);
-    gl.attachShader(program, fragmentShader);
-    gl.linkProgram(program);
-    if(!gl.getProgramParameter(program, gl.LINK_STATUS)) {
-      console.error(gl.getProgramInfoLog(program));
-      return null;
-    }
-    return program;
-  }
-
-  const program = createProgram(vertexSource, fragmentSource);
-  gl.useProgram(program);
-
-  const positionBuffer = gl.createBuffer();
-  gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
-  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([
-    -1, -1,
-     1, -1,
-    -1,  1,
-     1,  1
-  ]), gl.STATIC_DRAW);
-
-  const positionLocation = gl.getAttribLocation(program, 'aPosition');
-  gl.enableVertexAttribArray(positionLocation);
-  gl.vertexAttribPointer(positionLocation, 2, gl.FLOAT, false, 0, 0);
-
-  const iResolutionLoc = gl.getUniformLocation(program, 'iResolution');
-  const iTimeLoc = gl.getUniformLocation(program, 'iTime');
-
-  let startTime = performance.now();
-
-  function render() {
-    resize();
-    const currentTime = (performance.now() - startTime) / 1000;
-    gl.uniform2f(iResolutionLoc, canvas.width, canvas.height);
-    gl.uniform1f(iTimeLoc, currentTime);
-    gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
-    requestAnimationFrame(render);
-  }
-  render();
-
-  // Terminal interaction logic
-  const cmdline = document.getElementById('cmdline');
-  const output = document.getElementById('output');
-
-  function printOutput(text) {
-    const div = document.createElement('div');
-    div.textContent = text;
-    output.appendChild(div);
-    output.scrollTop = output.scrollHeight;
-  }
-
-  function processCommand(cmd) {
-    cmd = cmd.trim().toLowerCase();
-    switch(cmd) {
-      case 'help':
-        printOutput('Commands:\nhelp - Show this help\nabout - About Martin\ncontact - Show contact info\nclear - Clear the terminal');
-        break;
-      case 'about':
-        printOutput('Martin Dokholyan is a Biochemistry & Molecular Biology major at Boston University, interested in the neural basis of behavior and active sensing.');
-        break;
-      case 'contact':
-        printOutput('LinkedIn: https://www.linkedin.com/in/mvdokh/\nGitHub: https://github.com/mvdokh');
-        break;
-      case 'clear':
-        output.innerHTML = '';
-        break;
-      default:
-        printOutput(`Command not found: ${cmd}`);
-    }
-  }
-
-  cmdline.addEventListener('keydown', e => {
-    if (e.key === 'Enter') {
-      if(cmdline.value.trim() !== '') {
-        printOutput('> ' + cmdline.value);
-        processCommand(cmdline.value);
-        cmdline.value = '';
-      }
-      e.preventDefault();
-    }
+  // Update the visible description text live as you type in textarea
+  editArea.addEventListener('input', () => {
+    descriptionDiv.textContent = editArea.value;
   });
 </script>
 
