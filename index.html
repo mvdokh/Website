@@ -10,257 +10,196 @@
             padding: 0;
             box-sizing: border-box;
         }
-        
+
         body {
-            font-family: "Times New Roman", serif;
-            background: #f5f5f5;
-            color: #222;
-            padding: 40px 20px;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
+            font-family: "Courier New", monospace;
+            background-color: #ffffff;
+            color: #000000;
+            padding: 20px;
         }
-        
+
         nav {
-            margin-bottom: 30px;
+            margin-bottom: 20px;
+            background: #c0c0c0;
+            padding: 10px;
+            border: 2px outset #888;
+            text-align: center;
         }
-        
+
         nav a {
-            text-decoration: none;
-            color: #222;
-            border: 1px solid #222;
-            padding: 8px 16px;
-            margin-right: 10px;
-            display: inline-block;
-            transition: all 0.2s ease;
+            color: #0000ee;
+            text-decoration: underline;
+            margin: 0 10px;
+            font-weight: bold;
+            cursor: pointer;
         }
-        
-        nav a:hover, nav a.active {
-            background: #222;
-            color: #fff;
-        }
-        
+
         .tab-content {
             display: none;
-            max-width: 800px;
             width: 100%;
+            max-width: 800px;
+            margin: 0 auto;
         }
-        
+
         .tab-content.active {
             display: block;
         }
-        
+
         .content-box {
-            background: #fff;
-            border: 1px solid #ccc;
-            border-radius: 6px;
-            padding: 30px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            border: 2px solid #000;
+            padding: 20px;
+            background: #f8f8f8;
         }
-        
-        /* Intro Tab Styles */
+
         .intro-content {
             display: flex;
-            gap: 30px;
+            gap: 20px;
             align-items: flex-start;
         }
-        
+
         .photo {
-            width: 160px;
-            height: 200px;
-            border: 1px solid #aaa;
-            border-radius: 3px;
-            overflow: hidden;
-            flex-shrink: 0;
-            background: #eee;
+            width: 150px;
+            height: 180px;
+            background: #ddd;
+            border: 1px solid #000;
             display: flex;
             align-items: center;
             justify-content: center;
-            color: #999;
+            font-size: 14px;
         }
-        
+
         .photo img {
             width: 100%;
             height: 100%;
             object-fit: cover;
         }
-        
+
         .info h1 {
-            font-size: 1.6rem;
-            margin-bottom: 15px;
+            font-size: 20px;
+            margin-bottom: 10px;
             font-weight: bold;
         }
-        
+
         .info p {
-            line-height: 1.6;
-            margin-bottom: 8px;
+            font-size: 14px;
+            margin-bottom: 6px;
         }
-        
-        /* Widget Styles */
+
         .widget {
-            background: #fafafa;
-            border: 1px solid #ddd;
-            border-radius: 6px;
-            padding: 20px;
-            margin-bottom: 25px;
+            margin-top: 30px;
+            padding: 10px;
+            background: #f0f0f0;
+            border: 1px solid #000;
         }
-        
+
         .widget h3 {
-            margin-bottom: 15px;
-            color: #333;
-            font-size: 1.2rem;
+            font-size: 16px;
+            margin-bottom: 8px;
+            border-bottom: 1px dashed #000;
+            padding-bottom: 4px;
         }
-        
+
         .color-picker {
             display: flex;
-            gap: 10px;
-            flex-wrap: wrap;
-            margin: 10px 0;
+            gap: 5px;
+            margin-top: 10px;
         }
-        
+
         .color-box {
-            width: 40px;
-            height: 40px;
-            border: 2px solid #000;
-            border-radius: 4px;
+            width: 30px;
+            height: 30px;
+            border: 1px solid #000;
             cursor: pointer;
-            transition: transform 0.2s;
         }
-        
-        .color-box:hover {
-            transform: scale(1.1);
-        }
-        
+
         .calculator-grid {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
             gap: 5px;
-            max-width: 280px;
-            margin: 15px 0;
+            margin-top: 10px;
         }
-        
+
         .calc-display {
             grid-column: span 4;
-            padding: 15px;
+            padding: 8px;
             background: #fff;
-            border: 2px solid #333;
+            border: 1px solid #000;
             text-align: right;
-            font-size: 1.2rem;
             font-family: monospace;
-            margin-bottom: 10px;
-            border-radius: 4px;
         }
-        
+
         .calc-btn {
-            padding: 15px;
-            border: 1px solid #333;
-            background: #fff;
+            padding: 10px;
+            font-size: 14px;
+            background: #e0e0e0;
+            border: 1px solid #000;
             cursor: pointer;
-            font-size: 1rem;
-            border-radius: 4px;
-            transition: background 0.2s;
         }
-        
-        .calc-btn:hover {
-            background: #f0f0f0;
-        }
-        
+
         .calc-btn.equals {
-            background: #4ecdc4;
-            color: white;
+            background: #000;
+            color: #0f0;
         }
-        
+
         .calc-btn.wide {
             grid-column: span 2;
         }
-        
+
         .calc-btn.tall {
             grid-row: span 2;
         }
-        
+
         .clock {
-            font-family: 'Courier New', monospace;
-            font-size: 2.5rem;
             text-align: center;
-            padding: 20px;
+            font-size: 24px;
+            font-family: monospace;
             background: #000;
-            color: #0f0;
-            border-radius: 6px;
-            margin: 15px 0;
-            letter-spacing: 2px;
+            color: #00ff00;
+            padding: 10px;
+            margin-top: 10px;
         }
-        
-        .drawing-area {
-            margin: 15px 0;
-        }
-        
+
         .canvas {
-            border: 2px solid #333;
-            border-radius: 4px;
-            cursor: crosshair;
-            display: block;
+            border: 1px solid #000;
+            margin-top: 10px;
         }
-        
+
         .canvas-controls {
             margin-top: 10px;
-            display: flex;
-            gap: 15px;
-            align-items: center;
-            flex-wrap: wrap;
         }
-        
+
+        .canvas-controls label,
         .canvas-controls button {
-            padding: 8px 16px;
-            border: 1px solid #333;
-            background: #fff;
-            border-radius: 4px;
-            cursor: pointer;
+            font-size: 12px;
+            margin-right: 10px;
         }
-        
-        .canvas-controls button:hover {
-            background: #f0f0f0;
-        }
-        
+
         .counter-widget {
             text-align: center;
-            padding: 20px;
+            margin-top: 10px;
         }
-        
+
         .counter-display {
-            font-size: 3rem;
+            font-size: 24px;
+            margin: 10px 0;
             font-family: monospace;
-            margin: 20px 0;
-            color: #333;
         }
-        
-        .counter-buttons {
-            display: flex;
-            gap: 10px;
-            justify-content: center;
-            flex-wrap: wrap;
-        }
-        
+
         .counter-btn {
-            padding: 12px 20px;
-            border: 1px solid #333;
-            background: #fff;
-            border-radius: 4px;
+            background: #ddd;
+            border: 1px solid #000;
+            padding: 5px 10px;
             cursor: pointer;
-            font-size: 1rem;
-            transition: background 0.2s;
+            margin: 2px;
+            font-size: 14px;
         }
-        
-        .counter-btn:hover {
-            background: #f0f0f0;
-        }
-        
+
         @media (max-width: 600px) {
             .intro-content {
                 flex-direction: column;
                 text-align: center;
             }
-            
+
             .photo {
                 margin: 0 auto;
             }
@@ -274,7 +213,6 @@
         <a href="#" onclick="showTab('widgets')" id="widgets-tab">Widgets</a>
     </nav>
 
-    <!-- Intro Tab -->
     <div id="intro" class="tab-content active">
         <div class="content-box">
             <div class="intro-content">
@@ -292,7 +230,6 @@
         </div>
     </div>
 
-    <!-- Telos Tab -->
     <div id="telos" class="tab-content">
         <div class="content-box">
             <h2>τέλος</h2>
@@ -300,11 +237,8 @@
         </div>
     </div>
 
-    <!-- Widgets Tab -->
     <div id="widgets" class="tab-content">
         <div class="content-box">
-            
-            <!-- Color Picker Widget -->
             <div class="widget">
                 <h3>🎨 Color Picker</h3>
                 <p>Click a color to change the page background:</p>
@@ -318,7 +252,6 @@
                 </div>
             </div>
 
-            <!-- Calculator Widget -->
             <div class="widget">
                 <h3>🧮 Calculator</h3>
                 <div class="calculator-grid">
@@ -344,26 +277,21 @@
                 </div>
             </div>
 
-            <!-- Clock Widget -->
             <div class="widget">
                 <h3>🕒 Live Clock</h3>
                 <div class="clock" id="clock">00:00:00</div>
             </div>
 
-            <!-- Drawing Widget -->
             <div class="widget">
                 <h3>✏️ Drawing Canvas</h3>
-                <div class="drawing-area">
-                    <canvas class="canvas" id="canvas" width="400" height="200"></canvas>
-                    <div class="canvas-controls">
-                        <button onclick="clearCanvas()">Clear</button>
-                        <label>Color: <input type="color" id="brush-color" value="#000000"></label>
-                        <label>Size: <input type="range" id="brush-size" min="1" max="10" value="3"></label>
-                    </div>
+                <canvas class="canvas" id="canvas" width="400" height="200"></canvas>
+                <div class="canvas-controls">
+                    <button onclick="clearCanvas()">Clear</button>
+                    <label>Color: <input type="color" id="brush-color" value="#000000"></label>
+                    <label>Size: <input type="range" id="brush-size" min="1" max="10" value="3"></label>
                 </div>
             </div>
 
-            <!-- Counter Widget -->
             <div class="widget">
                 <h3>🔢 Counter</h3>
                 <div class="counter-widget">
@@ -377,37 +305,29 @@
                     </div>
                 </div>
             </div>
-
         </div>
     </div>
 
     <script>
-        // Global variables
         let calcExpression = '';
         let counterValue = 0;
         let isDrawing = false;
 
-        // Tab Management
         function showTab(tabName) {
-            // Hide all tabs
             const tabs = document.querySelectorAll('.tab-content');
             tabs.forEach(tab => tab.classList.remove('active'));
-            
-            // Remove active class from nav links
+
             const navLinks = document.querySelectorAll('nav a');
             navLinks.forEach(link => link.classList.remove('active'));
-            
-            // Show selected tab
+
             document.getElementById(tabName).classList.add('active');
             document.getElementById(tabName + '-tab').classList.add('active');
         }
 
-        // Color Picker
         function changeBackground(color) {
             document.body.style.background = color;
         }
 
-        // Calculator Functions
         function calcInput(value) {
             const display = document.getElementById('calc-display');
             if (calcExpression === '0' || calcExpression === 'Error') {
@@ -439,7 +359,6 @@
             }
         }
 
-        // Clock
         function updateClock() {
             const now = new Date();
             const time = now.toLocaleTimeString();
@@ -449,7 +368,6 @@
             }
         }
 
-        // Drawing Canvas
         function initCanvas() {
             const canvas = document.getElementById('canvas');
             const ctx = canvas.getContext('2d');
@@ -465,15 +383,15 @@
 
             function draw(e) {
                 if (!isDrawing) return;
-                
+
                 const rect = canvas.getBoundingClientRect();
                 const x = e.clientX - rect.left;
                 const y = e.clientY - rect.top;
-                
+
                 ctx.lineWidth = document.getElementById('brush-size').value;
                 ctx.lineCap = 'round';
                 ctx.strokeStyle = document.getElementById('brush-color').value;
-                
+
                 ctx.lineTo(x, y);
                 ctx.stroke();
                 ctx.beginPath();
@@ -488,7 +406,6 @@
             ctx.beginPath();
         }
 
-        // Counter Functions
         function changeCounter(amount) {
             counterValue += amount;
             document.getElementById('counter-display').textContent = counterValue;
@@ -499,7 +416,6 @@
             document.getElementById('counter-display').textContent = counterValue;
         }
 
-        // Initialize everything when page loads
         document.addEventListener('DOMContentLoaded', function() {
             updateClock();
             setInterval(updateClock, 1000);
