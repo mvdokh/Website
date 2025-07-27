@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Shader Test</title>
+<title>Martin Dokholyan - Shader Background</title>
 <style>
   html, body {
     margin: 0; padding: 0; height: 100%; overflow: hidden;
@@ -14,11 +14,86 @@
     position: fixed;
     top: 0; left: 0;
     width: 100%; height: 100%;
+    z-index: -1;
+  }
+  /* Profile overlay container */
+  #profile {
+    position: fixed;
+    top: 30px;
+    left: 30px;
+    max-width: 480px;
+    background: rgba(30, 30, 30, 0.85);
+    color: #8fef9f; /* greenish code color */
+    font-family: 'Courier New', Courier, monospace;
+    border: 2px solid #3dbf3d;
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0 0 12px #3dbf3daa;
+    user-select: none;
+  }
+  #profile table {
+    width: 100%;
+  }
+  #profile img {
+    width: 100px;
+    border-radius: 8px;
+    border: 1px solid #3dbf3d;
+  }
+  #profile h1 {
+    margin: 0 0 6px 0;
+    font-weight: normal;
+    font-size: 1.8em;
+    color: #a0ffa0;
+  }
+  #profile p {
+    margin: 6px 0;
+    line-height: 1.3;
+  }
+  #profile a {
+    color: #7ddb7d;
+    text-decoration: none;
+  }
+  #profile a:hover {
+    text-decoration: underline;
+  }
+  /* About me block styled like a code block */
+  #about {
+    margin-top: 12px;
+    background: #222;
+    padding: 10px;
+    border-radius: 6px;
+    font-size: 0.95em;
+    color: #a6ffa6;
+    font-family: 'Courier New', Courier, monospace;
   }
 </style>
 </head>
 <body>
-<canvas id="glcanvas"></canvas>
+  <canvas id="glcanvas"></canvas>
+
+  <div id="profile">
+    <table>
+      <tr>
+        <td>
+          <img src="unnamed.jpg" alt="Martin Dokholyan" />
+        </td>
+        <td style="padding-left: 15px; vertical-align: top;">
+          <h1>Martin Dokholyan</h1>
+          <p>Biochemistry &amp; Molecular Biology major at Boston University.</p>
+          <p>
+            <a href="https://www.linkedin.com/in/mvdokh/" target="_blank" rel="noopener noreferrer">LinkedIn</a> | 
+            <a href="https://github.com/mvdokh" target="_blank" rel="noopener noreferrer">GitHub</a>
+          </p>
+        </td>
+      </tr>
+    </table>
+
+    <div id="about">
+      Interested in the neural basis of behavior and active sensing.<br/>
+      📍 Allston, MA<br/>
+      🎓 BMB @ BU 2026
+    </div>
+  </div>
 
 <script>
   const canvas = document.getElementById('glcanvas');
@@ -103,7 +178,7 @@
   const program = createProgram(vertexSource, fragmentSource);
   gl.useProgram(program);
 
-  // Setup a full-screen triangle strip
+  // Setup a full-screen quad
   const positionBuffer = gl.createBuffer();
   gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
   gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([
@@ -135,5 +210,6 @@
 
   render();
 </script>
+
 </body>
 </html>
