@@ -1,0 +1,157 @@
+<div class="content-box">
+    <style>
+        .widget {
+            margin-top: 30px;
+            padding: 10px;
+            background: #f0f0f0;
+            border: 1px solid #000;
+        }
+
+        .widget:first-child {
+            margin-top: 0;
+        }
+
+        .widget h3 {
+            font-size: 16px;
+            margin-bottom: 8px;
+            border-bottom: 1px dashed #000;
+            padding-bottom: 4px;
+        }
+
+        .calculator-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 5px;
+            margin-top: 10px;
+        }
+
+        .calc-display {
+            grid-column: span 4;
+            padding: 8px;
+            background: #fff;
+            border: 1px solid #000;
+            text-align: right;
+            font-family: monospace;
+        }
+
+        .calc-btn {
+            padding: 10px;
+            font-size: 14px;
+            background: #e0e0e0;
+            border: 1px solid #000;
+            cursor: pointer;
+        }
+
+        .calc-btn.equals {
+            background: #000;
+            color: #0f0;
+        }
+
+        .calc-btn.wide {
+            grid-column: span 2;
+        }
+
+        .calc-btn.tall {
+            grid-row: span 2;
+        }
+
+        .clock {
+            text-align: center;
+            font-size: 24px;
+            font-family: monospace;
+            background: #000;
+            color: #00ff00;
+            padding: 10px;
+            margin-top: 10px;
+        }
+
+        .canvas {
+            border: 1px solid #000;
+            margin-top: 10px;
+        }
+
+        .canvas-controls {
+            margin-top: 10px;
+        }
+
+        .canvas-controls label,
+        .canvas-controls button {
+            font-size: 12px;
+            margin-right: 10px;
+        }
+
+        .counter-widget {
+            text-align: center;
+            margin-top: 10px;
+        }
+
+        .counter-display {
+            font-size: 24px;
+            margin: 10px 0;
+            font-family: monospace;
+        }
+
+        .counter-btn {
+            background: #ddd;
+            border: 1px solid #000;
+            padding: 5px 10px;
+            cursor: pointer;
+            margin: 2px;
+            font-size: 14px;
+        }
+    </style>
+
+    <div class="widget">
+        <h3>🧮 Calculator</h3>
+        <div class="calculator-grid">
+            <div class="calc-display" id="calc-display">0</div>
+            <button class="calc-btn" onclick="clearCalc()">C</button>
+            <button class="calc-btn" onclick="calcInput('/')">/</button>
+            <button class="calc-btn" onclick="calcInput('*')">×</button>
+            <button class="calc-btn" onclick="deleteLast()">⌫</button>
+            <button class="calc-btn" onclick="calcInput('7')">7</button>
+            <button class="calc-btn" onclick="calcInput('8')">8</button>
+            <button class="calc-btn" onclick="calcInput('9')">9</button>
+            <button class="calc-btn" onclick="calcInput('-')">-</button>
+            <button class="calc-btn" onclick="calcInput('4')">4</button>
+            <button class="calc-btn" onclick="calcInput('5')">5</button>
+            <button class="calc-btn" onclick="calcInput('6')">6</button>
+            <button class="calc-btn" onclick="calcInput('+')">+</button>
+            <button class="calc-btn" onclick="calcInput('1')">1</button>
+            <button class="calc-btn" onclick="calcInput('2')">2</button>
+            <button class="calc-btn" onclick="calcInput('3')">3</button>
+            <button class="calc-btn equals tall" onclick="calculate()">=</button>
+            <button class="calc-btn wide" onclick="calcInput('0')">0</button>
+            <button class="calc-btn" onclick="calcInput('.')">.</button>
+        </div>
+    </div>
+
+    <div class="widget">
+        <h3>🕒 Live Clock</h3>
+        <div class="clock" id="clock">00:00:00</div>
+    </div>
+
+    <div class="widget">
+        <h3>✏️ Drawing Canvas</h3>
+        <canvas class="canvas" id="canvas" width="400" height="200"></canvas>
+        <div class="canvas-controls">
+            <button onclick="clearCanvas()">Clear</button>
+            <label>Color: <input type="color" id="brush-color" value="#000000"></label>
+            <label>Size: <input type="range" id="brush-size" min="1" max="10" value="3"></label>
+        </div>
+    </div>
+
+    <div class="widget">
+        <h3>🔢 Counter</h3>
+        <div class="counter-widget">
+            <div class="counter-display" id="counter-display">0</div>
+            <div class="counter-buttons">
+                <button class="counter-btn" onclick="changeCounter(-10)">-10</button>
+                <button class="counter-btn" onclick="changeCounter(-1)">-1</button>
+                <button class="counter-btn" onclick="resetCounter()">Reset</button>
+                <button class="counter-btn" onclick="changeCounter(1)">+1</button>
+                <button class="counter-btn" onclick="changeCounter(10)">+10</button>
+            </div>
+        </div>
+    </div>
+</div>
