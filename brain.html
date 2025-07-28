@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Mouse Brain</title>
+    <style>
+        .brain-container {
+            text-align: center;
+            padding: 20px;
+        }
+
+        .brain-title {
+            font-size: 18px;
+            margin-bottom: 15px;
+            font-weight: bold;
+        }
+
+        .brain-svg {
+            width: 600px;
+            height: 300px;
+            border: 2px solid #000;
+            background: #f9f9f9;
+            margin: 0 auto 20px auto;
+            display: block;
+        }
+
+        .brain-region {
+            fill: #e0e0e0;
+            stroke: #333;
+            stroke-width: 1.5;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .brain-region:hover {
+            fill: #ffff00;
+            stroke: #000;
+            stroke-width: 2;
+        }
+
+        .brain-region.highlighted {
+            fill: #ff6b6b;
+            stroke: #000;
+            stroke-width: 2;
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+
+        .brain-info {
+            background: #fff;
+            border: 2px solid #000;
+            padding: 15px;
+            margin-top: 20px;
+            min-height: 100px;
+            text-align: left;
+        }
+
+        .region-name {
+            font-weight: bold;
+            font-size: 16px;
+            margin-bottom: 8px;
+            color: #0000ee;
+        }
+
+        .region-function {
+            font-size: 14px;
+            line-height: 1.4;
+        }
+
+        .instructions {
+            font-size: 12px;
+            font-style: italic;
+            margin-bottom: 10px;
+            color: #666;
+        }
+
+        @media (max-width: 650px) {
+            .brain-svg {
+                width: 100%;
+                max-width: 500px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="brain-container">
+        <h2 class="brain-title">Interactive Mouse Brain - Sagittal Section</h2>
+        <p class="instructions">Click on different brain regions to learn about their functions!</p>
+        
+        <svg class="brain-svg" viewBox="0 0 600 300">
+            <!-- Cortex -->
+            <path class="brain-region" id="cortex" 
+                  d="M50 80 Q100 50 200 60 Q300 55 400 65 Q480 70 520 90 Q540 100 550 120 L550 140 Q540 120 520 130 Q480 140 400 135 Q300 140 200 135 Q100 130 50 140 Z" />
+            
+            <!-- Hippocampus -->
+            <ellipse class="brain-region" id="hippocampus" cx="350" cy="180" rx="40" ry="15" />
+            
+            <!-- Cerebellum -->
+            <circle class="brain-region" id="cerebellum" cx="480" cy="200" r="35" />
+            
+            <!-- Brainstem -->
+            <rect class="brain-region" id="brainstem" x="420" y="220" width="25" height="50" rx="5" />
+            
+            <!-- Thalamus -->
+            <ellipse class="brain-region" id="thalamus" cx="280" cy="150" rx="25" ry="20" />
+            
+            <!-- Hypothalamus -->
+            <ellipse class="brain-region" id="hypothalamus" cx="250" cy="180" rx="20" ry="12" />
+            
+            <!-- Olfactory Bulb -->
+            <circle class="brain-region" id="olfactory" cx="80" cy="120" r="15" />
+            
+            <!-- Striatum -->
+            <ellipse class="brain-region" id="striatum" cx="200" cy="160" rx="30" ry="18" />
+            
+            <!-- Amygdala -->
+            <ellipse class="brain-region" id="amygdala" cx="300" cy="190" rx="18" ry="12" />
+            
+            <!-- Spinal Cord -->
+            <rect class="brain-region" id="spinal" x="440" y="270" width="12" height="25" rx="6" />
+            
+            <!-- Region Labels (small text) -->
+            <text x="300" y="35" font-size="10" text-anchor="middle" fill="#333">Anterior</text>
+            <text x="30" y="155" font-size="10" text-anchor="middle" fill="#333" transform="rotate(-90 30 155)">Dorsal</text>
+            <text x="570" y="155" font-size="10" text-anchor="middle" fill="#333" transform="rotate(90 570 155)">Ventral</text>
+            <text x="300" y="295" font-size="10" text-anchor="middle" fill="#333">Posterior</text>
+        </svg>
+
+        <div class="brain-info" id="brain-info">
+            <div class="region-name">Welcome to the Mouse Brain Explorer!</div>
+            <div class="region-function">
+                This is a simplified sagittal (side) view of a mouse brain at the midline. 
+                Click on any colored region to learn about its primary functions and role in behavior and cognition.
+                The mouse brain is an excellent model for understanding mammalian neuroscience due to its similarity to human brain organization.
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Brain region information
+        const brainRegions = {
+            cortex: {
+                name: "Cerebral Cortex",
+                function: "The outermost layer of the brain responsible for higher-order functions including sensory processing, motor control, decision-making, and consciousness. In mice, it's organized into distinct areas for vision, hearing, touch, and movement. Critical for learning, memory formation, and complex behaviors."
+            },
+            hippocampus: {
+                name: "Hippocampus",
+                function: "Essential for forming new memories and spatial navigation. The hippocampus creates cognitive maps of environments and is crucial for episodic memory. Damage here leads to severe memory impairments. Contains place cells that fire when the animal is in specific locations."
+            },
+            cerebellum: {
+                name: "Cerebellum",
+                function: "The 'little brain' responsible for motor coordination, balance, and motor learning. It fine-tunes movements and helps maintain posture. Also involved in cognitive functions like attention and language processing. Contains more neurons than the rest of the brain combined."
+            },
+            brainstem: {
+                name: "Brainstem",
+                function: "Controls vital life functions including breathing, heart rate, and sleep-wake cycles. Contains nuclei that regulate arousal, attention, and basic survival reflexes. Connects the brain to the spinal cord and houses cranial nerve nuclei."
+            },
+            thalamus: {
+                name: "Thalamus",
+                function: "The brain's relay station that filters and directs sensory information to appropriate cortical areas. Acts as a gatekeeper for consciousness and attention. Almost all sensory information (except smell) passes through the thalamus before reaching the cortex."
+            },
+            hypothalamus: {
+                name: "Hypothalamus",
+                function: "Master regulator of homeostasis controlling hunger, thirst, body temperature, and circadian rhythms. Produces hormones and controls the pituitary gland. Integrates emotional and physiological responses to maintain internal balance."
+            },
+            olfactory: {
+                name: "Olfactory Bulb",
+                function: "First processing station for smell information. Receives input directly from olfactory receptors in the nose. In mice, smell is crucial for navigation, finding food, recognizing kin, and detecting predators. Connected to emotional and memory centers."
+            },
+            striatum: {
+                name: "Striatum",
+                function: "Part of the basal ganglia involved in motor control, habit formation, and reward processing. Critical for learning action-outcome associations and developing automatic behaviors. Dysfunction here is linked to movement disorders like Parkinson's disease."
+            },
+            amygdala: {
+                name: "Amygdala",
+                function: "The brain's alarm system responsible for processing fear, threat detection, and emotional memories. Triggers fight-or-flight responses and helps form emotional associations with stimuli. Essential for survival behaviors and social interactions."
+            },
+            spinal: {
+                name: "Spinal Cord",
+                function: "Major conduit between the brain and body, carrying motor commands down and sensory information up. Contains neural circuits for reflexes and basic locomotor patterns. Organized in segments corresponding to different body regions."
+            }
+        };
+
+        // Initialize brain functionality
+        function initializeBrain() {
+            // Add click listeners to brain regions
+            Object.keys(brainRegions).forEach(regionId => {
+                const region = document.getElementById(regionId);
+                if (region) {
+                    region.addEventListener('click', () => {
+                        // Remove highlight from all regions
+                        document.querySelectorAll('.brain-region').forEach(r => {
+                            r.classList.remove('highlighted');
+                        });
+                        
+                        // Highlight clicked region
+                        region.classList.add('highlighted');
+                        
+                        // Update info panel
+                        const info = brainRegions[regionId];
+                        document.getElementById('brain-info').innerHTML = `
+                            <div class="region-name">${info.name}</div>
+                            <div class="region-function">${info.function}</div>
+                        `;
+                    });
+                }
+            });
+        }
+
+        // Initialize when page loads
+        document.addEventListener('DOMContentLoaded', initializeBrain);
+    </script>
+</body>
+</html>
