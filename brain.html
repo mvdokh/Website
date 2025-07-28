@@ -93,9 +93,25 @@
         <p class="instructions">Click on different brain regions to learn about their functions!</p>
         
         <svg class="brain-svg" viewBox="0 0 600 300">
-            <!-- Cortex -->
-            <path class="brain-region" id="cortex" 
-                  d="M50 80 Q100 50 200 60 Q300 55 400 65 Q480 70 520 90 Q540 100 550 120 L550 140 Q540 120 520 130 Q480 140 400 135 Q300 140 200 135 Q100 130 50 140 Z" />
+            <!-- Primary Somatosensory Cortex -->
+            <path class="brain-region" id="s1-cortex" 
+                  d="M150 70 Q180 60 220 65 Q250 68 280 70 L280 85 Q250 83 220 80 Q180 75 150 85 Z" />
+            
+            <!-- Primary Motor Cortex -->
+            <path class="brain-region" id="m1-cortex" 
+                  d="M120 75 Q150 65 180 68 Q210 70 240 72 L240 87 Q210 85 180 83 Q150 80 120 90 Z" />
+            
+            <!-- Visual Cortex -->
+            <path class="brain-region" id="visual-cortex" 
+                  d="M400 80 Q450 75 500 85 Q530 90 550 100 L550 115 Q530 105 500 100 Q450 90 400 95 Z" />
+            
+            <!-- Auditory Cortex -->
+            <path class="brain-region" id="auditory-cortex" 
+                  d="M200 90 Q230 85 260 88 Q290 90 320 92 L320 107 Q290 105 260 103 Q230 100 200 105 Z" />
+            
+            <!-- Prefrontal Cortex -->
+            <path class="brain-region" id="prefrontal-cortex" 
+                  d="M50 85 Q80 75 110 78 Q140 80 170 82 L170 97 Q140 95 110 93 Q80 90 50 100 Z" />
             
             <!-- Hippocampus -->
             <ellipse class="brain-region" id="hippocampus" cx="350" cy="180" rx="40" ry="15" />
@@ -109,14 +125,26 @@
             <!-- Thalamus -->
             <ellipse class="brain-region" id="thalamus" cx="280" cy="150" rx="25" ry="20" />
             
-            <!-- Hypothalamus -->
-            <ellipse class="brain-region" id="hypothalamus" cx="250" cy="180" rx="20" ry="12" />
+            <!-- Paraventricular Nucleus (PVN) -->
+            <circle class="brain-region" id="pvn" cx="240" cy="175" r="8" />
+            
+            <!-- Suprachiasmatic Nucleus (SCN) -->
+            <circle class="brain-region" id="scn" cx="255" cy="185" r="6" />
+            
+            <!-- Arcuate Nucleus -->
+            <circle class="brain-region" id="arcuate" cx="250" cy="195" r="7" />
+            
+            <!-- Lateral Hypothalamus -->
+            <ellipse class="brain-region" id="lateral-hyp" cx="265" cy="180" rx="15" ry="8" />
             
             <!-- Olfactory Bulb -->
             <circle class="brain-region" id="olfactory" cx="80" cy="120" r="15" />
             
-            <!-- Striatum -->
-            <ellipse class="brain-region" id="striatum" cx="200" cy="160" rx="30" ry="18" />
+            <!-- Caudate Putamen (Dorsal Striatum) -->
+            <ellipse class="brain-region" id="caudate-putamen" cx="200" cy="155" rx="25" ry="15" />
+            
+            <!-- Nucleus Accumbens (Ventral Striatum) -->
+            <ellipse class="brain-region" id="accumbens" cx="180" cy="175" rx="18" ry="10" />
             
             <!-- Amygdala -->
             <ellipse class="brain-region" id="amygdala" cx="300" cy="190" rx="18" ry="12" />
@@ -144,45 +172,77 @@
     <script>
         // Brain region information
         const brainRegions = {
-            cortex: {
-                name: "Cerebral Cortex",
-                function: "The outermost layer of the brain responsible for higher-order functions including sensory processing, motor control, decision-making, and consciousness. In mice, it's organized into distinct areas for vision, hearing, touch, and movement. Critical for learning, memory formation, and complex behaviors."
+            's1-cortex': {
+                name: "Primary Somatosensory Cortex (S1)",
+                function: "Processes touch, pressure, temperature, and pain sensations from the body. Contains a topographic 'body map' where different areas respond to specific body parts."
+            },
+            'm1-cortex': {
+                name: "Primary Motor Cortex (M1)",
+                function: "Controls voluntary movements. Sends direct commands to muscles via the corticospinal tract. Also organized as a body map with larger areas for precise movements like whiskers and forepaws."
+            },
+            'visual-cortex': {
+                name: "Primary Visual Cortex (V1)",
+                function: "First cortical area to process visual information. Detects edges, orientation, and motion. Critical for basic visual perception and feeds information to higher visual areas."
+            },
+            'auditory-cortex': {
+                name: "Primary Auditory Cortex (A1)",
+                function: "Processes sound frequency, intensity, and temporal patterns. Organized tonotopically with different areas responding to specific frequencies. Essential for sound localization."
+            },
+            'prefrontal-cortex': {
+                name: "Prefrontal Cortex (PFC)",
+                function: "Executive control center for decision-making, working memory, and behavioral flexibility. Plans future actions and inhibits inappropriate responses."
             },
             hippocampus: {
                 name: "Hippocampus",
-                function: "Essential for forming new memories and spatial navigation. The hippocampus creates cognitive maps of environments and is crucial for episodic memory. Damage here leads to severe memory impairments. Contains place cells that fire when the animal is in specific locations."
+                function: "Memory consolidation and spatial navigation. Contains place cells that create cognitive maps. Essential for forming new episodic memories and spatial learning tasks."
             },
             cerebellum: {
                 name: "Cerebellum",
-                function: "The 'little brain' responsible for motor coordination, balance, and motor learning. It fine-tunes movements and helps maintain posture. Also involved in cognitive functions like attention and language processing. Contains more neurons than the rest of the brain combined."
+                function: "Motor learning, coordination, and balance. Fine-tunes movements and maintains posture. Also involved in cognitive functions and motor skill acquisition."
             },
             brainstem: {
                 name: "Brainstem",
-                function: "Controls vital life functions including breathing, heart rate, and sleep-wake cycles. Contains nuclei that regulate arousal, attention, and basic survival reflexes. Connects the brain to the spinal cord and houses cranial nerve nuclei."
+                function: "Controls vital functions like breathing, heart rate, and arousal. Contains nuclei for cranial nerves and regulates sleep-wake cycles and basic reflexes."
             },
             thalamus: {
                 name: "Thalamus",
-                function: "The brain's relay station that filters and directs sensory information to appropriate cortical areas. Acts as a gatekeeper for consciousness and attention. Almost all sensory information (except smell) passes through the thalamus before reaching the cortex."
+                function: "Sensory relay station filtering information to cortex. Gates sensory input based on attention and arousal state. Critical for consciousness and sensory awareness."
             },
-            hypothalamus: {
-                name: "Hypothalamus",
-                function: "Master regulator of homeostasis controlling hunger, thirst, body temperature, and circadian rhythms. Produces hormones and controls the pituitary gland. Integrates emotional and physiological responses to maintain internal balance."
+            pvn: {
+                name: "Paraventricular Nucleus (PVN)",
+                function: "Stress response center. Releases CRH to trigger cortisol release and controls autonomic responses to threats. Key in fight-or-flight reactions."
+            },
+            scn: {
+                name: "Suprachiasmatic Nucleus (SCN)",
+                function: "Master circadian clock. Synchronizes daily rhythms in body temperature, hormone release, and sleep-wake cycles based on light input."
+            },
+            arcuate: {
+                name: "Arcuate Nucleus",
+                function: "Appetite control center. Contains neurons that sense hunger (AgRP) and satiety (POMC) signals. Regulates food intake and energy balance."
+            },
+            'lateral-hyp': {
+                name: "Lateral Hypothalamus",
+                function: "Feeding and arousal center. Stimulation causes eating behavior. Also involved in reward processing and motivated behaviors like foraging."
             },
             olfactory: {
                 name: "Olfactory Bulb",
-                function: "First processing station for smell information. Receives input directly from olfactory receptors in the nose. In mice, smell is crucial for navigation, finding food, recognizing kin, and detecting predators. Connected to emotional and memory centers."
+                function: "First processing station for smell. Receives direct input from nose receptors. Critical for mice - used for navigation, mate recognition, and predator detection."
             },
-            striatum: {
-                name: "Striatum",
-                function: "Part of the basal ganglia involved in motor control, habit formation, and reward processing. Critical for learning action-outcome associations and developing automatic behaviors. Dysfunction here is linked to movement disorders like Parkinson's disease."
+            'caudate-putamen': {
+                name: "Caudate-Putamen (Dorsal Striatum)",
+                function: "Motor control and habit formation. Processes action-outcome learning and develops automatic behavioral sequences. Important for skill learning."
+            },
+            accumbens: {
+                name: "Nucleus Accumbens (Ventral Striatum)",
+                function: "Reward and motivation center. Processes dopamine signals related to pleasure and addiction. Drives goal-directed behaviors and reinforcement learning."
             },
             amygdala: {
                 name: "Amygdala",
-                function: "The brain's alarm system responsible for processing fear, threat detection, and emotional memories. Triggers fight-or-flight responses and helps form emotional associations with stimuli. Essential for survival behaviors and social interactions."
+                function: "Fear processing and threat detection. Forms emotional memories and triggers defensive responses. Essential for survival behaviors and anxiety responses."
             },
             spinal: {
                 name: "Spinal Cord",
-                function: "Major conduit between the brain and body, carrying motor commands down and sensory information up. Contains neural circuits for reflexes and basic locomotor patterns. Organized in segments corresponding to different body regions."
+                function: "Information highway between brain and body. Carries motor commands down and sensory information up. Contains reflex circuits for rapid responses."
             }
         };
 
