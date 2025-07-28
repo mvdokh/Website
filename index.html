@@ -207,6 +207,10 @@
                     <p><b>Plato</b> - The Republic</p>
                     <p>"The desire for "freedom of will" in the superlative, metaphysical sense, such as still holds sway, unfortunately, in the minds of the half-educated, the desire to bear the entire and ultimate responsibility for one's actions oneself, and to absolve God, the world, ancestors, chance, and society therefrom, involves nothing less than to be precisely this CAUSA SUI, and, with more than Munchausen daring, to pull oneself up into existence by the hair, out of the slough of nothingness. If any one should find out in this manner the crass stupidity of the celebrated conception of "free will" and put it out of his head altogether, I beg of him to carry his "enlightenment" a step further, and also put out of his head the contrary of this monstrous conception of "free will": I mean "non-free wall," which is tantamount to a misuse of cause and effect."</p>
                     <p><b>Friedrich Nietzsche</b> - Beyond Good and Evil</p>
+                    <p>"One morning, as Gregor Samsa was waking up from anxious dreams, he discovered that in his bed he had been changed into a monstrous bug…"</p>
+                    <p><b>Franz Kafka</b> - The Metamorphosis</p>
+                    <p>"Everything that burns, everything that rips me apart, I want to suffer with my body. I'd rather have a hundred wounds, whips, poisons - than this kind of suffering in the head, this phantom of suffering, which touches me softly and caresses me without ever really hurting."</p>
+                    <p><b>Jean-Paul Sartre</b> - No Exit</p>
                 </div>
             `,
 
@@ -467,21 +471,53 @@
                     name: "Prefrontal Cortex (PFC)",
                     function: "Executive control center for decision-making, working memory, and behavioral flexibility. Plans future actions and inhibits inappropriate responses."
                 },
+                'cingulate-cortex': {
+                    name: "Cingulate Cortex",
+                    function: "Involved in emotion regulation, attention, and pain processing. The anterior portion processes emotional conflict while posterior areas handle spatial attention."
+                },
+                'insular-cortex': {
+                    name: "Insular Cortex",
+                    function: "Integrates sensory information with emotional and cognitive states. Processes taste, visceral sensations, and social emotions like empathy and disgust."
+                },
+                'piriform-cortex': {
+                    name: "Piriform Cortex",
+                    function: "Primary olfactory cortex that processes smell information directly from the olfactory bulb. Creates odor representations and associations."
+                },
+                'entorhinal-cortex': {
+                    name: "Entorhinal Cortex",
+                    function: "Gateway between hippocampus and neocortex. Contains grid cells that provide spatial coordinate system for navigation. Critical for memory formation."
+                },
+                'retrosplenial-cortex': {
+                    name: "Retrosplenial Cortex",
+                    function: "Processes spatial navigation and contextual memory. Integrates visual landmarks with spatial maps and supports episodic memory retrieval."
+                },
                 hippocampus: {
                     name: "Hippocampus",
                     function: "Memory consolidation and spatial navigation. Contains place cells that create cognitive maps. Essential for forming new episodic memories and spatial learning tasks."
                 },
-                cerebellum: {
-                    name: "Cerebellum",
-                    function: "Motor learning, coordination, and balance. Fine-tunes movements and maintains posture. Also involved in cognitive functions and motor skill acquisition."
+                'dentate-gyrus': {
+                    name: "Dentate Gyrus",
+                    function: "Part of hippocampal formation that performs pattern separation. Creates distinct representations of similar experiences to avoid memory interference."
                 },
-                brainstem: {
-                    name: "Brainstem",
-                    function: "Controls vital functions like breathing, heart rate, and arousal. Contains nuclei for cranial nerves and regulates sleep-wake cycles and basic reflexes."
+                subiculum: {
+                    name: "Subicular Complex",
+                    function: "Output structure of hippocampus that processes spatial and temporal information. Connects hippocampus to other brain regions for memory consolidation."
                 },
-                thalamus: {
-                    name: "Thalamus",
-                    function: "Sensory relay station filtering information to cortex. Gates sensory input based on attention and arousal state. Critical for consciousness and sensory awareness."
+                'vp-thalamus': {
+                    name: "Ventral Posterior Thalamus",
+                    function: "Relays somatosensory information from body to cortex. Processes touch, pressure, and proprioceptive signals before sending to S1 cortex."
+                },
+                'vl-thalamus': {
+                    name: "Ventral Lateral Thalamus",
+                    function: "Motor relay nucleus that receives input from cerebellum and basal ganglia. Sends processed motor information to motor cortex."
+                },
+                lgn: {
+                    name: "Lateral Geniculate Nucleus",
+                    function: "Visual relay nucleus in thalamus. Processes retinal input and sends organized visual information to primary visual cortex."
+                },
+                mgn: {
+                    name: "Medial Geniculate Nucleus",
+                    function: "Auditory relay nucleus that processes sound information from inferior colliculus before sending to auditory cortex."
                 },
                 pvn: {
                     name: "Paraventricular Nucleus (PVN)",
@@ -499,9 +535,17 @@
                     name: "Lateral Hypothalamus",
                     function: "Feeding and arousal center. Stimulation causes eating behavior. Also involved in reward processing and motivated behaviors like foraging."
                 },
-                olfactory: {
-                    name: "Olfactory Bulb",
-                    function: "First processing station for smell. Receives direct input from nose receptors. Critical for mice - used for navigation, mate recognition, and predator detection."
+                vmh: {
+                    name: "Ventromedial Hypothalamus",
+                    function: "Satiety center that signals fullness after eating. Also regulates glucose metabolism and defensive behaviors like aggression."
+                },
+                dmh: {
+                    name: "Dorsomedial Hypothalamus",
+                    function: "Regulates circadian rhythms, stress responses, and feeding behavior. Connects SCN timing signals to other hypothalamic areas."
+                },
+                mammillary: {
+                    name: "Mammillary Bodies",
+                    function: "Part of memory circuit connecting hippocampus to thalamus. Important for spatial memory and recollective aspects of episodic memory."
                 },
                 'caudate-putamen': {
                     name: "Caudate-Putamen (Dorsal Striatum)",
@@ -511,9 +555,101 @@
                     name: "Nucleus Accumbens (Ventral Striatum)",
                     function: "Reward and motivation center. Processes dopamine signals related to pleasure and addiction. Drives goal-directed behaviors and reinforcement learning."
                 },
-                amygdala: {
-                    name: "Amygdala",
-                    function: "Fear processing and threat detection. Forms emotional memories and triggers defensive responses. Essential for survival behaviors and anxiety responses."
+                'globus-pallidus': {
+                    name: "Globus Pallidus",
+                    function: "Output nucleus of basal ganglia that regulates movement. Inhibits unwanted movements and allows desired actions to proceed."
+                },
+                subthalamic: {
+                    name: "Subthalamic Nucleus",
+                    function: "Excitatory nucleus in basal ganglia circuit. Loss of function leads to uncontrolled movements as seen in Huntington's disease."
+                },
+                'substantia-nigra': {
+                    name: "Substantia Nigra",
+                    function: "Contains dopamine neurons that modulate movement and reward. Degeneration here causes Parkinson's disease motor symptoms."
+                },
+                bla: {
+                    name: "Basolateral Amygdala",
+                    function: "Emotional learning center that forms associations between stimuli and outcomes. Critical for fear conditioning and reward learning."
+                },
+                'central-amygdala': {
+                    name: "Central Amygdala",
+                    function: "Output nucleus that triggers fear responses. Activates autonomic and behavioral responses to threats through brainstem connections."
+                },
+                'medial-amygdala': {
+                    name: "Medial Amygdala",
+                    function: "Processes social and pheromonal information. Important for social recognition, mating behaviors, and territorial responses."
+                },
+                midbrain: {
+                    name: "Midbrain",
+                    function: "Contains structures for visual/auditory reflexes, arousal, and reward processing. Houses dopamine neurons and controls eye movements."
+                },
+                pons: {
+                    name: "Pons",
+                    function: "Relays information between cerebellum and cortex. Contains nuclei for sleep, arousal, and facial sensation. Critical for REM sleep."
+                },
+                medulla: {
+                    name: "Medulla Oblongata",
+                    function: "Controls vital functions like breathing, heart rate, and blood pressure. Contains reflexes for swallowing, coughing, and vomiting."
+                },
+                'superior-colliculus': {
+                    name: "Superior Colliculus",
+                    function: "Controls eye movements and orienting responses to visual stimuli. Creates maps of visual space for directing attention and gaze."
+                },
+                'inferior-colliculus': {
+                    name: "Inferior Colliculus",
+                    function: "Major auditory processing center that integrates sound information. Processes sound localization and frequency before sending to thalamus."
+                },
+                pag: {
+                    name: "Periaqueductal Gray",
+                    function: "Pain modulation and defensive behaviors. Produces analgesia during stress and coordinates fight-or-flight responses to threats."
+                },
+                vta: {
+                    name: "Ventral Tegmental Area",
+                    function: "Source of dopamine for reward and motivation circuits. Neurons here respond to unexpected rewards and drive learning and addiction."
+                },
+                'locus-coeruleus': {
+                    name: "Locus Coeruleus",
+                    function: "Primary source of norepinephrine in brain. Regulates arousal, attention, and stress responses. Active during wakefulness and vigilance."
+                },
+                raphe: {
+                    name: "Raphe Nuclei",
+                    function: "Source of serotonin throughout brain. Regulates mood, sleep, appetite, and impulse control. Target of antidepressant medications."
+                },
+                'cerebellar-cortex': {
+                    name: "Cerebellar Cortex",
+                    function: "Motor learning and coordination. Fine-tunes movements through error correction. Also involved in cognitive functions and timing."
+                },
+                'deep-cerebellar': {
+                    name: "Deep Cerebellar Nuclei",
+                    function: "Output of cerebellum that sends corrective signals to motor areas. Integrates information from cerebellar cortex for movement control."
+                },
+                olfactory: {
+                    name: "Olfactory Bulb",
+                    function: "First processing station for smell. Receives direct input from nose receptors. Critical for mice - used for navigation, mate recognition, and predator detection."
+                },
+                'olfactory-tubercle': {
+                    name: "Olfactory Tubercle",
+                    function: "Part of reward system that responds to pleasant odors. Links smell to motivation and connects olfaction to limbic circuits."
+                },
+                septum: {
+                    name: "Septum",
+                    function: "Modulates hippocampal activity and theta rhythms. Involved in social behavior, aggression, and reward processing."
+                },
+                bnst: {
+                    name: "Bed Nucleus of Stria Terminalis",
+                    function: "Extended amygdala region that processes sustained fear and anxiety. Responds to long-term threats and stress hormones."
+                },
+                habenula: {
+                    name: "Habenula",
+                    function: "Processes negative reward prediction errors. Becomes active when expected rewards don't occur, contributing to depression and addiction."
+                },
+                pineal: {
+                    name: "Pineal Gland",
+                    function: "Produces melatonin hormone that regulates sleep-wake cycles. Responds to light/dark information from SCN to control circadian rhythms."
+                },
+                'choroid-plexus': {
+                    name: "Choroid Plexus",
+                    function: "Produces cerebrospinal fluid that cushions brain and removes waste products. Forms blood-brain barrier to protect neural tissue."
                 },
                 spinal: {
                     name: "Spinal Cord",

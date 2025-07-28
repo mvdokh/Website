@@ -93,6 +93,7 @@
         <p class="instructions">Click on different brain regions to learn about their functions!</p>
         
         <svg class="brain-svg" viewBox="0 0 600 300">
+            <!-- Cortical Areas -->
             <!-- Primary Somatosensory Cortex -->
             <path class="brain-region" id="s1-cortex" 
                   d="M150 70 Q180 60 220 65 Q250 68 280 70 L280 85 Q250 83 220 80 Q180 75 150 85 Z" />
@@ -113,18 +114,47 @@
             <path class="brain-region" id="prefrontal-cortex" 
                   d="M50 85 Q80 75 110 78 Q140 80 170 82 L170 97 Q140 95 110 93 Q80 90 50 100 Z" />
             
+            <!-- Cingulate Cortex -->
+            <path class="brain-region" id="cingulate-cortex" 
+                  d="M180 110 Q220 105 260 108 Q300 110 340 112 L340 125 Q300 123 260 121 Q220 118 180 123 Z" />
+            
+            <!-- Insular Cortex -->
+            <ellipse class="brain-region" id="insular-cortex" cx="220" cy="125" rx="20" ry="10" />
+            
+            <!-- Piriform Cortex -->
+            <path class="brain-region" id="piriform-cortex" 
+                  d="M100 130 Q130 125 160 128 L160 140 Q130 137 100 142 Z" />
+            
+            <!-- Entorhinal Cortex -->
+            <ellipse class="brain-region" id="entorhinal-cortex" cx="380" cy="200" rx="25" ry="12" />
+            
+            <!-- Retrosplenial Cortex -->
+            <ellipse class="brain-region" id="retrosplenial-cortex" cx="340" cy="130" rx="18" ry="8" />
+            
+            <!-- Hippocampal Formation -->
             <!-- Hippocampus -->
             <ellipse class="brain-region" id="hippocampus" cx="350" cy="180" rx="40" ry="15" />
             
-            <!-- Cerebellum -->
-            <circle class="brain-region" id="cerebellum" cx="480" cy="200" r="35" />
+            <!-- Dentate Gyrus -->
+            <ellipse class="brain-region" id="dentate-gyrus" cx="370" cy="190" rx="15" ry="8" />
             
-            <!-- Brainstem -->
-            <rect class="brain-region" id="brainstem" x="420" y="220" width="25" height="50" rx="5" />
+            <!-- Subicular Complex -->
+            <ellipse class="brain-region" id="subiculum" cx="330" cy="195" rx="20" ry="10" />
             
-            <!-- Thalamus -->
-            <ellipse class="brain-region" id="thalamus" cx="280" cy="150" rx="25" ry="20" />
+            <!-- Thalamic Nuclei -->
+            <!-- Ventral Posterior Thalamus -->
+            <ellipse class="brain-region" id="vp-thalamus" cx="275" cy="145" rx="12" ry="8" />
             
+            <!-- Ventral Lateral Thalamus -->
+            <ellipse class="brain-region" id="vl-thalamus" cx="285" cy="155" rx="10" ry="6" />
+            
+            <!-- Lateral Geniculate Nucleus -->
+            <circle class="brain-region" id="lgn" cx="295" cy="140" r="6" />
+            
+            <!-- Medial Geniculate Nucleus -->
+            <circle class="brain-region" id="mgn" cx="285" cy="148" r="5" />
+            
+            <!-- Hypothalamic Nuclei -->
             <!-- Paraventricular Nucleus (PVN) -->
             <circle class="brain-region" id="pvn" cx="230" cy="165" r="8" />
             
@@ -137,17 +167,97 @@
             <!-- Lateral Hypothalamus -->
             <ellipse class="brain-region" id="lateral-hyp" cx="265" cy="175" rx="12" ry="6" />
             
-            <!-- Olfactory Bulb -->
-            <circle class="brain-region" id="olfactory" cx="80" cy="120" r="15" />
+            <!-- Ventromedial Hypothalamus -->
+            <circle class="brain-region" id="vmh" cx="240" cy="190" r="6" />
             
+            <!-- Dorsomedial Hypothalamus -->
+            <circle class="brain-region" id="dmh" cx="235" cy="175" r="5" />
+            
+            <!-- Mammillary Bodies -->
+            <circle class="brain-region" id="mammillary" cx="255" cy="205" r="8" />
+            
+            <!-- Basal Ganglia -->
             <!-- Caudate Putamen (Dorsal Striatum) -->
             <ellipse class="brain-region" id="caudate-putamen" cx="200" cy="140" rx="25" ry="15" />
             
             <!-- Nucleus Accumbens (Ventral Striatum) -->
             <ellipse class="brain-region" id="accumbens" cx="180" cy="175" rx="18" ry="10" />
             
-            <!-- Amygdala -->
-            <ellipse class="brain-region" id="amygdala" cx="320" cy="190" rx="18" ry="12" />
+            <!-- Globus Pallidus -->
+            <ellipse class="brain-region" id="globus-pallidus" cx="215" cy="165" rx="15" ry="8" />
+            
+            <!-- Subthalamic Nucleus -->
+            <circle class="brain-region" id="subthalamic" cx="230" cy="155" r="5" />
+            
+            <!-- Substantia Nigra -->
+            <ellipse class="brain-region" id="substantia-nigra" cx="410" cy="230" rx="12" ry="6" />
+            
+            <!-- Amygdala Complex -->
+            <!-- Basolateral Amygdala -->
+            <ellipse class="brain-region" id="bla" cx="315" cy="185" rx="12" ry="8" />
+            
+            <!-- Central Amygdala -->
+            <circle class="brain-region" id="central-amygdala" cx="325" cy="195" r="6" />
+            
+            <!-- Medial Amygdala -->
+            <circle class="brain-region" id="medial-amygdala" cx="305" cy="195" r="5" />
+            
+            <!-- Brainstem Structures -->
+            <!-- Midbrain -->
+            <rect class="brain-region" id="midbrain" x="415" y="210" width="20" height="15" rx="3" />
+            
+            <!-- Pons -->
+            <rect class="brain-region" id="pons" x="420" y="225" width="25" height="12" rx="3" />
+            
+            <!-- Medulla -->
+            <rect class="brain-region" id="medulla" x="425" y="237" width="20" height="15" rx="3" />
+            
+            <!-- Superior Colliculus -->
+            <ellipse class="brain-region" id="superior-colliculus" cx="405" cy="205" rx="8" ry="5" />
+            
+            <!-- Inferior Colliculus -->
+            <ellipse class="brain-region" id="inferior-colliculus" cx="410" cy="215" rx="7" ry="4" />
+            
+            <!-- Periaqueductal Gray -->
+            <circle class="brain-region" id="pag" cx="400" cy="220" r="4" />
+            
+            <!-- Ventral Tegmental Area -->
+            <ellipse class="brain-region" id="vta" cx="395" cy="235" rx="8" ry="5" />
+            
+            <!-- Locus Coeruleus -->
+            <circle class="brain-region" id="locus-coeruleus" cx="430" cy="230" r="3" />
+            
+            <!-- Raphe Nuclei -->
+            <ellipse class="brain-region" id="raphe" cx="435" cy="240" rx="6" ry="3" />
+            
+            <!-- Cerebellum Regions -->
+            <!-- Cerebellar Cortex -->
+            <circle class="brain-region" id="cerebellar-cortex" cx="475" cy="195" r="20" />
+            
+            <!-- Deep Cerebellar Nuclei -->
+            <circle class="brain-region" id="deep-cerebellar" cx="485" cy="205" r="8" />
+            
+            <!-- Other Structures -->
+            <!-- Olfactory Bulb -->
+            <circle class="brain-region" id="olfactory" cx="80" cy="120" r="15" />
+            
+            <!-- Olfactory Tubercle -->
+            <ellipse class="brain-region" id="olfactory-tubercle" cx="120" cy="140" rx="12" ry="6" />
+            
+            <!-- Septum -->
+            <ellipse class="brain-region" id="septum" cx="160" cy="155" rx="10" ry="8" />
+            
+            <!-- Bed Nucleus of Stria Terminalis -->
+            <circle class="brain-region" id="bnst" cx="200" cy="170" r="5" />
+            
+            <!-- Habenula -->
+            <circle class="brain-region" id="habenula" cx="290" cy="135" r="4" />
+            
+            <!-- Pineal Gland -->
+            <circle class="brain-region" id="pineal" cx="300" cy="125" r="3" />
+            
+            <!-- Choroid Plexus -->
+            <ellipse class="brain-region" id="choroid-plexus" cx="320" cy="160" rx="8" ry="4" />
             
             <!-- Spinal Cord -->
             <rect class="brain-region" id="spinal" x="440" y="270" width="12" height="25" rx="6" />
@@ -191,21 +301,53 @@
                 name: "Prefrontal Cortex (PFC)",
                 function: "Executive control center for decision-making, working memory, and behavioral flexibility. Plans future actions and inhibits inappropriate responses."
             },
+            'cingulate-cortex': {
+                name: "Cingulate Cortex",
+                function: "Involved in emotion regulation, attention, and pain processing. The anterior portion processes emotional conflict while posterior areas handle spatial attention."
+            },
+            'insular-cortex': {
+                name: "Insular Cortex",
+                function: "Integrates sensory information with emotional and cognitive states. Processes taste, visceral sensations, and social emotions like empathy and disgust."
+            },
+            'piriform-cortex': {
+                name: "Piriform Cortex",
+                function: "Primary olfactory cortex that processes smell information directly from the olfactory bulb. Creates odor representations and associations."
+            },
+            'entorhinal-cortex': {
+                name: "Entorhinal Cortex",
+                function: "Gateway between hippocampus and neocortex. Contains grid cells that provide spatial coordinate system for navigation. Critical for memory formation."
+            },
+            'retrosplenial-cortex': {
+                name: "Retrosplenial Cortex",
+                function: "Processes spatial navigation and contextual memory. Integrates visual landmarks with spatial maps and supports episodic memory retrieval."
+            },
             hippocampus: {
                 name: "Hippocampus",
                 function: "Memory consolidation and spatial navigation. Contains place cells that create cognitive maps. Essential for forming new episodic memories and spatial learning tasks."
             },
-            cerebellum: {
-                name: "Cerebellum",
-                function: "Motor learning, coordination, and balance. Fine-tunes movements and maintains posture. Also involved in cognitive functions and motor skill acquisition."
+            'dentate-gyrus': {
+                name: "Dentate Gyrus",
+                function: "Part of hippocampal formation that performs pattern separation. Creates distinct representations of similar experiences to avoid memory interference."
             },
-            brainstem: {
-                name: "Brainstem",
-                function: "Controls vital functions like breathing, heart rate, and arousal. Contains nuclei for cranial nerves and regulates sleep-wake cycles and basic reflexes."
+            subiculum: {
+                name: "Subicular Complex",
+                function: "Output structure of hippocampus that processes spatial and temporal information. Connects hippocampus to other brain regions for memory consolidation."
             },
-            thalamus: {
-                name: "Thalamus",
-                function: "Sensory relay station filtering information to cortex. Gates sensory input based on attention and arousal state. Critical for consciousness and sensory awareness."
+            'vp-thalamus': {
+                name: "Ventral Posterior Thalamus",
+                function: "Relays somatosensory information from body to cortex. Processes touch, pressure, and proprioceptive signals before sending to S1 cortex."
+            },
+            'vl-thalamus': {
+                name: "Ventral Lateral Thalamus",
+                function: "Motor relay nucleus that receives input from cerebellum and basal ganglia. Sends processed motor information to motor cortex."
+            },
+            lgn: {
+                name: "Lateral Geniculate Nucleus",
+                function: "Visual relay nucleus in thalamus. Processes retinal input and sends organized visual information to primary visual cortex."
+            },
+            mgn: {
+                name: "Medial Geniculate Nucleus",
+                function: "Auditory relay nucleus that processes sound information from inferior colliculus before sending to auditory cortex."
             },
             pvn: {
                 name: "Paraventricular Nucleus (PVN)",
@@ -223,9 +365,17 @@
                 name: "Lateral Hypothalamus",
                 function: "Feeding and arousal center. Stimulation causes eating behavior. Also involved in reward processing and motivated behaviors like foraging."
             },
-            olfactory: {
-                name: "Olfactory Bulb",
-                function: "First processing station for smell. Receives direct input from nose receptors. Critical for mice - used for navigation, mate recognition, and predator detection."
+            vmh: {
+                name: "Ventromedial Hypothalamus",
+                function: "Satiety center that signals fullness after eating. Also regulates glucose metabolism and defensive behaviors like aggression."
+            },
+            dmh: {
+                name: "Dorsomedial Hypothalamus",
+                function: "Regulates circadian rhythms, stress responses, and feeding behavior. Connects SCN timing signals to other hypothalamic areas."
+            },
+            mammillary: {
+                name: "Mammillary Bodies",
+                function: "Part of memory circuit connecting hippocampus to thalamus. Important for spatial memory and recollective aspects of episodic memory."
             },
             'caudate-putamen': {
                 name: "Caudate-Putamen (Dorsal Striatum)",
@@ -235,9 +385,101 @@
                 name: "Nucleus Accumbens (Ventral Striatum)",
                 function: "Reward and motivation center. Processes dopamine signals related to pleasure and addiction. Drives goal-directed behaviors and reinforcement learning."
             },
-            amygdala: {
-                name: "Amygdala",
-                function: "Fear processing and threat detection. Forms emotional memories and triggers defensive responses. Essential for survival behaviors and anxiety responses."
+            'globus-pallidus': {
+                name: "Globus Pallidus",
+                function: "Output nucleus of basal ganglia that regulates movement. Inhibits unwanted movements and allows desired actions to proceed."
+            },
+            subthalamic: {
+                name: "Subthalamic Nucleus",
+                function: "Excitatory nucleus in basal ganglia circuit. Loss of function leads to uncontrolled movements as seen in Huntington's disease."
+            },
+            'substantia-nigra': {
+                name: "Substantia Nigra",
+                function: "Contains dopamine neurons that modulate movement and reward. Degeneration here causes Parkinson's disease motor symptoms."
+            },
+            bla: {
+                name: "Basolateral Amygdala",
+                function: "Emotional learning center that forms associations between stimuli and outcomes. Critical for fear conditioning and reward learning."
+            },
+            'central-amygdala': {
+                name: "Central Amygdala",
+                function: "Output nucleus that triggers fear responses. Activates autonomic and behavioral responses to threats through brainstem connections."
+            },
+            'medial-amygdala': {
+                name: "Medial Amygdala",
+                function: "Processes social and pheromonal information. Important for social recognition, mating behaviors, and territorial responses."
+            },
+            midbrain: {
+                name: "Midbrain",
+                function: "Contains structures for visual/auditory reflexes, arousal, and reward processing. Houses dopamine neurons and controls eye movements."
+            },
+            pons: {
+                name: "Pons",
+                function: "Relays information between cerebellum and cortex. Contains nuclei for sleep, arousal, and facial sensation. Critical for REM sleep."
+            },
+            medulla: {
+                name: "Medulla Oblongata",
+                function: "Controls vital functions like breathing, heart rate, and blood pressure. Contains reflexes for swallowing, coughing, and vomiting."
+            },
+            'superior-colliculus': {
+                name: "Superior Colliculus",
+                function: "Controls eye movements and orienting responses to visual stimuli. Creates maps of visual space for directing attention and gaze."
+            },
+            'inferior-colliculus': {
+                name: "Inferior Colliculus",
+                function: "Major auditory processing center that integrates sound information. Processes sound localization and frequency before sending to thalamus."
+            },
+            pag: {
+                name: "Periaqueductal Gray",
+                function: "Pain modulation and defensive behaviors. Produces analgesia during stress and coordinates fight-or-flight responses to threats."
+            },
+            vta: {
+                name: "Ventral Tegmental Area",
+                function: "Source of dopamine for reward and motivation circuits. Neurons here respond to unexpected rewards and drive learning and addiction."
+            },
+            'locus-coeruleus': {
+                name: "Locus Coeruleus",
+                function: "Primary source of norepinephrine in brain. Regulates arousal, attention, and stress responses. Active during wakefulness and vigilance."
+            },
+            raphe: {
+                name: "Raphe Nuclei",
+                function: "Source of serotonin throughout brain. Regulates mood, sleep, appetite, and impulse control. Target of antidepressant medications."
+            },
+            'cerebellar-cortex': {
+                name: "Cerebellar Cortex",
+                function: "Motor learning and coordination. Fine-tunes movements through error correction. Also involved in cognitive functions and timing."
+            },
+            'deep-cerebellar': {
+                name: "Deep Cerebellar Nuclei",
+                function: "Output of cerebellum that sends corrective signals to motor areas. Integrates information from cerebellar cortex for movement control."
+            },
+            olfactory: {
+                name: "Olfactory Bulb",
+                function: "First processing station for smell. Receives direct input from nose receptors. Critical for mice - used for navigation, mate recognition, and predator detection."
+            },
+            'olfactory-tubercle': {
+                name: "Olfactory Tubercle",
+                function: "Part of reward system that responds to pleasant odors. Links smell to motivation and connects olfaction to limbic circuits."
+            },
+            septum: {
+                name: "Septum",
+                function: "Modulates hippocampal activity and theta rhythms. Involved in social behavior, aggression, and reward processing."
+            },
+            bnst: {
+                name: "Bed Nucleus of Stria Terminalis",
+                function: "Extended amygdala region that processes sustained fear and anxiety. Responds to long-term threats and stress hormones."
+            },
+            habenula: {
+                name: "Habenula",
+                function: "Processes negative reward prediction errors. Becomes active when expected rewards don't occur, contributing to depression and addiction."
+            },
+            pineal: {
+                name: "Pineal Gland",
+                function: "Produces melatonin hormone that regulates sleep-wake cycles. Responds to light/dark information from SCN to control circadian rhythms."
+            },
+            'choroid-plexus': {
+                name: "Choroid Plexus",
+                function: "Produces cerebrospinal fluid that cushions brain and removes waste products. Forms blood-brain barrier to protect neural tissue."
             },
             spinal: {
                 name: "Spinal Cord",
