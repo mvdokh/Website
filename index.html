@@ -401,14 +401,6 @@
                             </div>
                         `;
                         
-                        // Execute any scripts from the brain.html file
-                        const scripts = doc.querySelectorAll('script');
-                        scripts.forEach(script => {
-                            const newScript = document.createElement('script');
-                            newScript.textContent = script.textContent;
-                            document.head.appendChild(newScript);
-                        });
-                        
                         // Add styles from brain.html to current document
                         const styles = doc.querySelectorAll('style');
                         styles.forEach(style => {
@@ -416,6 +408,9 @@
                             newStyle.textContent = style.textContent;
                             document.head.appendChild(newStyle);
                         });
+                        
+                        // Initialize brain functionality directly
+                        initializeBrainTab();
                     })
                     .catch(error => {
                         console.error('Error loading brain content:', error);
@@ -447,6 +442,107 @@
 
             // Initialize canvas
             initCanvas();
+        }
+
+        function initializeBrainTab() {
+            // Brain region information
+            const brainRegions = {
+                's1-cortex': {
+                    name: "Primary Somatosensory Cortex (S1)",
+                    function: "Processes touch, pressure, temperature, and pain sensations from the body. Contains a topographic 'body map' where different areas respond to specific body parts."
+                },
+                'm1-cortex': {
+                    name: "Primary Motor Cortex (M1)",
+                    function: "Controls voluntary movements. Sends direct commands to muscles via the corticospinal tract. Also organized as a body map with larger areas for precise movements like whiskers and forepaws."
+                },
+                'visual-cortex': {
+                    name: "Primary Visual Cortex (V1)",
+                    function: "First cortical area to process visual information. Detects edges, orientation, and motion. Critical for basic visual perception and feeds information to higher visual areas."
+                },
+                'auditory-cortex': {
+                    name: "Primary Auditory Cortex (A1)",
+                    function: "Processes sound frequency, intensity, and temporal patterns. Organized tonotopically with different areas responding to specific frequencies. Essential for sound localization."
+                },
+                'prefrontal-cortex': {
+                    name: "Prefrontal Cortex (PFC)",
+                    function: "Executive control center for decision-making, working memory, and behavioral flexibility. Plans future actions and inhibits inappropriate responses."
+                },
+                hippocampus: {
+                    name: "Hippocampus",
+                    function: "Memory consolidation and spatial navigation. Contains place cells that create cognitive maps. Essential for forming new episodic memories and spatial learning tasks."
+                },
+                cerebellum: {
+                    name: "Cerebellum",
+                    function: "Motor learning, coordination, and balance. Fine-tunes movements and maintains posture. Also involved in cognitive functions and motor skill acquisition."
+                },
+                brainstem: {
+                    name: "Brainstem",
+                    function: "Controls vital functions like breathing, heart rate, and arousal. Contains nuclei for cranial nerves and regulates sleep-wake cycles and basic reflexes."
+                },
+                thalamus: {
+                    name: "Thalamus",
+                    function: "Sensory relay station filtering information to cortex. Gates sensory input based on attention and arousal state. Critical for consciousness and sensory awareness."
+                },
+                pvn: {
+                    name: "Paraventricular Nucleus (PVN)",
+                    function: "Stress response center. Releases CRH to trigger cortisol release and controls autonomic responses to threats. Key in fight-or-flight reactions."
+                },
+                scn: {
+                    name: "Suprachiasmatic Nucleus (SCN)",
+                    function: "Master circadian clock. Synchronizes daily rhythms in body temperature, hormone release, and sleep-wake cycles based on light input."
+                },
+                arcuate: {
+                    name: "Arcuate Nucleus",
+                    function: "Appetite control center. Contains neurons that sense hunger (AgRP) and satiety (POMC) signals. Regulates food intake and energy balance."
+                },
+                'lateral-hyp': {
+                    name: "Lateral Hypothalamus",
+                    function: "Feeding and arousal center. Stimulation causes eating behavior. Also involved in reward processing and motivated behaviors like foraging."
+                },
+                olfactory: {
+                    name: "Olfactory Bulb",
+                    function: "First processing station for smell. Receives direct input from nose receptors. Critical for mice - used for navigation, mate recognition, and predator detection."
+                },
+                'caudate-putamen': {
+                    name: "Caudate-Putamen (Dorsal Striatum)",
+                    function: "Motor control and habit formation. Processes action-outcome learning and develops automatic behavioral sequences. Important for skill learning."
+                },
+                accumbens: {
+                    name: "Nucleus Accumbens (Ventral Striatum)",
+                    function: "Reward and motivation center. Processes dopamine signals related to pleasure and addiction. Drives goal-directed behaviors and reinforcement learning."
+                },
+                amygdala: {
+                    name: "Amygdala",
+                    function: "Fear processing and threat detection. Forms emotional memories and triggers defensive responses. Essential for survival behaviors and anxiety responses."
+                },
+                spinal: {
+                    name: "Spinal Cord",
+                    function: "Information highway between brain and body. Carries motor commands down and sensory information up. Contains reflex circuits for rapid responses."
+                }
+            };
+
+            // Add click listeners to brain regions
+            Object.keys(brainRegions).forEach(regionId => {
+                const region = document.getElementById(regionId);
+                if (region) {
+                    region.addEventListener('click', () => {
+                        // Remove highlight from all regions
+                        document.querySelectorAll('.brain-region').forEach(r => {
+                            r.classList.remove('highlighted');
+                        });
+                        
+                        // Highlight clicked region
+                        region.classList.add('highlighted');
+                        
+                        // Update info panel
+                        const info = brainRegions[regionId];
+                        document.getElementById('brain-info').innerHTML = `
+                            <div class="region-name">${info.name}</div>
+                            <div class="region-function">${info.function}</div>
+                        `;
+                    });
+                }
+            });
         }
 
         // Widget functions (moved from original file)
