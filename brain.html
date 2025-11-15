@@ -1,520 +1,714 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Interactive Mouse Brain</title>
+<div class="content-box">
     <style>
-        .brain-container {
+        .sim-container {
             text-align: center;
             padding: 20px;
         }
 
-        .brain-title {
+        .sim-title {
             font-size: 18px;
-            margin-bottom: 15px;
+            margin-bottom: 10px;
             font-weight: bold;
-        }
-
-        .brain-svg {
-            width: 600px;
-            height: 300px;
-            border: 2px solid #000;
-            background: #f9f9f9;
-            margin: 0 auto 20px auto;
-            display: block;
-        }
-
-        .brain-region {
-            fill: #e0e0e0;
-            stroke: #333;
-            stroke-width: 1.5;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .brain-region:hover {
-            fill: #ffff00;
-            stroke: #000;
-            stroke-width: 2;
-        }
-
-        .brain-region.highlighted {
-            fill: #ff6b6b;
-            stroke: #000;
-            stroke-width: 2;
-            animation: pulse 1.5s infinite;
-        }
-
-        @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.7; }
-        }
-
-        .brain-info {
-            background: #fff;
-            border: 2px solid #000;
-            padding: 15px;
-            margin-top: 20px;
-            min-height: 100px;
-            text-align: left;
-        }
-
-        .region-name {
-            font-weight: bold;
-            font-size: 16px;
-            margin-bottom: 8px;
-            color: #0000ee;
-        }
-
-        .region-function {
-            font-size: 14px;
-            line-height: 1.4;
         }
 
         .instructions {
             font-size: 12px;
-            font-style: italic;
-            margin-bottom: 10px;
+            margin-bottom: 15px;
             color: #666;
         }
 
-        @media (max-width: 650px) {
-            .brain-svg {
-                width: 100%;
-                max-width: 500px;
-            }
+        #neuralCanvas {
+            border: 2px solid #000;
+            background: #0a0a0a;
+            cursor: crosshair;
+            display: block;
+            margin: 0 auto 20px auto;
+        }
+
+        .recordings-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            justify-content: center;
+            margin-top: 20px;
+        }
+
+        .recording-plot {
+            background: #1a1a1a;
+            border: 2px solid #444;
+            padding: 10px;
+            width: 280px;
+        }
+
+        .recording-plot h4 {
+            color: #fff;
+            font-size: 11px;
+            margin: 0 0 5px 0;
+            text-align: center;
+        }
+
+        .recording-plot canvas {
+            width: 100%;
+            height: 120px;
+            background: #000;
+            border: 1px solid #666;
+        }
+
+        .recording-info {
+            color: #aaa;
+            font-size: 10px;
+            margin-top: 5px;
+            text-align: center;
+        }
+
+        .controls {
+            margin-top: 15px;
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .controls button {
+            padding: 8px 16px;
+            background: #c0c0c0;
+            border: 2px outset #888;
+            cursor: pointer;
+            font-family: "Courier New", monospace;
+            font-weight: bold;
+        }
+
+        .controls button:active {
+            border-style: inset;
+        }
+
+        .controls button.active {
+            background: #ffff00;
+        }
+
+        .neuron-type {
+            font-size: 11px;
+            font-weight: bold;
+        }
+
+        .neuron-panel {
+            position: absolute;
+            background: #c0c0c0;
+            border: 2px solid #000;
+            padding: 10px;
+            display: none;
+            z-index: 1000;
+            font-size: 12px;
+            min-width: 200px;
+        }
+
+        .neuron-panel.visible {
+            display: block;
+        }
+
+        .neuron-panel h3 {
+            margin: 0 0 10px 0;
+            font-size: 14px;
+        }
+
+        .neuron-panel label {
+            display: block;
+            margin: 8px 0 4px 0;
+            font-weight: bold;
+        }
+
+        .neuron-panel input[type="range"] {
+            width: 100%;
+        }
+
+        .neuron-panel button {
+            margin-top: 10px;
+            padding: 5px 10px;
+            background: #fff;
+            border: 2px outset #888;
+            cursor: pointer;
+            width: 100%;
+            font-family: "Courier New", monospace;
+        }
+
+        .neuron-panel button:active {
+            border-style: inset;
+        }
+
+        .rate-value {
+            display: inline-block;
+            margin-left: 5px;
+            color: #000;
         }
     </style>
-</head>
-<body>
-    <div class="brain-container">
-        <h2 class="brain-title">Interactive Mouse Brain - Sagittal Section</h2>
-        <p class="instructions">Click on different brain regions to learn about their functions!</p>
-        
-        <svg class="brain-svg" viewBox="0 0 600 300">
-            <!-- Cortical Areas -->
-            <!-- Primary Somatosensory Cortex -->
-            <path class="brain-region" id="s1-cortex" 
-                  d="M150 70 Q180 60 220 65 Q250 68 280 70 L280 85 Q250 83 220 80 Q180 75 150 85 Z" />
-            
-            <!-- Primary Motor Cortex -->
-            <path class="brain-region" id="m1-cortex" 
-                  d="M120 75 Q150 65 180 68 Q210 70 240 72 L240 87 Q210 85 180 83 Q150 80 120 90 Z" />
-            
-            <!-- Visual Cortex -->
-            <path class="brain-region" id="visual-cortex" 
-                  d="M400 80 Q450 75 500 85 Q530 90 550 100 L550 115 Q530 105 500 100 Q450 90 400 95 Z" />
-            
-            <!-- Auditory Cortex -->
-            <path class="brain-region" id="auditory-cortex" 
-                  d="M200 90 Q230 85 260 88 Q290 90 320 92 L320 107 Q290 105 260 103 Q230 100 200 105 Z" />
-            
-            <!-- Prefrontal Cortex -->
-            <path class="brain-region" id="prefrontal-cortex" 
-                  d="M50 85 Q80 75 110 78 Q140 80 170 82 L170 97 Q140 95 110 93 Q80 90 50 100 Z" />
-            
-            <!-- Cingulate Cortex -->
-            <path class="brain-region" id="cingulate-cortex" 
-                  d="M180 110 Q220 105 260 108 Q300 110 340 112 L340 125 Q300 123 260 121 Q220 118 180 123 Z" />
-            
-            <!-- Insular Cortex -->
-            <ellipse class="brain-region" id="insular-cortex" cx="220" cy="125" rx="20" ry="10" />
-            
-            <!-- Piriform Cortex -->
-            <path class="brain-region" id="piriform-cortex" 
-                  d="M100 130 Q130 125 160 128 L160 140 Q130 137 100 142 Z" />
-            
-            <!-- Entorhinal Cortex -->
-            <ellipse class="brain-region" id="entorhinal-cortex" cx="380" cy="200" rx="25" ry="12" />
-            
-            <!-- Retrosplenial Cortex -->
-            <ellipse class="brain-region" id="retrosplenial-cortex" cx="340" cy="130" rx="18" ry="8" />
-            
-            <!-- Hippocampal Formation -->
-            <!-- Hippocampus -->
-            <ellipse class="brain-region" id="hippocampus" cx="350" cy="180" rx="40" ry="15" />
-            
-            <!-- Dentate Gyrus -->
-            <ellipse class="brain-region" id="dentate-gyrus" cx="370" cy="190" rx="15" ry="8" />
-            
-            <!-- Subicular Complex -->
-            <ellipse class="brain-region" id="subiculum" cx="330" cy="195" rx="20" ry="10" />
-            
-            <!-- Thalamic Nuclei -->
-            <!-- Ventral Posterior Thalamus -->
-            <ellipse class="brain-region" id="vp-thalamus" cx="275" cy="145" rx="12" ry="8" />
-            
-            <!-- Ventral Lateral Thalamus -->
-            <ellipse class="brain-region" id="vl-thalamus" cx="285" cy="155" rx="10" ry="6" />
-            
-            <!-- Lateral Geniculate Nucleus -->
-            <circle class="brain-region" id="lgn" cx="295" cy="140" r="6" />
-            
-            <!-- Medial Geniculate Nucleus -->
-            <circle class="brain-region" id="mgn" cx="285" cy="148" r="5" />
-            
-            <!-- Hypothalamic Nuclei -->
-            <!-- Paraventricular Nucleus (PVN) -->
-            <circle class="brain-region" id="pvn" cx="230" cy="165" r="8" />
-            
-            <!-- Suprachiasmatic Nucleus (SCN) -->
-            <circle class="brain-region" id="scn" cx="245" cy="185" r="6" />
-            
-            <!-- Arcuate Nucleus -->
-            <circle class="brain-region" id="arcuate" cx="235" cy="200" r="7" />
-            
-            <!-- Lateral Hypothalamus -->
-            <ellipse class="brain-region" id="lateral-hyp" cx="265" cy="175" rx="12" ry="6" />
-            
-            <!-- Ventromedial Hypothalamus -->
-            <circle class="brain-region" id="vmh" cx="240" cy="190" r="6" />
-            
-            <!-- Dorsomedial Hypothalamus -->
-            <circle class="brain-region" id="dmh" cx="235" cy="175" r="5" />
-            
-            <!-- Mammillary Bodies -->
-            <circle class="brain-region" id="mammillary" cx="255" cy="205" r="8" />
-            
-            <!-- Basal Ganglia -->
-            <!-- Caudate Putamen (Dorsal Striatum) -->
-            <ellipse class="brain-region" id="caudate-putamen" cx="200" cy="140" rx="25" ry="15" />
-            
-            <!-- Nucleus Accumbens (Ventral Striatum) -->
-            <ellipse class="brain-region" id="accumbens" cx="180" cy="175" rx="18" ry="10" />
-            
-            <!-- Globus Pallidus -->
-            <ellipse class="brain-region" id="globus-pallidus" cx="215" cy="165" rx="15" ry="8" />
-            
-            <!-- Subthalamic Nucleus -->
-            <circle class="brain-region" id="subthalamic" cx="230" cy="155" r="5" />
-            
-            <!-- Substantia Nigra -->
-            <ellipse class="brain-region" id="substantia-nigra" cx="410" cy="230" rx="12" ry="6" />
-            
-            <!-- Amygdala Complex -->
-            <!-- Basolateral Amygdala -->
-            <ellipse class="brain-region" id="bla" cx="315" cy="185" rx="12" ry="8" />
-            
-            <!-- Central Amygdala -->
-            <circle class="brain-region" id="central-amygdala" cx="325" cy="195" r="6" />
-            
-            <!-- Medial Amygdala -->
-            <circle class="brain-region" id="medial-amygdala" cx="305" cy="195" r="5" />
-            
-            <!-- Brainstem Structures -->
-            <!-- Midbrain -->
-            <rect class="brain-region" id="midbrain" x="415" y="210" width="20" height="15" rx="3" />
-            
-            <!-- Pons -->
-            <rect class="brain-region" id="pons" x="420" y="225" width="25" height="12" rx="3" />
-            
-            <!-- Medulla -->
-            <rect class="brain-region" id="medulla" x="425" y="237" width="20" height="15" rx="3" />
-            
-            <!-- Superior Colliculus -->
-            <ellipse class="brain-region" id="superior-colliculus" cx="405" cy="205" rx="8" ry="5" />
-            
-            <!-- Inferior Colliculus -->
-            <ellipse class="brain-region" id="inferior-colliculus" cx="410" cy="215" rx="7" ry="4" />
-            
-            <!-- Periaqueductal Gray -->
-            <circle class="brain-region" id="pag" cx="400" cy="220" r="4" />
-            
-            <!-- Ventral Tegmental Area -->
-            <ellipse class="brain-region" id="vta" cx="395" cy="235" rx="8" ry="5" />
-            
-            <!-- Locus Coeruleus -->
-            <circle class="brain-region" id="locus-coeruleus" cx="430" cy="230" r="3" />
-            
-            <!-- Raphe Nuclei -->
-            <ellipse class="brain-region" id="raphe" cx="435" cy="240" rx="6" ry="3" />
-            
-            <!-- Cerebellum Regions -->
-            <!-- Cerebellar Cortex -->
-            <circle class="brain-region" id="cerebellar-cortex" cx="475" cy="195" r="20" />
-            
-            <!-- Deep Cerebellar Nuclei -->
-            <circle class="brain-region" id="deep-cerebellar" cx="485" cy="205" r="8" />
-            
-            <!-- Other Structures -->
-            <!-- Olfactory Bulb -->
-            <circle class="brain-region" id="olfactory" cx="80" cy="120" r="15" />
-            
-            <!-- Olfactory Tubercle -->
-            <ellipse class="brain-region" id="olfactory-tubercle" cx="120" cy="140" rx="12" ry="6" />
-            
-            <!-- Septum -->
-            <ellipse class="brain-region" id="septum" cx="160" cy="155" rx="10" ry="8" />
-            
-            <!-- Bed Nucleus of Stria Terminalis -->
-            <circle class="brain-region" id="bnst" cx="200" cy="170" r="5" />
-            
-            <!-- Habenula -->
-            <circle class="brain-region" id="habenula" cx="290" cy="135" r="4" />
-            
-            <!-- Pineal Gland -->
-            <circle class="brain-region" id="pineal" cx="300" cy="125" r="3" />
-            
-            <!-- Choroid Plexus -->
-            <ellipse class="brain-region" id="choroid-plexus" cx="320" cy="160" rx="8" ry="4" />
-            
-            <!-- Spinal Cord -->
-            <rect class="brain-region" id="spinal" x="440" y="270" width="12" height="25" rx="6" />
-            
-            <!-- Region Labels (small text) -->
-            <text x="300" y="35" font-size="10" text-anchor="middle" fill="#333">Anterior</text>
-            <text x="30" y="155" font-size="10" text-anchor="middle" fill="#333" transform="rotate(-90 30 155)">Dorsal</text>
-            <text x="570" y="155" font-size="10" text-anchor="middle" fill="#333" transform="rotate(90 570 155)">Ventral</text>
-            <text x="300" y="295" font-size="10" text-anchor="middle" fill="#333">Posterior</text>
-        </svg>
 
-        <div class="brain-info" id="brain-info">
-            <div class="region-name">Welcome to the Mouse Brain Explorer!</div>
-            <div class="region-function">
-                This is a simplified sagittal (side) view of a mouse brain at the midline. 
-                Click on any colored region to learn about its primary functions and role in behavior and cognition.
-            </div>
+    <div class="sim-container">
+        <h2 class="sim-title">Neurons in a dish</h2>
+        <p class="instructions">Click to place • Drag between neurons to connect • Click neuron to stimulate • Right-click to toggle type/properties</p>
+        
+        <canvas id="neuralCanvas" width="700" height="500"></canvas>
+        
+        <div class="recordings-container" id="recordingsContainer"></div>
+        
+        <div class="controls">
+            <button id="clearBtn">Clear All</button>
+            <button id="exciteBtn" class="active">Excitatory</button>
+            <button id="inhibitBtn">Inhibitory</button>
+        </div>
+
+        <div id="neuronPanel" class="neuron-panel">
+            <h3>Neuron Settings</h3>
+            <label>
+                Type: <span id="neuronTypeLabel">Excitatory</span>
+            </label>
+            <button id="toggleTypeBtn">Toggle Type</button>
+            
+            <label>
+                Basal Firing Rate: <span class="rate-value" id="rateValue">0.00</span>
+            </label>
+            <input type="range" id="basalRateSlider" min="0" max="100" value="0" step="1">
+            
+            <label>
+                Burst Frequency (Hz): <span class="rate-value" id="burstValue">0.00</span>
+            </label>
+            <input type="range" id="burstSlider" min="0" max="10" value="0" step="0.5">
+            
+            <label>
+                Burst Duration (ms): <span class="rate-value" id="burstDurationValue">100</span>
+            </label>
+            <input type="range" id="burstDurationSlider" min="10" max="1000" value="100" step="10">
+            
+            <label style="margin-top: 10px;">
+                <input type="checkbox" id="regularModeCheckbox"> Non-random Firing
+            </label>
+            
+            <button id="closePanel">Close</button>
         </div>
     </div>
 
     <script>
-        // Brain region information
-        const brainRegions = {
-            's1-cortex': {
-                name: "Primary Somatosensory Cortex (S1)",
-                function: "Processes touch, pressure, temperature, and pain sensations from the body. Contains a topographic 'body map' where different areas respond to specific body parts."
-            },
-            'm1-cortex': {
-                name: "Primary Motor Cortex (M1)",
-                function: "Controls voluntary movements. Sends direct commands to muscles via the corticospinal tract. Also organized as a body map with larger areas for precise movements like whiskers and forepaws."
-            },
-            'visual-cortex': {
-                name: "Primary Visual Cortex (V1)",
-                function: "First cortical area to process visual information. Detects edges, orientation, and motion. Critical for basic visual perception and feeds information to higher visual areas."
-            },
-            'auditory-cortex': {
-                name: "Primary Auditory Cortex (A1)",
-                function: "Processes sound frequency, intensity, and temporal patterns. Organized tonotopically with different areas responding to specific frequencies. Essential for sound localization."
-            },
-            'prefrontal-cortex': {
-                name: "Prefrontal Cortex (PFC)",
-                function: "Executive control center for decision-making, working memory, and behavioral flexibility. Plans future actions and inhibits inappropriate responses."
-            },
-            'cingulate-cortex': {
-                name: "Cingulate Cortex",
-                function: "Involved in emotion regulation, attention, and pain processing. The anterior portion processes emotional conflict while posterior areas handle spatial attention."
-            },
-            'insular-cortex': {
-                name: "Insular Cortex",
-                function: "Integrates sensory information with emotional and cognitive states. Processes taste, visceral sensations, and social emotions like empathy and disgust."
-            },
-            'piriform-cortex': {
-                name: "Piriform Cortex",
-                function: "Primary olfactory cortex that processes smell information directly from the olfactory bulb. Creates odor representations and associations."
-            },
-            'entorhinal-cortex': {
-                name: "Entorhinal Cortex",
-                function: "Gateway between hippocampus and neocortex. Contains grid cells that provide spatial coordinate system for navigation. Critical for memory formation."
-            },
-            'retrosplenial-cortex': {
-                name: "Retrosplenial Cortex",
-                function: "Processes spatial navigation and contextual memory. Integrates visual landmarks with spatial maps and supports episodic memory retrieval."
-            },
-            hippocampus: {
-                name: "Hippocampus",
-                function: "Memory consolidation and spatial navigation. Contains place cells that create cognitive maps. Essential for forming new episodic memories and spatial learning tasks."
-            },
-            'dentate-gyrus': {
-                name: "Dentate Gyrus",
-                function: "Part of hippocampal formation that performs pattern separation. Creates distinct representations of similar experiences to avoid memory interference."
-            },
-            subiculum: {
-                name: "Subicular Complex",
-                function: "Output structure of hippocampus that processes spatial and temporal information. Connects hippocampus to other brain regions for memory consolidation."
-            },
-            'vp-thalamus': {
-                name: "Ventral Posterior Thalamus",
-                function: "Relays somatosensory information from body to cortex. Processes touch, pressure, and proprioceptive signals before sending to S1 cortex."
-            },
-            'vl-thalamus': {
-                name: "Ventral Lateral Thalamus",
-                function: "Motor relay nucleus that receives input from cerebellum and basal ganglia. Sends processed motor information to motor cortex."
-            },
-            lgn: {
-                name: "Lateral Geniculate Nucleus",
-                function: "Visual relay nucleus in thalamus. Processes retinal input and sends organized visual information to primary visual cortex."
-            },
-            mgn: {
-                name: "Medial Geniculate Nucleus",
-                function: "Auditory relay nucleus that processes sound information from inferior colliculus before sending to auditory cortex."
-            },
-            pvn: {
-                name: "Paraventricular Nucleus (PVN)",
-                function: "Stress response center. Releases CRH to trigger cortisol release and controls autonomic responses to threats. Key in fight-or-flight reactions."
-            },
-            scn: {
-                name: "Suprachiasmatic Nucleus (SCN)",
-                function: "Master circadian clock. Synchronizes daily rhythms in body temperature, hormone release, and sleep-wake cycles based on light input."
-            },
-            arcuate: {
-                name: "Arcuate Nucleus",
-                function: "Appetite control center. Contains neurons that sense hunger (AgRP) and satiety (POMC) signals. Regulates food intake and energy balance."
-            },
-            'lateral-hyp': {
-                name: "Lateral Hypothalamus",
-                function: "Feeding and arousal center. Stimulation causes eating behavior. Also involved in reward processing and motivated behaviors like foraging."
-            },
-            vmh: {
-                name: "Ventromedial Hypothalamus",
-                function: "Satiety center that signals fullness after eating. Also regulates glucose metabolism and defensive behaviors like aggression."
-            },
-            dmh: {
-                name: "Dorsomedial Hypothalamus",
-                function: "Regulates circadian rhythms, stress responses, and feeding behavior. Connects SCN timing signals to other hypothalamic areas."
-            },
-            mammillary: {
-                name: "Mammillary Bodies",
-                function: "Part of memory circuit connecting hippocampus to thalamus. Important for spatial memory and recollective aspects of episodic memory."
-            },
-            'caudate-putamen': {
-                name: "Caudate-Putamen (Dorsal Striatum)",
-                function: "Motor control and habit formation. Processes action-outcome learning and develops automatic behavioral sequences. Important for skill learning."
-            },
-            accumbens: {
-                name: "Nucleus Accumbens (Ventral Striatum)",
-                function: "Reward and motivation center. Processes dopamine signals related to pleasure and addiction. Drives goal-directed behaviors and reinforcement learning."
-            },
-            'globus-pallidus': {
-                name: "Globus Pallidus",
-                function: "Output nucleus of basal ganglia that regulates movement. Inhibits unwanted movements and allows desired actions to proceed."
-            },
-            subthalamic: {
-                name: "Subthalamic Nucleus",
-                function: "Excitatory nucleus in basal ganglia circuit. Loss of function leads to uncontrolled movements as seen in Huntington's disease."
-            },
-            'substantia-nigra': {
-                name: "Substantia Nigra",
-                function: "Contains dopamine neurons that modulate movement and reward. Degeneration here causes Parkinson's disease motor symptoms."
-            },
-            bla: {
-                name: "Basolateral Amygdala",
-                function: "Emotional learning center that forms associations between stimuli and outcomes. Critical for fear conditioning and reward learning."
-            },
-            'central-amygdala': {
-                name: "Central Amygdala",
-                function: "Output nucleus that triggers fear responses. Activates autonomic and behavioral responses to threats through brainstem connections."
-            },
-            'medial-amygdala': {
-                name: "Medial Amygdala",
-                function: "Processes social and pheromonal information. Important for social recognition, mating behaviors, and territorial responses."
-            },
-            midbrain: {
-                name: "Midbrain",
-                function: "Contains structures for visual/auditory reflexes, arousal, and reward processing. Houses dopamine neurons and controls eye movements."
-            },
-            pons: {
-                name: "Pons",
-                function: "Relays information between cerebellum and cortex. Contains nuclei for sleep, arousal, and facial sensation. Critical for REM sleep."
-            },
-            medulla: {
-                name: "Medulla Oblongata",
-                function: "Controls vital functions like breathing, heart rate, and blood pressure. Contains reflexes for swallowing, coughing, and vomiting."
-            },
-            'superior-colliculus': {
-                name: "Superior Colliculus",
-                function: "Controls eye movements and orienting responses to visual stimuli. Creates maps of visual space for directing attention and gaze."
-            },
-            'inferior-colliculus': {
-                name: "Inferior Colliculus",
-                function: "Major auditory processing center that integrates sound information. Processes sound localization and frequency before sending to thalamus."
-            },
-            pag: {
-                name: "Periaqueductal Gray",
-                function: "Pain modulation and defensive behaviors. Produces analgesia during stress and coordinates fight-or-flight responses to threats."
-            },
-            vta: {
-                name: "Ventral Tegmental Area",
-                function: "Source of dopamine for reward and motivation circuits. Neurons here respond to unexpected rewards and drive learning and addiction."
-            },
-            'locus-coeruleus': {
-                name: "Locus Coeruleus",
-                function: "Primary source of norepinephrine in brain. Regulates arousal, attention, and stress responses. Active during wakefulness and vigilance."
-            },
-            raphe: {
-                name: "Raphe Nuclei",
-                function: "Source of serotonin throughout brain. Regulates mood, sleep, appetite, and impulse control. Target of antidepressant medications."
-            },
-            'cerebellar-cortex': {
-                name: "Cerebellar Cortex",
-                function: "Motor learning and coordination. Fine-tunes movements through error correction. Also involved in cognitive functions and timing."
-            },
-            'deep-cerebellar': {
-                name: "Deep Cerebellar Nuclei",
-                function: "Output of cerebellum that sends corrective signals to motor areas. Integrates information from cerebellar cortex for movement control."
-            },
-            olfactory: {
-                name: "Olfactory Bulb",
-                function: "First processing station for smell. Receives direct input from nose receptors. Critical for mice - used for navigation, mate recognition, and predator detection."
-            },
-            'olfactory-tubercle': {
-                name: "Olfactory Tubercle",
-                function: "Part of reward system that responds to pleasant odors. Links smell to motivation and connects olfaction to limbic circuits."
-            },
-            septum: {
-                name: "Septum",
-                function: "Modulates hippocampal activity and theta rhythms. Involved in social behavior, aggression, and reward processing."
-            },
-            bnst: {
-                name: "Bed Nucleus of Stria Terminalis",
-                function: "Extended amygdala region that processes sustained fear and anxiety. Responds to long-term threats and stress hormones."
-            },
-            habenula: {
-                name: "Habenula",
-                function: "Processes negative reward prediction errors. Becomes active when expected rewards don't occur, contributing to depression and addiction."
-            },
-            pineal: {
-                name: "Pineal Gland",
-                function: "Produces melatonin hormone that regulates sleep-wake cycles. Responds to light/dark information from SCN to control circadian rhythms."
-            },
-            'choroid-plexus': {
-                name: "Choroid Plexus",
-                function: "Produces cerebrospinal fluid that cushions brain and removes waste products. Forms blood-brain barrier to protect neural tissue."
-            },
-            spinal: {
-                name: "Spinal Cord",
-                function: "Information highway between brain and body. Carries motor commands down and sensory information up. Contains reflex circuits for rapid responses."
+        class Connection {
+            constructor(from, to, type = 'excitatory') {
+                this.from = from;
+                this.to = to;
+                this.type = type; // 'excitatory' or 'inhibitory'
+                this.strength = type === 'excitatory' ? 0.6 : -0.4;
             }
-        };
 
-        // Initialize brain functionality
-        function initializeBrain() {
-            // Add click listeners to brain regions
-            Object.keys(brainRegions).forEach(regionId => {
-                const region = document.getElementById(regionId);
-                if (region) {
-                    region.addEventListener('click', () => {
-                        // Remove highlight from all regions
-                        document.querySelectorAll('.brain-region').forEach(r => {
-                            r.classList.remove('highlighted');
-                        });
-                        
-                        // Highlight clicked region
-                        region.classList.add('highlighted');
-                        
-                        // Update info panel
-                        const info = brainRegions[regionId];
-                        document.getElementById('brain-info').innerHTML = `
-                            <div class="region-name">${info.name}</div>
-                            <div class="region-function">${info.function}</div>
-                        `;
-                    });
+            draw(ctx) {
+                const alpha = Math.abs(this.from.activity) * 0.8 + 0.2;
+                if (this.type === 'excitatory') {
+                    ctx.strokeStyle = `rgba(0, 255, 255, ${alpha})`;
+                } else {
+                    ctx.strokeStyle = `rgba(255, 100, 100, ${alpha})`;
                 }
+                ctx.lineWidth = 2;
+                
+                // Draw arrow
+                const angle = Math.atan2(this.to.y - this.from.y, this.to.x - this.from.x);
+                const endX = this.to.x - Math.cos(angle) * 15;
+                const endY = this.to.y - Math.sin(angle) * 15;
+                
+                ctx.beginPath();
+                ctx.moveTo(this.from.x, this.from.y);
+                ctx.lineTo(endX, endY);
+                ctx.stroke();
+
+                // Arrow head
+                const headLen = 10;
+                ctx.beginPath();
+                ctx.moveTo(endX, endY);
+                ctx.lineTo(endX - headLen * Math.cos(angle - Math.PI / 6), 
+                          endY - headLen * Math.sin(angle - Math.PI / 6));
+                ctx.moveTo(endX, endY);
+                ctx.lineTo(endX - headLen * Math.cos(angle + Math.PI / 6), 
+                          endY - headLen * Math.sin(angle + Math.PI / 6));
+                ctx.stroke();
+            }
+        }
+
+        class Neuron {
+            constructor(x, y) {
+                this.x = x;
+                this.y = y;
+                this.activity = 0;
+                this.basalRate = 0;
+                this.threshold = 0.7;
+                this.decayRate = 0.92;
+                this.isExcitatory = true;
+                this.id = Math.random().toString(36).substr(2, 9);
+                this.spikeHistory = [];
+                this.voltageTrace = new Array(400).fill(-70); // Resting potential
+                this.lastSpikeTime = 0;
+                this.timeSinceLastSpike = 0;
+                this.regularMode = false; // False = random, True = regular firing
+                this.inhibition = 0; // Accumulated inhibition
+                this.burstFrequency = 0; // 0 = no bursting, 0-1 = burst frequency in Hz
+                this.burstDuration = 100; // Duration of burst in ms
+                this.timeSinceLastBurst = 0;
+                this.inBurst = false;
+            }
+
+            update(dt = 16.67) { // dt in milliseconds (60 fps)
+                const currentTime = Date.now();
+                this.timeSinceLastSpike += dt;
+                this.timeSinceLastBurst += dt;
+                
+                // Decay inhibition
+                this.inhibition *= 0.9;
+                
+                // Handle bursting behavior
+                if (this.burstFrequency > 0) {
+                    const burstInterval = 1000 / this.burstFrequency; // ms between bursts
+                    
+                    if (this.inBurst) {
+                        // Check if burst should end
+                        if (this.timeSinceLastBurst >= this.burstDuration) {
+                            this.inBurst = false;
+                            this.timeSinceLastBurst = 0;
+                        }
+                    } else {
+                        // Check if new burst should start
+                        if (this.timeSinceLastBurst >= burstInterval) {
+                            this.inBurst = true;
+                            this.timeSinceLastBurst = 0;
+                            this.timeSinceLastSpike = 0; // Reset for immediate spike in burst
+                        }
+                    }
+                }
+                
+                // Calculate effective firing rate considering inhibition
+                const basalHz = this.basalRate * 100; // 0-100 Hz range
+                let effectiveHz = basalHz;
+                
+                // Apply inhibition as a multiplicative reduction
+                if (this.inhibition > 0) {
+                    effectiveHz = basalHz * (1 - Math.min(0.9, this.inhibition));
+                }
+                
+                // Only fire if in burst (when bursting enabled) or always (when not bursting)
+                const shouldFire = this.burstFrequency === 0 || this.inBurst;
+                
+                // Add basal firing
+                if (effectiveHz > 0 && shouldFire) {
+                    const interSpikeInterval = 1000 / effectiveHz; // ms between spikes
+                    
+                    if (this.regularMode) {
+                        // Regular firing mode - fire at exact intervals
+                        if (this.timeSinceLastSpike >= interSpikeInterval) {
+                            this.activity = Math.min(1, this.activity + 0.8);
+                            this.recordSpike(currentTime);
+                            this.timeSinceLastSpike = 0;
+                        }
+                    } else {
+                        // Random/Poisson firing mode
+                        const probability = (effectiveHz * dt) / 1000;
+                        if (Math.random() < probability) {
+                            this.activity = Math.min(1, this.activity + 0.8);
+                            this.recordSpike(currentTime);
+                            this.timeSinceLastSpike = 0;
+                        }
+                    }
+                }
+                
+                // Update voltage trace
+                this.voltageTrace.shift();
+                let voltage = -70; // Resting potential
+                
+                if (this.activity > 0.7) {
+                    voltage = 40; // Action potential peak
+                    this.lastSpikeTime = currentTime;
+                } else if (this.activity > 0) {
+                    voltage = -70 + (this.activity * 110); // Depolarization
+                } else if (this.inhibition > 0) {
+                    voltage = -70 - (this.inhibition * 15); // Hyperpolarization from inhibition
+                }
+                
+                this.voltageTrace.push(voltage);
+                
+                this.activity *= this.decayRate;
+                if (this.activity < 0.01) this.activity = 0;
+            }
+
+            recordSpike(time) {
+                this.spikeHistory.push(time);
+                // Keep only last 2 seconds of spikes
+                const cutoff = time - 2000;
+                this.spikeHistory = this.spikeHistory.filter(t => t > cutoff);
+            }
+
+            getFiringRate() {
+                // Calculate firing rate from last 1 second
+                const currentTime = Date.now();
+                const recentSpikes = this.spikeHistory.filter(t => t > currentTime - 1000);
+                return recentSpikes.length; // Spikes per second
+            }
+
+            applyInhibition(amount) {
+                this.inhibition = Math.min(1, this.inhibition + Math.abs(amount));
+            }
+
+            stimulate(amount) {
+                if (amount < 0) {
+                    this.applyInhibition(amount);
+                } else {
+                    this.activity = Math.max(-1, Math.min(1, this.activity + amount));
+                }
+            }
+
+            draw(ctx) {
+                const radius = 12;
+                
+                // Color based on activity and type
+                let color;
+                if (this.activity > 0.1) {
+                    const intensity = Math.abs(this.activity);
+                    color = `rgba(255, 255, 100, ${intensity})`;
+                } else if (this.activity < -0.1) {
+                    const intensity = Math.abs(this.activity);
+                    color = `rgba(100, 100, 255, ${intensity})`;
+                } else {
+                    color = this.isExcitatory ? 'rgba(100, 200, 255, 0.8)' : 'rgba(255, 100, 100, 0.8)';
+                }
+
+                // Draw neuron body
+                ctx.fillStyle = color;
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, radius, 0, Math.PI * 2);
+                ctx.fill();
+                
+                ctx.strokeStyle = '#fff';
+                ctx.lineWidth = 2;
+                ctx.stroke();
+
+                // Draw basal rate indicator
+                if (this.basalRate > 0) {
+                    ctx.fillStyle = 'rgba(255, 255, 0, 0.6)';
+                    ctx.beginPath();
+                    ctx.arc(this.x, this.y, radius * 0.5, 0, Math.PI * 2);
+                    ctx.fill();
+                }
+
+                // Draw type indicator
+                ctx.fillStyle = '#fff';
+                ctx.font = 'bold 14px Arial';
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                ctx.fillText(this.isExcitatory ? '+' : '-', this.x, this.y);
+            }
+        }
+
+        const canvas = document.getElementById('neuralCanvas');
+        const ctx = canvas.getContext('2d');
+        const neurons = [];
+        const connections = [];
+        let animationId;
+        let connectionMode = 'excitatory';
+        let isDragging = false;
+        let dragStart = null;
+        let dragEnd = null;
+        let selectedNeuron = null;
+
+        function animate() {
+            ctx.fillStyle = '#0a0a0a';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            // Update and check for firing
+            neurons.forEach(neuron => {
+                neuron.update();
+                if (Math.abs(neuron.activity) >= neuron.threshold) {
+                    fire(neuron);
+                }
+            });
+
+            // Draw connections
+            connections.forEach(conn => conn.draw(ctx));
+
+            // Draw neurons
+            neurons.forEach(neuron => neuron.draw(ctx));
+
+            // Draw drag line
+            if (isDragging && dragStart && dragEnd) {
+                ctx.strokeStyle = connectionMode === 'excitatory' ? 
+                    'rgba(0, 255, 255, 0.5)' : 'rgba(255, 100, 100, 0.5)';
+                ctx.lineWidth = 2;
+                ctx.setLineDash([5, 5]);
+                ctx.beginPath();
+                ctx.moveTo(dragStart.x, dragStart.y);
+                ctx.lineTo(dragEnd.x, dragEnd.y);
+                ctx.stroke();
+                ctx.setLineDash([]);
+            }
+
+            animationId = requestAnimationFrame(animate);
+        }
+
+        function updateRecordings() {
+            const container = document.getElementById('recordingsContainer');
+            container.innerHTML = '';
+            
+            neurons.forEach((neuron, idx) => {
+                const plotDiv = document.createElement('div');
+                plotDiv.className = 'recording-plot';
+                
+                const title = document.createElement('h4');
+                title.textContent = `Neuron ${idx + 1} (${neuron.isExcitatory ? 'E' : 'I'})`;
+                
+                const canvas = document.createElement('canvas');
+                canvas.width = 400;
+                canvas.height = 120;
+                
+                const info = document.createElement('div');
+                info.className = 'recording-info';
+                const firingRate = neuron.getFiringRate();
+                const basalHz = Math.round(neuron.basalRate * 100);
+                const mode = neuron.regularMode ? 'Non-random' : 'Poisson';
+                const burstInfo = neuron.burstFrequency > 0 ? ` | Burst: ${neuron.burstFrequency.toFixed(1)} Hz` : '';
+                info.textContent = `${firingRate} Hz (${mode}, basal: ${basalHz} Hz${burstInfo})`;
+                
+                plotDiv.appendChild(title);
+                plotDiv.appendChild(canvas);
+                plotDiv.appendChild(info);
+                container.appendChild(plotDiv);
+                
+                // Draw voltage trace
+                const ctx = canvas.getContext('2d');
+                ctx.fillStyle = '#000';
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+                
+                ctx.strokeStyle = '#0f0';
+                ctx.lineWidth = 1;
+                ctx.beginPath();
+                
+                neuron.voltageTrace.forEach((v, i) => {
+                    const x = i;
+                    const y = canvas.height - ((v + 80) / 130) * canvas.height;
+                    if (i === 0) ctx.moveTo(x, y);
+                    else ctx.lineTo(x, y);
+                });
+                
+                ctx.stroke();
+                
+                // Draw reference lines
+                ctx.strokeStyle = 'rgba(255, 255, 255, 0.2)';
+                ctx.lineWidth = 0.5;
+                
+                // 0 mV line
+                const zeroY = canvas.height - ((0 + 80) / 130) * canvas.height;
+                ctx.beginPath();
+                ctx.moveTo(0, zeroY);
+                ctx.lineTo(canvas.width, zeroY);
+                ctx.stroke();
+                
+                // -70 mV line (resting)
+                const restY = canvas.height - ((-70 + 80) / 130) * canvas.height;
+                ctx.beginPath();
+                ctx.moveTo(0, restY);
+                ctx.lineTo(canvas.width, restY);
+                ctx.stroke();
             });
         }
 
-        // Initialize when page loads
-        document.addEventListener('DOMContentLoaded', initializeBrain);
+        // Update recordings every 100ms
+        setInterval(updateRecordings, 100);
+
+        function fire(neuron) {
+            const outgoing = connections.filter(c => c.from === neuron);
+            outgoing.forEach(conn => {
+                setTimeout(() => {
+                    conn.to.stimulate(conn.strength);
+                }, Math.random() * 30 + 10);
+            });
+            neuron.activity *= 0.5; // Reset after firing
+        }
+
+        function getNeuronAt(x, y) {
+            return neurons.find(n => {
+                const dist = Math.hypot(n.x - x, n.y - y);
+                return dist < 15;
+            });
+        }
+
+        canvas.addEventListener('mousedown', (e) => {
+            const rect = canvas.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+
+            const neuron = getNeuronAt(x, y);
+            
+            if (neuron) {
+                isDragging = true;
+                dragStart = neuron;
+            }
+        });
+
+        canvas.addEventListener('mousemove', (e) => {
+            if (isDragging) {
+                const rect = canvas.getBoundingClientRect();
+                dragEnd = {
+                    x: e.clientX - rect.left,
+                    y: e.clientY - rect.top
+                };
+            }
+        });
+
+        canvas.addEventListener('mouseup', (e) => {
+            if (isDragging) {
+                const rect = canvas.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                
+                const targetNeuron = getNeuronAt(x, y);
+                
+                if (targetNeuron && targetNeuron !== dragStart) {
+                    // Create connection
+                    const existing = connections.find(c => c.from === dragStart && c.to === targetNeuron);
+                    if (!existing) {
+                        connections.push(new Connection(dragStart, targetNeuron, connectionMode));
+                    }
+                }
+                
+                isDragging = false;
+                dragStart = null;
+                dragEnd = null;
+            }
+        });
+
+        canvas.addEventListener('click', (e) => {
+            if (isDragging) return;
+            
+            const rect = canvas.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+
+            const neuron = getNeuronAt(x, y);
+            
+            if (neuron) {
+                // Stimulate neuron
+                neuron.stimulate(0.8);
+            } else {
+                // Place new neuron
+                const newNeuron = new Neuron(x, y);
+                newNeuron.isExcitatory = (connectionMode === 'excitatory');
+                neurons.push(newNeuron);
+            }
+        });
+
+        canvas.addEventListener('contextmenu', (e) => {
+            e.preventDefault();
+            const rect = canvas.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+
+            const neuron = getNeuronAt(x, y);
+            if (neuron) {
+                // Show settings panel
+                selectedNeuron = neuron;
+                const panel = document.getElementById('neuronPanel');
+                panel.style.left = (e.clientX + 10) + 'px';
+                panel.style.top = (e.clientY + 10) + 'px';
+                panel.classList.add('visible');
+                
+                // Update panel values
+                document.getElementById('neuronTypeLabel').textContent = 
+                    neuron.isExcitatory ? 'Excitatory' : 'Inhibitory';
+                document.getElementById('basalRateSlider').value = Math.round(neuron.basalRate * 100);
+                document.getElementById('rateValue').textContent = neuron.basalRate.toFixed(2);
+                document.getElementById('burstSlider').value = neuron.burstFrequency;
+                document.getElementById('burstValue').textContent = neuron.burstFrequency.toFixed(2);
+                document.getElementById('burstDurationSlider').value = neuron.burstDuration;
+                document.getElementById('burstDurationValue').textContent = neuron.burstDuration;
+                document.getElementById('regularModeCheckbox').checked = neuron.regularMode;
+            }
+        });
+
+        canvas.addEventListener('dblclick', (e) => {
+            const rect = canvas.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+
+            const neuron = getNeuronAt(x, y);
+            if (neuron) {
+                // Toggle excitatory/inhibitory
+                neuron.isExcitatory = !neuron.isExcitatory;
+            }
+        });
+
+        document.getElementById('clearBtn').addEventListener('click', () => {
+            neurons.length = 0;
+            connections.length = 0;
+            ctx.fillStyle = '#0a0a0a';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            document.getElementById('neuronPanel').classList.remove('visible');
+        });
+
+        document.getElementById('exciteBtn').addEventListener('click', () => {
+            connectionMode = 'excitatory';
+            document.querySelectorAll('.controls button').forEach(btn => btn.classList.remove('active'));
+            document.getElementById('exciteBtn').classList.add('active');
+        });
+
+        document.getElementById('inhibitBtn').addEventListener('click', () => {
+            connectionMode = 'inhibitory';
+            document.querySelectorAll('.controls button').forEach(btn => btn.classList.remove('active'));
+            document.getElementById('inhibitBtn').classList.add('active');
+        });
+
+        document.getElementById('toggleTypeBtn').addEventListener('click', () => {
+            if (selectedNeuron) {
+                selectedNeuron.isExcitatory = !selectedNeuron.isExcitatory;
+                document.getElementById('neuronTypeLabel').textContent = 
+                    selectedNeuron.isExcitatory ? 'Excitatory' : 'Inhibitory';
+            }
+        });
+
+        document.getElementById('basalRateSlider').addEventListener('input', (e) => {
+            if (selectedNeuron) {
+                selectedNeuron.basalRate = parseInt(e.target.value) / 100;
+                document.getElementById('rateValue').textContent = selectedNeuron.basalRate.toFixed(2);
+            }
+        });
+
+        document.getElementById('burstSlider').addEventListener('input', (e) => {
+            if (selectedNeuron) {
+                selectedNeuron.burstFrequency = parseFloat(e.target.value);
+                document.getElementById('burstValue').textContent = selectedNeuron.burstFrequency.toFixed(2);
+                selectedNeuron.timeSinceLastBurst = 0;
+                selectedNeuron.inBurst = false;
+            }
+        });
+
+        document.getElementById('burstDurationSlider').addEventListener('input', (e) => {
+            if (selectedNeuron) {
+                selectedNeuron.burstDuration = parseInt(e.target.value);
+                document.getElementById('burstDurationValue').textContent = selectedNeuron.burstDuration;
+            }
+        });
+
+        document.getElementById('regularModeCheckbox').addEventListener('change', (e) => {
+            if (selectedNeuron) {
+                selectedNeuron.regularMode = e.target.checked;
+                selectedNeuron.timeSinceLastSpike = 0; // Reset timing
+            }
+        });
+
+        document.getElementById('closePanel').addEventListener('click', () => {
+            document.getElementById('neuronPanel').classList.remove('visible');
+            selectedNeuron = null;
+        });
+
+        // Close panel when clicking outside
+        document.addEventListener('click', (e) => {
+            const panel = document.getElementById('neuronPanel');
+            if (!panel.contains(e.target) && e.target !== canvas) {
+                panel.classList.remove('visible');
+                selectedNeuron = null;
+            }
+        });
+
+        // Initialize
+        ctx.fillStyle = '#0a0a0a';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        animate();
     </script>
-</body>
-</html>
+</div>
