@@ -399,7 +399,7 @@
         }
 
         const canvas = document.getElementById('neuralCanvas');
-        const ctx = canvas.getContext('2d');
+        const ctx = canvas ? canvas.getContext('2d') : null;
         const neurons = [];
         const connections = [];
         let animationId;
@@ -409,7 +409,12 @@
         let dragEnd = null;
         let selectedNeuron = null;
 
+        if (!canvas || !ctx) {
+            console.error('Canvas not found');
+        }
+
         function animate() {
+            if (!ctx) return;
             ctx.fillStyle = '#0a0a0a';
             ctx.fillRect(0, 0, canvas.width, canvas.height);
 
@@ -530,6 +535,8 @@
         }
 
         canvas.addEventListener('mousedown', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
             const rect = canvas.getBoundingClientRect();
             const x = e.clientX - rect.left;
             const y = e.clientY - rect.top;
@@ -543,6 +550,8 @@
         });
 
         canvas.addEventListener('mousemove', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
             if (isDragging) {
                 const rect = canvas.getBoundingClientRect();
                 dragEnd = {
@@ -553,6 +562,8 @@
         });
 
         canvas.addEventListener('mouseup', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
             if (isDragging) {
                 const rect = canvas.getBoundingClientRect();
                 const x = e.clientX - rect.left;
@@ -575,6 +586,8 @@
         });
 
         canvas.addEventListener('click', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
             if (isDragging) return;
             
             const rect = canvas.getBoundingClientRect();
@@ -596,6 +609,7 @@
 
         canvas.addEventListener('contextmenu', (e) => {
             e.preventDefault();
+            e.stopPropagation();
             const rect = canvas.getBoundingClientRect();
             const x = e.clientX - rect.left;
             const y = e.clientY - rect.top;
@@ -623,6 +637,8 @@
         });
 
         canvas.addEventListener('dblclick', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
             const rect = canvas.getBoundingClientRect();
             const x = e.clientX - rect.left;
             const y = e.clientY - rect.top;
@@ -707,8 +723,10 @@
         });
 
         // Initialize
-        ctx.fillStyle = '#0a0a0a';
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
-        animate();
+        if (canvas && ctx) {
+            ctx.fillStyle = '#0a0a0a';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            animate();
+        }
     </script>
 </div>
