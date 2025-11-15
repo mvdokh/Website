@@ -3,6 +3,8 @@
         .sim-container {
             text-align: center;
             padding: 20px;
+            position: relative;
+            z-index: 5;
         }
 
         .sim-title {
@@ -23,6 +25,9 @@
             cursor: crosshair;
             display: block;
             margin: 0 auto 20px auto;
+            position: relative;
+            z-index: 10;
+            pointer-events: auto;
         }
 
         .recordings-container {
@@ -92,12 +97,12 @@
         }
 
         .neuron-panel {
-            position: absolute;
+            position: fixed;
             background: #c0c0c0;
             border: 2px solid #000;
             padding: 10px;
             display: none;
-            z-index: 1000;
+            z-index: 10000;
             font-size: 12px;
             min-width: 200px;
         }
@@ -402,6 +407,17 @@
         setTimeout(() => {
             const canvas = document.getElementById('neuralCanvas');
             const ctx = canvas ? canvas.getContext('2d') : null;
+            
+            console.log('Brain simulator initializing...', canvas, ctx);
+            
+            if (!canvas || !ctx) {
+                console.error('Canvas not found - retrying in 100ms');
+                setTimeout(arguments.callee, 100);
+                return;
+            }
+            
+            console.log('Canvas found, setting up simulator');
+            
             const neurons = [];
             const connections = [];
             let animationId;
@@ -410,11 +426,6 @@
             let dragStart = null;
             let dragEnd = null;
             let selectedNeuron = null;
-
-            if (!canvas || !ctx) {
-                console.error('Canvas not found');
-                return;
-            }
 
             function animate() {
                 if (!ctx) return;
@@ -589,6 +600,7 @@
         });
 
         canvas.addEventListener('click', (e) => {
+            console.log('Canvas clicked!', e);
             e.preventDefault();
             e.stopPropagation();
             if (isDragging) return;
@@ -596,17 +608,22 @@
             const rect = canvas.getBoundingClientRect();
             const x = e.clientX - rect.left;
             const y = e.clientY - rect.top;
+            
+            console.log('Click position:', x, y);
 
             const neuron = getNeuronAt(x, y);
             
             if (neuron) {
                 // Stimulate neuron
+                console.log('Stimulating neuron');
                 neuron.stimulate(0.8);
             } else {
                 // Place new neuron
+                console.log('Placing new neuron');
                 const newNeuron = new Neuron(x, y);
                 newNeuron.isExcitatory = (connectionMode === 'excitatory');
                 neurons.push(newNeuron);
+                console.log('Total neurons:', neurons.length);
             }
         });
 
