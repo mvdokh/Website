@@ -131,6 +131,11 @@
                     initializeWidgets();
                 }
 
+                // If it's the brain tab, initialize the brain simulator
+                if (tabName === 'brain') {
+                    initializeBrainSimulator();
+                }
+
                 currentTab = tabName;
             } catch (error) {
                 document.getElementById('content').innerHTML = `
@@ -248,6 +253,534 @@
             window.counterValue = 0;
             document.getElementById('counter-display').textContent = window.counterValue;
         }
+
+        // Brain simulator initialization function
+        window.initializeBrainSimulator = function() {
+            console.log('initializeBrainSimulator called!');
+            
+            setTimeout(() => {
+                const canvas = document.getElementById('neuralCanvas');
+                const ctx = canvas ? canvas.getContext('2d') : null;
+                
+                console.log('Brain simulator initializing...', canvas, ctx);
+                
+                if (!canvas || !ctx) {
+                    console.error('Canvas not found - retrying in 100ms');
+                    setTimeout(() => window.initializeBrainSimulator(), 100);
+                    return;
+                }
+                
+                console.log('Canvas found, setting up simulator');
+                
+                const neurons = [];
+                const connections = [];
+                let animationId;
+                let connectionMode = 'excitatory';
+                let isDragging = false;
+                let dragStart = null;
+                let dragEnd = null;
+                let selectedNeuron = null;
+
+                // Define classes
+                class Connection {
+                    constructor(from, to, type = 'excitatory') {
+                        this.from = from;
+                        this.to = to;
+                        this.type = type;
+                        this.strength = type === 'excitatory' ? 0.6 : -0.4;
+                    }
+
+                    draw(ctx) {
+                        const alpha = Math.abs(this.from.activity) * 0.8 + 0.2;
+                        if (this.type === 'excitatory') {
+                            ctx.strokeStyle = `rgba(0, 255, 255, ${alpha})`;
+                        } else {
+                            ctx.strokeStyle = `rgba(255, 100, 100, ${alpha})`;
+                        }
+                        ctx.lineWidth = 2;
+                        
+                        const angle = Math.atan2(this.to.y - this.from.y, this.to.x - this.from.x);
+                        const endX = this.to.x - Math.cos(angle) * 15;
+                        const endY = this.to.y - Math.sin(angle) * 15;
+                        
+                        ctx.beginPath();
+                        ctx.moveTo(this.from.x, this.from.y);
+                        ctx.lineTo(endX, endY);
+                        ctx.stroke();
+
+                        const headLen = 10;
+                        ctx.beginPath();
+                        ctx.moveTo(endX, endY);
+                        ctx.lineTo(endX - headLen * Math.cos(angle - Math.PI / 6), 
+                                  endY - headLen * Math.sin(angle - Math.PI / 6));
+                        ctx.moveTo(endX, endY);
+                        ctx.lineTo(endX - headLen * Math.cos(angle + Math.PI / 6), 
+                                  endY - headLen * Math.sin(angle + Math.PI / 6));
+                        ctx.stroke();
+                    }
+                }
+
+                class Neuron {
+                    constructor(x, y) {
+                        this.x = x;
+                        this.y = y;
+                        this.activity = 0;
+                        this.basalRate = 0;
+                        this.threshold = 0.7;
+                        this.decayRate = 0.92;
+                        this.isExcitatory = true;
+                        this.id = Math.random().toString(36).substr(2, 9);
+                        this.spikeHistory = [];
+                        this.voltageTrace = new Array(400).fill(-70);
+                        this.lastSpikeTime = 0;
+                        this.timeSinceLastSpike = 0;
+                        this.regularMode = false;
+                        this.inhibition = 0;
+                        this.burstFrequency = 0;
+                        this.burstDuration = 100;
+                        this.timeSinceLastBurst = 0;
+                        this.inBurst = false;
+                    }
+
+                    update(dt = 16.67) {
+                        const currentTime = Date.now();
+                        this.timeSinceLastSpike += dt;
+                        this.timeSinceLastBurst += dt;
+                        
+                        this.inhibition *= 0.9;
+                        
+                        if (this.burstFrequency > 0) {
+                            const burstInterval = 1000 / this.burstFrequency;
+                            
+                            if (this.inBurst) {
+                                if (this.timeSinceLastBurst >= this.burstDuration) {
+                                    this.inBurst = false;
+                                    this.timeSinceLastBurst = 0;
+                                }
+                            } else {
+                                if (this.timeSinceLastBurst >= burstInterval) {
+                                    this.inBurst = true;
+                                    this.timeSinceLastBurst = 0;
+                                    this.timeSinceLastSpike = 0;
+                                }
+                            }
+                        }
+                        
+                        const basalHz = this.basalRate * 100;
+                        let effectiveHz = basalHz;
+                        
+                        if (this.inhibition > 0) {
+                            effectiveHz = basalHz * (1 - Math.min(0.9, this.inhibition));
+                        }
+                        
+                        const shouldFire = this.burstFrequency === 0 || this.inBurst;
+                        
+                        if (effectiveHz > 0 && shouldFire) {
+                            const interSpikeInterval = 1000 / effectiveHz;
+                            
+                            if (this.regularMode) {
+                                if (this.timeSinceLastSpike >= interSpikeInterval) {
+                                    this.activity = Math.min(1, this.activity + 0.8);
+                                    this.recordSpike(currentTime);
+                                    this.timeSinceLastSpike = 0;
+                                }
+                            } else {
+                                const probability = (effectiveHz * dt) / 1000;
+                                if (Math.random() < probability) {
+                                    this.activity = Math.min(1, this.activity + 0.8);
+                                    this.recordSpike(currentTime);
+                                    this.timeSinceLastSpike = 0;
+                                }
+                            }
+                        }
+                        
+                        this.voltageTrace.shift();
+                        let voltage = -70;
+                        
+                        if (this.activity > 0.7) {
+                            voltage = 40;
+                            this.lastSpikeTime = currentTime;
+                        } else if (this.activity > 0) {
+                            voltage = -70 + (this.activity * 110);
+                        } else if (this.inhibition > 0) {
+                            voltage = -70 - (this.inhibition * 15);
+                        }
+                        
+                        this.voltageTrace.push(voltage);
+                        
+                        this.activity *= this.decayRate;
+                        if (this.activity < 0.01) this.activity = 0;
+                    }
+
+                    recordSpike(time) {
+                        this.spikeHistory.push(time);
+                        const cutoff = time - 2000;
+                        this.spikeHistory = this.spikeHistory.filter(t => t > cutoff);
+                    }
+
+                    getFiringRate() {
+                        const currentTime = Date.now();
+                        const recentSpikes = this.spikeHistory.filter(t => t > currentTime - 1000);
+                        return recentSpikes.length;
+                    }
+
+                    applyInhibition(amount) {
+                        this.inhibition = Math.min(1, this.inhibition + Math.abs(amount));
+                    }
+
+                    stimulate(amount) {
+                        if (amount < 0) {
+                            this.applyInhibition(amount);
+                        } else {
+                            this.activity = Math.max(-1, Math.min(1, this.activity + amount));
+                        }
+                    }
+
+                    draw(ctx) {
+                        const radius = 12;
+                        
+                        let color;
+                        if (this.activity > 0.1) {
+                            const intensity = Math.abs(this.activity);
+                            color = `rgba(255, 255, 100, ${intensity})`;
+                        } else if (this.activity < -0.1) {
+                            const intensity = Math.abs(this.activity);
+                            color = `rgba(100, 100, 255, ${intensity})`;
+                        } else {
+                            color = this.isExcitatory ? 'rgba(100, 200, 255, 0.8)' : 'rgba(255, 100, 100, 0.8)';
+                        }
+
+                        ctx.fillStyle = color;
+                        ctx.beginPath();
+                        ctx.arc(this.x, this.y, radius, 0, Math.PI * 2);
+                        ctx.fill();
+                        
+                        ctx.strokeStyle = '#fff';
+                        ctx.lineWidth = 2;
+                        ctx.stroke();
+
+                        if (this.basalRate > 0) {
+                            ctx.fillStyle = 'rgba(255, 255, 0, 0.6)';
+                            ctx.beginPath();
+                            ctx.arc(this.x, this.y, radius * 0.5, 0, Math.PI * 2);
+                            ctx.fill();
+                        }
+
+                        ctx.fillStyle = '#fff';
+                        ctx.font = 'bold 14px Arial';
+                        ctx.textAlign = 'center';
+                        ctx.textBaseline = 'middle';
+                        ctx.fillText(this.isExcitatory ? '+' : '-', this.x, this.y);
+                    }
+                }
+
+                function animate() {
+                    if (!ctx) return;
+                    ctx.fillStyle = '#0a0a0a';
+                    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+                    neurons.forEach(neuron => {
+                        neuron.update();
+                        if (Math.abs(neuron.activity) >= neuron.threshold) {
+                            fire(neuron);
+                        }
+                    });
+
+                    connections.forEach(conn => conn.draw(ctx));
+                    neurons.forEach(neuron => neuron.draw(ctx));
+
+                    if (isDragging && dragStart && dragEnd) {
+                        ctx.strokeStyle = connectionMode === 'excitatory' ? 
+                            'rgba(0, 255, 255, 0.5)' : 'rgba(255, 100, 100, 0.5)';
+                        ctx.lineWidth = 2;
+                        ctx.setLineDash([5, 5]);
+                        ctx.beginPath();
+                        ctx.moveTo(dragStart.x, dragStart.y);
+                        ctx.lineTo(dragEnd.x, dragEnd.y);
+                        ctx.stroke();
+                        ctx.setLineDash([]);
+                    }
+
+                    animationId = requestAnimationFrame(animate);
+                }
+
+                function updateRecordings() {
+                    const container = document.getElementById('recordingsContainer');
+                    if (!container) return;
+                    container.innerHTML = '';
+                    
+                    neurons.forEach((neuron, idx) => {
+                        const plotDiv = document.createElement('div');
+                        plotDiv.className = 'recording-plot';
+                        
+                        const title = document.createElement('h4');
+                        title.textContent = `Neuron ${idx + 1} (${neuron.isExcitatory ? 'E' : 'I'})`;
+                        
+                        const recCanvas = document.createElement('canvas');
+                        recCanvas.width = 400;
+                        recCanvas.height = 120;
+                        
+                        const info = document.createElement('div');
+                        info.className = 'recording-info';
+                        const firingRate = neuron.getFiringRate();
+                        const basalHz = Math.round(neuron.basalRate * 100);
+                        const mode = neuron.regularMode ? 'Non-random' : 'Poisson';
+                        const burstInfo = neuron.burstFrequency > 0 ? ` | Burst: ${neuron.burstFrequency.toFixed(1)} Hz` : '';
+                        info.textContent = `${firingRate} Hz (${mode}, basal: ${basalHz} Hz${burstInfo})`;
+                        
+                        plotDiv.appendChild(title);
+                        plotDiv.appendChild(recCanvas);
+                        plotDiv.appendChild(info);
+                        container.appendChild(plotDiv);
+                        
+                        const recCtx = recCanvas.getContext('2d');
+                        recCtx.fillStyle = '#000';
+                        recCtx.fillRect(0, 0, recCanvas.width, recCanvas.height);
+                        
+                        recCtx.strokeStyle = '#0f0';
+                        recCtx.lineWidth = 1;
+                        recCtx.beginPath();
+                        
+                        neuron.voltageTrace.forEach((v, i) => {
+                            const x = i;
+                            const y = recCanvas.height - ((v + 80) / 130) * recCanvas.height;
+                            if (i === 0) recCtx.moveTo(x, y);
+                            else recCtx.lineTo(x, y);
+                        });
+                        
+                        recCtx.stroke();
+                        
+                        recCtx.strokeStyle = 'rgba(255, 255, 255, 0.2)';
+                        recCtx.lineWidth = 0.5;
+                        
+                        const zeroY = recCanvas.height - ((0 + 80) / 130) * recCanvas.height;
+                        recCtx.beginPath();
+                        recCtx.moveTo(0, zeroY);
+                        recCtx.lineTo(recCanvas.width, zeroY);
+                        recCtx.stroke();
+                        
+                        const restY = recCanvas.height - ((-70 + 80) / 130) * recCanvas.height;
+                        recCtx.beginPath();
+                        recCtx.moveTo(0, restY);
+                        recCtx.lineTo(recCanvas.width, restY);
+                        recCtx.stroke();
+                    });
+                }
+
+                setInterval(updateRecordings, 100);
+
+                function fire(neuron) {
+                    const outgoing = connections.filter(c => c.from === neuron);
+                    outgoing.forEach(conn => {
+                        setTimeout(() => {
+                            conn.to.stimulate(conn.strength);
+                        }, Math.random() * 30 + 10);
+                    });
+                    neuron.activity *= 0.5;
+                }
+
+                function getNeuronAt(x, y) {
+                    return neurons.find(n => {
+                        const dist = Math.hypot(n.x - x, n.y - y);
+                        return dist < 15;
+                    });
+                }
+
+                canvas.addEventListener('mousedown', (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    const rect = canvas.getBoundingClientRect();
+                    const x = e.clientX - rect.left;
+                    const y = e.clientY - rect.top;
+
+                    const neuron = getNeuronAt(x, y);
+                    
+                    if (neuron) {
+                        isDragging = true;
+                        dragStart = neuron;
+                    }
+                });
+
+                canvas.addEventListener('mousemove', (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    if (isDragging) {
+                        const rect = canvas.getBoundingClientRect();
+                        dragEnd = {
+                            x: e.clientX - rect.left,
+                            y: e.clientY - rect.top
+                        };
+                    }
+                });
+
+                canvas.addEventListener('mouseup', (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    if (isDragging) {
+                        const rect = canvas.getBoundingClientRect();
+                        const x = e.clientX - rect.left;
+                        const y = e.clientY - rect.top;
+                        
+                        const targetNeuron = getNeuronAt(x, y);
+                        
+                        if (targetNeuron && targetNeuron !== dragStart) {
+                            const existing = connections.find(c => c.from === dragStart && c.to === targetNeuron);
+                            if (!existing) {
+                                connections.push(new Connection(dragStart, targetNeuron, connectionMode));
+                            }
+                        }
+                        
+                        isDragging = false;
+                        dragStart = null;
+                        dragEnd = null;
+                    }
+                });
+
+                canvas.addEventListener('click', (e) => {
+                    console.log('Canvas clicked!', e);
+                    e.preventDefault();
+                    e.stopPropagation();
+                    if (isDragging) return;
+                    
+                    const rect = canvas.getBoundingClientRect();
+                    const x = e.clientX - rect.left;
+                    const y = e.clientY - rect.top;
+                    
+                    console.log('Click position:', x, y);
+
+                    const neuron = getNeuronAt(x, y);
+                    
+                    if (neuron) {
+                        console.log('Stimulating neuron');
+                        neuron.stimulate(0.8);
+                    } else {
+                        console.log('Placing new neuron');
+                        const newNeuron = new Neuron(x, y);
+                        newNeuron.isExcitatory = (connectionMode === 'excitatory');
+                        neurons.push(newNeuron);
+                        console.log('Total neurons:', neurons.length);
+                    }
+                });
+
+                canvas.addEventListener('contextmenu', (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    const rect = canvas.getBoundingClientRect();
+                    const x = e.clientX - rect.left;
+                    const y = e.clientY - rect.top;
+
+                    const neuron = getNeuronAt(x, y);
+                    if (neuron) {
+                        selectedNeuron = neuron;
+                        const panel = document.getElementById('neuronPanel');
+                        panel.style.left = (e.clientX + 10) + 'px';
+                        panel.style.top = (e.clientY + 10) + 'px';
+                        panel.classList.add('visible');
+                        
+                        document.getElementById('neuronTypeLabel').textContent = 
+                            neuron.isExcitatory ? 'Excitatory' : 'Inhibitory';
+                        document.getElementById('basalRateSlider').value = Math.round(neuron.basalRate * 100);
+                        document.getElementById('rateValue').textContent = neuron.basalRate.toFixed(2);
+                        document.getElementById('burstSlider').value = neuron.burstFrequency;
+                        document.getElementById('burstValue').textContent = neuron.burstFrequency.toFixed(2);
+                        document.getElementById('burstDurationSlider').value = neuron.burstDuration;
+                        document.getElementById('burstDurationValue').textContent = neuron.burstDuration;
+                        document.getElementById('regularModeCheckbox').checked = neuron.regularMode;
+                    }
+                });
+
+                canvas.addEventListener('dblclick', (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    const rect = canvas.getBoundingClientRect();
+                    const x = e.clientX - rect.left;
+                    const y = e.clientY - rect.top;
+
+                    const neuron = getNeuronAt(x, y);
+                    if (neuron) {
+                        neuron.isExcitatory = !neuron.isExcitatory;
+                    }
+                });
+
+                document.getElementById('clearBtn').addEventListener('click', () => {
+                    neurons.length = 0;
+                    connections.length = 0;
+                    ctx.fillStyle = '#0a0a0a';
+                    ctx.fillRect(0, 0, canvas.width, canvas.height);
+                    document.getElementById('neuronPanel').classList.remove('visible');
+                });
+
+                document.getElementById('exciteBtn').addEventListener('click', () => {
+                    connectionMode = 'excitatory';
+                    document.querySelectorAll('.controls button').forEach(btn => btn.classList.remove('active'));
+                    document.getElementById('exciteBtn').classList.add('active');
+                });
+
+                document.getElementById('inhibitBtn').addEventListener('click', () => {
+                    connectionMode = 'inhibitory';
+                    document.querySelectorAll('.controls button').forEach(btn => btn.classList.remove('active'));
+                    document.getElementById('inhibitBtn').classList.add('active');
+                });
+
+                document.getElementById('toggleTypeBtn').addEventListener('click', () => {
+                    if (selectedNeuron) {
+                        selectedNeuron.isExcitatory = !selectedNeuron.isExcitatory;
+                        document.getElementById('neuronTypeLabel').textContent = 
+                            selectedNeuron.isExcitatory ? 'Excitatory' : 'Inhibitory';
+                    }
+                });
+
+                document.getElementById('basalRateSlider').addEventListener('input', (e) => {
+                    if (selectedNeuron) {
+                        selectedNeuron.basalRate = parseInt(e.target.value) / 100;
+                        document.getElementById('rateValue').textContent = selectedNeuron.basalRate.toFixed(2);
+                    }
+                });
+
+                document.getElementById('burstSlider').addEventListener('input', (e) => {
+                    if (selectedNeuron) {
+                        selectedNeuron.burstFrequency = parseFloat(e.target.value);
+                        document.getElementById('burstValue').textContent = selectedNeuron.burstFrequency.toFixed(2);
+                        selectedNeuron.timeSinceLastBurst = 0;
+                        selectedNeuron.inBurst = false;
+                    }
+                });
+
+                document.getElementById('burstDurationSlider').addEventListener('input', (e) => {
+                    if (selectedNeuron) {
+                        selectedNeuron.burstDuration = parseInt(e.target.value);
+                        document.getElementById('burstDurationValue').textContent = selectedNeuron.burstDuration;
+                    }
+                });
+
+                document.getElementById('regularModeCheckbox').addEventListener('change', (e) => {
+                    if (selectedNeuron) {
+                        selectedNeuron.regularMode = e.target.checked;
+                        selectedNeuron.timeSinceLastSpike = 0;
+                    }
+                });
+
+                document.getElementById('closePanel').addEventListener('click', () => {
+                    document.getElementById('neuronPanel').classList.remove('visible');
+                    selectedNeuron = null;
+                });
+
+                document.addEventListener('click', (e) => {
+                    const panel = document.getElementById('neuronPanel');
+                    if (panel && !panel.contains(e.target) && e.target !== canvas) {
+                        panel.classList.remove('visible');
+                        selectedNeuron = null;
+                    }
+                });
+
+                if (canvas && ctx) {
+                    ctx.fillStyle = '#0a0a0a';
+                    ctx.fillRect(0, 0, canvas.width, canvas.height);
+                    animate();
+                }
+                
+            }, 50);
+        };
 
         // Load intro tab by default
         document.addEventListener('DOMContentLoaded', function() {
