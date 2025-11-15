@@ -398,25 +398,28 @@
             }
         }
 
-        const canvas = document.getElementById('neuralCanvas');
-        const ctx = canvas ? canvas.getContext('2d') : null;
-        const neurons = [];
-        const connections = [];
-        let animationId;
-        let connectionMode = 'excitatory';
-        let isDragging = false;
-        let dragStart = null;
-        let dragEnd = null;
-        let selectedNeuron = null;
+        // Wrap initialization in setTimeout to ensure DOM is ready
+        setTimeout(() => {
+            const canvas = document.getElementById('neuralCanvas');
+            const ctx = canvas ? canvas.getContext('2d') : null;
+            const neurons = [];
+            const connections = [];
+            let animationId;
+            let connectionMode = 'excitatory';
+            let isDragging = false;
+            let dragStart = null;
+            let dragEnd = null;
+            let selectedNeuron = null;
 
-        if (!canvas || !ctx) {
-            console.error('Canvas not found');
-        }
+            if (!canvas || !ctx) {
+                console.error('Canvas not found');
+                return;
+            }
 
-        function animate() {
-            if (!ctx) return;
-            ctx.fillStyle = '#0a0a0a';
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            function animate() {
+                if (!ctx) return;
+                ctx.fillStyle = '#0a0a0a';
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
 
             // Update and check for firing
             neurons.forEach(neuron => {
@@ -728,5 +731,7 @@
             ctx.fillRect(0, 0, canvas.width, canvas.height);
             animate();
         }
+        
+        }, 50); // End setTimeout
     </script>
 </div>
