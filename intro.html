@@ -50,20 +50,30 @@
             }
         }
 
+        .last-edited {
+            text-align: center;
+            color: var(--text-color);
+            opacity: 0.7;
+            font-size: 14px;
+            margin: 15px 0 10px 0;
+            padding-top: 10px;
+            border-top: 1px dashed var(--content-border);
+        }
+
         .social-links {
-            margin-top: 30px;
-            padding-top: 20px;
-            border-top: 1px solid #ccc;
+            margin-top: 10px;
+            padding-top: 10px;
+            border-top: 1px solid var(--content-border);
             text-align: center;
         }
 
         .social-links a {
             display: inline-block;
             margin: 0 15px;
-            color: #0000ee;
+            color: var(--link-color);
             text-decoration: none;
             font-size: 16px;
-            transition: transform 0.2s;
+            transition: transform 0.2s, color 0.3s;
         }
 
         .social-links a:hover {
@@ -76,6 +86,49 @@
             vertical-align: middle;
             margin-right: 5px;
             fill: currentColor;
+        }
+
+        .brain-viewer {
+            margin: 15px 0;
+            text-align: center;
+        }
+
+        #brainContainer {
+            width: 100%;
+            max-width: 700px;
+            height: 400px;
+            margin: 0 auto;
+            cursor: grab;
+            background: transparent;
+        }
+
+        #brainContainer:active {
+            cursor: grabbing;
+        }
+
+        #brainContainer canvas {
+            display: block;
+            width: 100% !important;
+            height: 100% !important;
+        }
+
+        .brain-attribution {
+            font-size: 10px;
+            color: var(--text-color);
+            opacity: 0.5;
+            margin-top: 8px;
+            font-style: italic;
+        }
+
+        .brain-attribution a {
+            color: var(--link-color);
+        }
+
+        .brain-label {
+            font-size: 11px;
+            color: var(--text-color);
+            opacity: 0.6;
+            margin-top: 5px;
         }
     </style>
 
@@ -91,8 +144,17 @@
             <p>How does the brain decide what matters most to guide our attention?</p>
             <p>Is it possible to predict ones actions or behaviors from only neural activity?</p>
             <p>I hope to bridge the gap between brain and behavior by identifying principles that govern how organisms sense, act, and adapt.</p>
-            <p style="color: #222;">Last Edited: 9/7/2025</p>
         </div>
+    </div>
+
+    <p class="last-edited">Last Edited: 11/28/2025</p>
+
+    <div class="brain-viewer">
+        <div id="brainContainer"></div>
+        <p class="brain-label">drag to rotate • scroll to zoom</p>
+        <p class="brain-attribution">
+            Model: <a href="https://www.thingiverse.com/smcinturff" target="_blank">smcinturff</a> on Thingiverse
+        </p>
     </div>
 
     <div class="social-links">
@@ -113,3 +175,4 @@
         </a>
     </div>
 </div>
+

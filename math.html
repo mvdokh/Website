@@ -1,0 +1,277 @@
+<div class="content-box math-page">
+    <style>
+        .math-container {
+            padding: 10px;
+        }
+
+        .math-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 10px;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .math-title {
+            font-size: 16px;
+            margin: 0 0 5px 0;
+            font-weight: bold;
+        }
+
+        .math-desc {
+            font-size: 11px;
+            color: var(--text-color);
+            opacity: 0.7;
+            margin: 0;
+        }
+
+        .controls-row {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .controls-row label {
+            font-size: 11px;
+            font-weight: bold;
+        }
+
+        .controls-row select {
+            padding: 4px 8px;
+            font-family: "Courier New", monospace;
+            font-size: 11px;
+            border: 2px inset #888;
+            background: linear-gradient(180deg, #e8e8e8 0%, #c8c8c8 100%);
+            color: #000;
+            box-shadow: inset 1px 1px 0 #fff, inset -1px -1px 0 #888;
+            cursor: pointer;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+            padding-right: 20px;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='4'%3E%3Cpath d='M0 0l4 4 4-4z' fill='%23333'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 6px center;
+        }
+
+        .controls-row select:hover {
+            background: linear-gradient(180deg, #f0f0f0 0%, #d0d0d0 100%);
+        }
+
+        .controls-row select:active {
+            border-style: inset;
+            box-shadow: inset 2px 2px 3px rgba(0,0,0,0.2);
+        }
+
+        body.dark-mode .controls-row select {
+            background: linear-gradient(180deg, #4a4a4a 0%, #3a3a3a 100%);
+            border-color: #555;
+            color: #c0c0c0;
+            box-shadow: inset 1px 1px 0 #5a5a5a, inset -1px -1px 0 #2a2a2a;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='4'%3E%3Cpath d='M0 0l4 4 4-4z' fill='%23aaa'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 6px center;
+        }
+
+        .main-area {
+            display: grid;
+            grid-template-columns: 1fr 300px;
+            gap: 15px;
+        }
+
+        @media (max-width: 900px) {
+            .main-area {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .canvas-container {
+            background: #0a0a0a;
+            border: 2px solid #000;
+        }
+
+        #mathCanvas {
+            display: block;
+            width: 100%;
+            height: 550px;
+            cursor: grab;
+        }
+
+        #mathCanvas:active {
+            cursor: grabbing;
+        }
+
+        .params-panel {
+            background: var(--nav-bg);
+            border: 1px solid var(--content-border);
+            padding: 12px;
+        }
+
+        .params-panel h4 {
+            margin: 0 0 10px 0;
+            font-size: 12px;
+            border-bottom: 1px solid var(--content-border);
+            padding-bottom: 5px;
+            color: var(--text-color);
+        }
+
+        .param-group {
+            margin-bottom: 12px;
+        }
+
+        .param-group.hidden {
+            display: none;
+        }
+
+        .param-group label {
+            display: block;
+            font-size: 11px;
+            font-weight: bold;
+            margin-bottom: 3px;
+            color: var(--text-color);
+        }
+
+        .param-group input[type="range"] {
+            width: 100%;
+        }
+
+        .param-value {
+            font-size: 10px;
+            color: var(--text-color);
+            opacity: 0.7;
+            font-family: "Courier New", monospace;
+        }
+
+        .equation-box {
+            background: var(--content-bg);
+            border: 1px solid var(--content-border);
+            padding: 10px;
+            margin-top: 15px;
+            font-family: "Times New Roman", serif;
+            font-size: 13px;
+            text-align: center;
+            color: var(--text-color);
+        }
+
+        .equation-box h5 {
+            margin: 0 0 8px 0;
+            font-size: 10px;
+            color: var(--text-color);
+            opacity: 0.7;
+            font-family: "Courier New", monospace;
+        }
+
+        .view-controls {
+            margin-top: 15px;
+            padding-top: 10px;
+            border-top: 1px solid var(--content-border);
+        }
+
+        .view-controls h5 {
+            margin: 0 0 8px 0;
+            font-size: 11px;
+            color: var(--text-color);
+        }
+
+        .checkbox-row {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 11px;
+            margin: 5px 0;
+            color: var(--text-color);
+        }
+
+        .info-text {
+            font-size: 10px;
+            color: var(--text-color);
+            opacity: 0.6;
+            margin-top: 10px;
+            line-height: 1.4;
+        }
+    </style>
+
+    <div class="math-container">
+        <div class="math-header">
+            <div>
+                <h2 class="math-title">Math</h2>
+                <p class="math-desc">Drag to rotate | Scroll to zoom | Adjust parameters on the right</p>
+            </div>
+            <div class="controls-row">
+                <label>Surface:</label>
+                <select id="surfaceSelect">
+                    <option value="lorenz" selected>Lorenz Attractor</option>
+                    <option value="bifurcation">Bifurcation Diagram</option>
+                    <option value="arnold">Arnold Tongues</option>
+                    <option value="sinc">Sinc Function</option>
+                    <option value="wave">Wave Interference</option>
+                    <option value="torus">Torus</option>
+                    <option value="sphere">Sphere</option>
+                    <option value="mobius">Mobius Strip</option>
+                    <option value="klein">Klein Bottle</option>
+                    <option value="trefoil">Trefoil Knot</option>
+                    <option value="saddle">Saddle (Hyperbolic Paraboloid)</option>
+                    <option value="helix">Double Helix</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="main-area">
+            <div class="canvas-container">
+                <canvas id="mathCanvas" width="800" height="550"></canvas>
+            </div>
+
+            <div class="params-panel">
+                <h4>Parameters</h4>
+                
+                <div class="param-group" id="paramAGroup">
+                    <label><span id="paramALabel">Major Radius (R)</span>: <span class="param-value" id="paramAVal">1.0</span></label>
+                    <input type="range" id="paramA" min="0.1" max="5" step="0.1" value="1">
+                </div>
+                
+                <div class="param-group" id="paramBGroup">
+                    <label><span id="paramBLabel">Minor Radius (r)</span>: <span class="param-value" id="paramBVal">0.4</span></label>
+                    <input type="range" id="paramB" min="0.1" max="2" step="0.05" value="0.4">
+                </div>
+                
+                <div class="param-group" id="paramCGroup">
+                    <label><span id="paramCLabel">Parameter C</span>: <span class="param-value" id="paramCVal">1.0</span></label>
+                    <input type="range" id="paramC" min="0.1" max="5" step="0.1" value="1">
+                </div>
+                
+                <div class="param-group" id="resGroup">
+                    <label>Resolution: <span class="param-value" id="resVal">30</span></label>
+                    <input type="range" id="resolution" min="10" max="60" step="5" value="30">
+                </div>
+
+                <div class="equation-box" id="equationBox">
+                    <h5>Parametric Equations</h5>
+                    <div id="equations">dx/dt = σ(y-x)<br>dy/dt = x(ρ-z)-y<br>dz/dt = xy - βz</div>
+                </div>
+
+                <div class="view-controls">
+                    <h5>View Options</h5>
+                    <div class="checkbox-row">
+                        <input type="checkbox" id="showWireframe" checked>
+                        <label for="showWireframe">Wireframe</label>
+                    </div>
+                    <div class="checkbox-row">
+                        <input type="checkbox" id="showPoints">
+                        <label for="showPoints">Points</label>
+                    </div>
+                    <div class="checkbox-row">
+                        <input type="checkbox" id="autoRotate" checked>
+                        <label for="autoRotate">Auto-rotate</label>
+                    </div>
+                </div>
+
+                <p class="info-text">
+                    Each surface is defined by parametric equations. Adjust the parameters to see how they affect the shape.
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+

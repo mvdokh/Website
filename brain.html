@@ -1,101 +1,391 @@
-<div class="content-box">
+<div class="content-box brain-page">
     <style>
         .sim-container {
-            text-align: center;
-            padding: 20px;
+            padding: 10px;
             position: relative;
             z-index: 5;
         }
 
-        .sim-title {
-            font-size: 18px;
+        /* Header row */
+        .sim-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
             margin-bottom: 10px;
+            gap: 15px;
+        }
+
+        .sim-header-left {
+            flex: 1;
+        }
+
+        .sim-title {
+            font-size: 16px;
+            margin: 0 0 6px 0;
             font-weight: bold;
         }
 
         .instructions {
-            font-size: 12px;
-            margin-bottom: 15px;
-            color: #666;
-        }
-
-        #neuralCanvas {
-            border: 2px solid #000;
-            background: #0a0a0a;
-            cursor: crosshair;
-            display: block;
-            margin: 0 auto 20px auto;
-            position: relative;
-            z-index: 10;
-            pointer-events: auto;
-        }
-
-        .recordings-container {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 15px;
-            justify-content: center;
-            margin-top: 20px;
-        }
-
-        .recording-plot {
-            background: #1a1a1a;
-            border: 2px solid #444;
-            padding: 10px;
-            width: 280px;
-        }
-
-        .recording-plot h4 {
-            color: #fff;
             font-size: 11px;
-            margin: 0 0 5px 0;
-            text-align: center;
+            color: #555;
+            line-height: 1.5;
+            margin: 0;
         }
 
-        .recording-plot canvas {
-            width: 100%;
-            height: 120px;
-            background: #000;
-            border: 1px solid #666;
-        }
-
-        .recording-info {
-            color: #aaa;
+        .instructions code {
+            background: #e8e8e8;
+            padding: 1px 4px;
             font-size: 10px;
-            margin-top: 5px;
-            text-align: center;
         }
 
-        .controls {
-            margin-top: 15px;
+        /* Controls in header */
+        .controls-compact {
             display: flex;
-            gap: 10px;
-            justify-content: center;
+            gap: 6px;
+            align-items: center;
             flex-wrap: wrap;
+            justify-content: flex-end;
         }
 
-        .controls button {
-            padding: 8px 16px;
+        .controls-compact button {
+            padding: 5px 10px;
             background: #c0c0c0;
             border: 2px outset #888;
             cursor: pointer;
             font-family: "Courier New", monospace;
-            font-weight: bold;
-        }
-
-        .controls button:active {
-            border-style: inset;
-        }
-
-        .controls button.active {
-            background: #ffff00;
-        }
-
-        .neuron-type {
             font-size: 11px;
             font-weight: bold;
         }
 
+        .controls-compact button:active {
+            border-style: inset;
+        }
+
+        .controls-compact button.active {
+            background: #ffff00;
+        }
+
+        .controls-compact select {
+            padding: 4px 6px;
+            font-family: "Courier New", monospace;
+            font-size: 11px;
+            border: 2px inset #888;
+            background: #fff;
+        }
+
+        /* Main layout grid */
+        .main-grid {
+            display: grid;
+            grid-template-columns: 1fr 280px;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+
+        @media (max-width: 900px) {
+            .main-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Canvas container */
+        .canvas-container {
+            background: #0a0a0a;
+            border: 2px solid #000;
+            position: relative;
+        }
+
+        #neuralCanvas {
+            display: block;
+            width: 100%;
+            height: 340px;
+            cursor: crosshair;
+        }
+
+        /* Right side panel - Network Stats & Quick Ref */
+        .side-panel {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .raster-box {
+            background: #1a1a1a;
+            border: 2px solid #444;
+            padding: 8px;
+            color: #fff;
+            flex: 1;
+        }
+
+        .raster-box h4 {
+            margin: 0 0 6px 0;
+            font-size: 11px;
+            color: #aaa;
+            border-bottom: 1px solid #444;
+            padding-bottom: 4px;
+        }
+
+        #rasterCanvas {
+            width: 100%;
+            height: 280px;
+            background: #000;
+            border: 1px solid #333;
+        }
+
+        .raster-legend {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin-top: 6px;
+            font-size: 9px;
+            color: #888;
+        }
+
+        .raster-legend-item {
+            display: flex;
+            align-items: center;
+            gap: 3px;
+        }
+
+        .raster-legend-color {
+            width: 8px;
+            height: 8px;
+            border-radius: 2px;
+        }
+
+        /* Recording section - below canvas */
+        .recording-section {
+            margin-top: 12px;
+        }
+
+        .recording-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 6px 10px;
+            background: #1a1a1a;
+            border: 2px solid #444;
+            border-bottom: none;
+        }
+
+        .recording-header h4 {
+            color: #fff;
+            font-size: 11px;
+            margin: 0;
+        }
+
+        .view-toggle {
+            display: flex;
+            gap: 3px;
+        }
+
+        .view-toggle button {
+            padding: 3px 8px;
+            background: #333;
+            border: 1px solid #555;
+            color: #aaa;
+            cursor: pointer;
+            font-family: "Courier New", monospace;
+            font-size: 10px;
+        }
+
+        .view-toggle button.active {
+            background: #4a9eff;
+            color: white;
+            border-color: #4a9eff;
+        }
+
+        /* Combined recording */
+        .combined-recording {
+            background: #1a1a1a;
+            border: 2px solid #444;
+            display: flex;
+            flex-direction: column;
+        }
+
+        #combinedCanvas {
+            width: 100%;
+            height: 180px;
+            background: #000;
+        }
+
+        .combined-legend {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            padding: 6px 10px;
+            font-size: 10px;
+            color: #aaa;
+            background: #111;
+            border-top: 1px solid #333;
+        }
+
+        .combined-legend-item {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .combined-legend-color {
+            width: 16px;
+            height: 3px;
+        }
+
+        /* Individual recordings */
+        .recordings-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            padding: 10px;
+            background: #1a1a1a;
+            border: 2px solid #444;
+        }
+
+        .recordings-container.hidden {
+            display: none;
+        }
+
+        .recording-plot {
+            background: #0a0a0a;
+            border: 1px solid #333;
+            padding: 6px;
+            flex: 1;
+            min-width: 200px;
+            max-width: 300px;
+        }
+
+        .recording-plot h4 {
+            color: #fff;
+            font-size: 10px;
+            margin: 0 0 4px 0;
+        }
+
+        .recording-plot canvas {
+            width: 100%;
+            height: 50px;
+            background: #000;
+            border: 1px solid #222;
+        }
+
+        .recording-info {
+            color: #666;
+            font-size: 9px;
+            margin-top: 3px;
+        }
+
+        /* Model info - collapsible */
+        .model-info {
+            background: #f5f5f5;
+            border: 1px solid #ccc;
+            font-size: 11px;
+            line-height: 1.5;
+            margin-top: 12px;
+        }
+
+        .model-info-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 12px;
+            background: #e8e8e8;
+            cursor: pointer;
+            border-bottom: 1px solid #ccc;
+        }
+
+        .model-info-header:hover {
+            background: #ddd;
+        }
+
+        .model-info-header h4 {
+            margin: 0;
+            font-size: 12px;
+            color: #333;
+        }
+
+        .model-info-toggle {
+            font-size: 10px;
+            color: #666;
+        }
+
+        .model-info-content {
+            padding: 12px;
+            display: none;
+        }
+
+        .model-info-content.expanded {
+            display: block;
+        }
+
+        .model-info-content p {
+            margin: 6px 0;
+        }
+
+        .model-info-content a {
+            color: #0066cc;
+        }
+
+        .info-columns {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-top: 10px;
+        }
+
+        @media (max-width: 700px) {
+            .info-columns {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .equations {
+            background: #fff;
+            border: 1px solid #ddd;
+            padding: 10px;
+            font-family: "Times New Roman", serif;
+            font-size: 13px;
+        }
+
+        .equations h5 {
+            margin: 0 0 8px 0;
+            font-size: 11px;
+            color: #666;
+            font-family: "Courier New", monospace;
+        }
+
+        .equations .eq {
+            margin: 6px 0;
+        }
+
+        .param-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 10px;
+        }
+
+        .param-table th, .param-table td {
+            border: 1px solid #ccc;
+            padding: 4px 6px;
+            text-align: center;
+        }
+
+        .param-table th {
+            background: #e0e0e0;
+            font-size: 9px;
+        }
+
+        .param-table td:first-child {
+            font-weight: bold;
+            text-align: left;
+        }
+
+        .reference {
+            margin-top: 10px;
+            padding-top: 8px;
+            border-top: 1px dashed #ccc;
+            font-size: 10px;
+            color: #666;
+        }
+
+        /* Neuron panel */
         .neuron-panel {
             position: fixed;
             background: #c0c0c0;
@@ -103,8 +393,9 @@
             padding: 10px;
             display: none;
             z-index: 10000;
-            font-size: 12px;
-            min-width: 200px;
+            font-size: 11px;
+            width: 220px;
+            box-shadow: 3px 3px 0 rgba(0,0,0,0.3);
         }
 
         .neuron-panel.visible {
@@ -112,81 +403,241 @@
         }
 
         .neuron-panel h3 {
-            margin: 0 0 10px 0;
-            font-size: 14px;
+            margin: 0 0 8px 0;
+            font-size: 12px;
+            border-bottom: 1px solid #888;
+            padding-bottom: 4px;
         }
 
         .neuron-panel label {
             display: block;
-            margin: 8px 0 4px 0;
+            margin: 6px 0 3px 0;
             font-weight: bold;
+            font-size: 10px;
         }
 
         .neuron-panel input[type="range"] {
             width: 100%;
         }
 
+        .neuron-panel select {
+            width: 100%;
+            padding: 3px;
+            font-family: "Courier New", monospace;
+            font-size: 10px;
+        }
+
         .neuron-panel button {
-            margin-top: 10px;
-            padding: 5px 10px;
+            margin-top: 6px;
+            padding: 4px 8px;
             background: #fff;
             border: 2px outset #888;
             cursor: pointer;
             width: 100%;
             font-family: "Courier New", monospace;
+            font-size: 10px;
         }
 
         .neuron-panel button:active {
             border-style: inset;
         }
 
+        .neuron-panel .toggle-btn {
+            background: #e0e0e0;
+        }
+
         .rate-value {
-            display: inline-block;
-            margin-left: 5px;
+            font-weight: normal;
             color: #000;
+        }
+
+        .param-info {
+            font-size: 9px;
+            color: #555;
+            margin: 2px 0 0 0;
+            font-style: italic;
+        }
+
+        .neuron-type-indicator {
+            display: inline-block;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-weight: bold;
+            font-size: 10px;
+        }
+
+        .neuron-type-indicator.excitatory {
+            background: #4a9eff;
+            color: white;
+        }
+
+        .neuron-type-indicator.inhibitory {
+            background: #ff6b6b;
+            color: white;
         }
     </style>
 
     <div class="sim-container">
-        <h2 class="sim-title">Neurons in a dish</h2>
-        <p class="instructions">Click to place • Drag between neurons to connect • Click neuron to stimulate • Right-click to toggle type/properties</p>
-        
-        <canvas id="neuralCanvas" width="700" height="500"></canvas>
-        
-        <div class="recordings-container" id="recordingsContainer"></div>
-        
-        <div class="controls">
-            <button id="clearBtn">Clear All</button>
-            <button id="exciteBtn" class="active">Excitatory</button>
-            <button id="inhibitBtn">Inhibitory</button>
+        <!-- Header with title and controls -->
+        <div class="sim-header">
+            <div class="sim-header-left">
+                <h2 class="sim-title">Dish</h2>
+                <p class="instructions">
+                    <b>Click</b> to place | <b>Drag</b> to connect | <b>Click</b> neuron to stimulate | <b>Right-click</b> to edit | <b>Dbl-click</b> toggle E/I
+                </p>
+            </div>
+            <div class="controls-compact">
+                <button id="clearBtn">Clear</button>
+                <button id="exciteBtn" class="active">E</button>
+                <button id="inhibitBtn">I</button>
+                <select id="neuronBehaviorSelect">
+                    <option value="RS">RS</option>
+                    <option value="IB">IB</option>
+                    <option value="CH">CH</option>
+                    <option value="FS">FS</option>
+                    <option value="LTS">LTS</option>
+                    <option value="RZ">RZ</option>
+                </select>
+            </div>
         </div>
 
+        <!-- Main grid: canvas + side panel -->
+        <div class="main-grid">
+            <div class="canvas-container">
+                <canvas id="neuralCanvas" width="600" height="340"></canvas>
+            </div>
+            
+            <div class="side-panel">
+                <!-- Spike Raster Plot -->
+                <div class="raster-box">
+                    <h4>Spike Raster (3s window)</h4>
+                    <canvas id="rasterCanvas" width="260" height="300"></canvas>
+                    <div class="raster-legend" id="rasterLegend"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Recording section - below canvas -->
+        <div class="recording-section">
+            <div class="recording-header">
+                <h4>Membrane Potential</h4>
+                <div class="view-toggle">
+                    <button id="viewCombinedBtn" class="active">All</button>
+                    <button id="viewIndividualBtn">Each</button>
+                </div>
+            </div>
+            
+            <div class="combined-recording" id="combinedRecording">
+                <canvas id="combinedCanvas" width="800" height="180"></canvas>
+                <div class="combined-legend" id="combinedLegend"></div>
+            </div>
+            
+            <div class="recordings-container hidden" id="recordingsContainer"></div>
+        </div>
+
+        <!-- Collapsible Model Information -->
+        <div class="model-info">
+            <div class="model-info-header" onclick="this.nextElementSibling.classList.toggle('expanded'); this.querySelector('.model-info-toggle').textContent = this.nextElementSibling.classList.contains('expanded') ? '^ collapse' : '> expand';">
+                <h4>About: Izhikevich Spiking Neuron Model</h4>
+                <span class="model-info-toggle">> expand</span>
+            </div>
+            <div class="model-info-content">
+                <p>
+                    This simulator implements the <b>Izhikevich model</b> 
+                    (<a href="https://www.izhikevich.org/publications/spikes.htm" target="_blank">Izhikevich, 2003</a>), 
+                    a computationally efficient model that reproduces the spiking and bursting behavior of known types of cortical neurons.
+                    It combines the biological plausibility of Hodgkin-Huxley-type dynamics with the computational efficiency of integrate-and-fire neurons.
+                </p>
+                
+                <div class="info-columns">
+                    <div class="equations">
+                        <h5>Model Equations</h5>
+                        <div class="eq"><i>v</i>' = 0.04<i>v</i><sup>2</sup> + 5<i>v</i> + 140 - <i>u</i> + <i>I</i></div>
+                        <div class="eq"><i>u</i>' = <i>a</i>(<i>bv</i> - <i>u</i>)</div>
+                        <div class="eq">if <i>v</i> >= 30mV: <i>v</i> = <i>c</i>, <i>u</i> = <i>u</i> + <i>d</i></div>
+                    </div>
+                    
+                    <div>
+                        <table class="param-table">
+                            <tr><th>Type</th><th>a</th><th>b</th><th>c</th><th>d</th></tr>
+                            <tr><td>RS</td><td>0.02</td><td>0.2</td><td>-65</td><td>8</td></tr>
+                            <tr><td>IB</td><td>0.02</td><td>0.2</td><td>-55</td><td>4</td></tr>
+                            <tr><td>CH</td><td>0.02</td><td>0.2</td><td>-50</td><td>2</td></tr>
+                            <tr><td>FS</td><td>0.1</td><td>0.2</td><td>-65</td><td>2</td></tr>
+                            <tr><td>LTS</td><td>0.02</td><td>0.25</td><td>-65</td><td>2</td></tr>
+                            <tr><td>RZ</td><td>0.1</td><td>0.26</td><td>-65</td><td>2</td></tr>
+                        </table>
+                    </div>
+                </div>
+                
+                <h5 style="margin: 15px 0 8px 0; font-size: 12px;">Equation Breakdown</h5>
+                
+                <p><b>First equation:</b> <i>v</i>' = 0.04<i>v</i><sup>2</sup> + 5<i>v</i> + 140 - <i>u</i> + <i>I</i></p>
+                <ul style="margin: 5px 0 10px 20px; font-size: 11px;">
+                    <li><b><i>v</i></b> = membrane potential (mV). This is what we measure in neurons.</li>
+                    <li><b>0.04<i>v</i><sup>2</sup> + 5<i>v</i> + 140</b> = quadratic term that captures the spike-generating currents. The coefficients were fit to match real cortical neurons.</li>
+                    <li><b><i>u</i></b> = recovery variable representing K+ currents and Na+ inactivation. It provides negative feedback.</li>
+                    <li><b><i>I</i></b> = input current (synaptic + tonic). This is how neurons receive external drive.</li>
+                </ul>
+                
+                <p><b>Second equation:</b> <i>u</i>' = <i>a</i>(<i>bv</i> - <i>u</i>)</p>
+                <ul style="margin: 5px 0 10px 20px; font-size: 11px;">
+                    <li><b><i>a</i></b> = time scale of recovery. Smaller values = slower recovery. Fast-spiking neurons have larger <i>a</i>.</li>
+                    <li><b><i>b</i></b> = sensitivity of <i>u</i> to subthreshold fluctuations of <i>v</i>. Greater values couple <i>v</i> and <i>u</i> more strongly.</li>
+                    <li><b><i>bv</i> - <i>u</i></b> = the recovery variable <i>u</i> tracks the membrane potential with gain <i>b</i>.</li>
+                </ul>
+                
+                <p><b>Reset condition:</b> if <i>v</i> >= 30mV, then <i>v</i> = <i>c</i>, <i>u</i> = <i>u</i> + <i>d</i></p>
+                <ul style="margin: 5px 0 10px 20px; font-size: 11px;">
+                    <li><b>30mV threshold</b> = when the membrane reaches this potential, a spike is fired.</li>
+                    <li><b><i>c</i></b> = after-spike reset value of <i>v</i>. More negative = deeper hyperpolarization after spike.</li>
+                    <li><b><i>d</i></b> = after-spike increment of <i>u</i>. Larger values = more adaptation (spike frequency adaptation).</li>
+                </ul>
+                
+                <h5 style="margin: 15px 0 8px 0; font-size: 12px;">Neuron Types Explained</h5>
+                <ul style="margin: 5px 0 10px 20px; font-size: 11px;">
+                    <li><b>RS (Regular Spiking)</b> - Most common excitatory cortical neurons. Show spike-frequency adaptation.</li>
+                    <li><b>IB (Intrinsically Bursting)</b> - Layer 5 pyramidal cells. Fire initial burst, then single spikes.</li>
+                    <li><b>CH (Chattering)</b> - Fast rhythmic bursting cells. Fire stereotyped high-frequency bursts.</li>
+                    <li><b>FS (Fast Spiking)</b> - Inhibitory interneurons. Can sustain high firing rates without adaptation.</li>
+                    <li><b>LTS (Low-Threshold Spiking)</b> - Inhibitory cells that can fire from hyperpolarized states.</li>
+                    <li><b>RZ (Resonator)</b> - Exhibit subthreshold oscillations and resonance properties.</li>
+                </ul>
+                
+                <div class="reference">
+                    <b>Reference:</b> Izhikevich, E.M. (2003). "Simple Model of Spiking Neurons." 
+                    <i>IEEE Trans. Neural Networks</i>, 14:1569-1572.
+                    <a href="https://www.izhikevich.org/publications/spikes.htm" target="_blank">[Paper + MATLAB code]</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Neuron settings panel -->
         <div id="neuronPanel" class="neuron-panel">
             <h3>Neuron Settings</h3>
-            <label>
-                Type: <span id="neuronTypeLabel">Excitatory</span>
-            </label>
-            <button id="toggleTypeBtn">Toggle Type</button>
             
-            <label>
-                Basal Firing Rate: <span class="rate-value" id="rateValue">0.00</span>
-            </label>
-            <input type="range" id="basalRateSlider" min="0" max="100" value="0" step="1">
+            <label>Type: <span id="neuronTypeLabel" class="neuron-type-indicator excitatory">E</span></label>
+            <button id="toggleTypeBtn" class="toggle-btn">Toggle E/I</button>
             
-            <label>
-                Burst Frequency (Hz): <span class="rate-value" id="burstValue">0.00</span>
+            <label>Behavior:
+                <select id="panelBehaviorSelect">
+                    <option value="RS">Regular Spiking (RS)</option>
+                    <option value="IB">Intrinsically Bursting (IB)</option>
+                    <option value="CH">Chattering (CH)</option>
+                    <option value="FS">Fast Spiking (FS)</option>
+                    <option value="LTS">Low-Threshold (LTS)</option>
+                    <option value="RZ">Resonator (RZ)</option>
+                </select>
             </label>
-            <input type="range" id="burstSlider" min="0" max="10" value="0" step="0.5">
+            <p class="param-info" id="behaviorDescription">Typical cortical excitatory</p>
             
-            <label>
-                Burst Duration (ms): <span class="rate-value" id="burstDurationValue">100</span>
-            </label>
-            <input type="range" id="burstDurationSlider" min="10" max="1000" value="100" step="10">
+            <label>Tonic Current: <span class="rate-value" id="rateValue">0</span> pA</label>
+            <input type="range" id="basalRateSlider" min="0" max="20" value="0" step="0.5">
             
-            <label style="margin-top: 10px;">
-                <input type="checkbox" id="regularModeCheckbox"> Non-random Firing
-            </label>
+            <label>Synaptic Weight: <span class="rate-value" id="weightValue">1.0</span>x</label>
+            <input type="range" id="weightSlider" min="0.1" max="3" value="1" step="0.1">
             
+            <button id="deleteNeuronBtn" style="background: #ffcccc;">Delete</button>
             <button id="closePanel">Close</button>
         </div>
     </div>
