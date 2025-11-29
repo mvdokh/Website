@@ -4,6 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Martin Dokholyan</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
         * {
             margin: 0;
@@ -113,15 +116,472 @@
             background: #5a5a5a;
         }
 
+        .style-toggle {
+            margin-left: 8px;
+            padding: 4px 10px;
+            font-family: "Courier New", monospace;
+            font-size: 11px;
+            cursor: pointer;
+            background: #808080;
+            border: 2px outset #999;
+            color: #fff;
+            transition: all 0.2s;
+        }
+
+        .style-toggle:hover {
+            background: #707070;
+        }
+
+        .style-toggle:active {
+            border-style: inset;
+        }
+
+        body.dark-mode .style-toggle {
+            background: #4a4a4a;
+            border-color: #666;
+            color: #fff;
+        }
+
+        /* ========== MODERN MODE (shadcn-inspired) ========== */
+        body.modern-mode {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            padding: 0;
+            --radius: 0;
+            --background: 0 0% 100%;
+            --foreground: 240 10% 3.9%;
+            --card: 0 0% 100%;
+            --card-foreground: 240 10% 3.9%;
+            --primary: 240 5.9% 10%;
+            --primary-foreground: 0 0% 98%;
+            --secondary: 240 4.8% 95.9%;
+            --secondary-foreground: 240 5.9% 10%;
+            --muted: 240 4.8% 95.9%;
+            --muted-foreground: 240 3.8% 46.1%;
+            --accent: 240 4.8% 95.9%;
+            --accent-foreground: 240 5.9% 10%;
+            --border: 240 5.9% 90%;
+            --ring: 240 5.9% 10%;
+            background: hsl(var(--background));
+            color: hsl(var(--foreground));
+        }
+
+        body.modern-mode.dark-mode {
+            --background: 240 10% 3.9%;
+            --foreground: 0 0% 98%;
+            --card: 240 10% 3.9%;
+            --card-foreground: 0 0% 98%;
+            --primary: 0 0% 98%;
+            --primary-foreground: 240 5.9% 10%;
+            --secondary: 240 3.7% 15.9%;
+            --secondary-foreground: 0 0% 98%;
+            --muted: 240 3.7% 15.9%;
+            --muted-foreground: 240 5% 64.9%;
+            --accent: 240 3.7% 15.9%;
+            --accent-foreground: 0 0% 98%;
+            --border: 240 3.7% 15.9%;
+            --ring: 240 4.9% 83.9%;
+        }
+
+        body.modern-mode nav {
+            background: hsl(var(--card));
+            border: none;
+            border-bottom: 1px solid hsl(var(--border));
+            border-radius: 0;
+            padding: 12px 24px;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        body.modern-mode nav a {
+            color: hsl(var(--muted-foreground));
+            text-decoration: none;
+            padding: 8px 16px;
+            border-radius: var(--radius);
+            font-weight: 500;
+            font-size: 14px;
+            transition: all 0.15s ease;
+            margin: 0 2px;
+        }
+
+        body.modern-mode nav a:hover {
+            color: hsl(var(--foreground));
+            background: hsl(var(--accent));
+        }
+
+        body.modern-mode nav a.active {
+            color: hsl(var(--foreground));
+            background: hsl(var(--accent));
+            font-weight: 600;
+        }
+
+        body.modern-mode .dark-toggle,
+        body.modern-mode .style-toggle {
+            background: hsl(var(--secondary));
+            border: 1px solid hsl(var(--border));
+            border-radius: var(--radius);
+            padding: 6px 12px;
+            color: hsl(var(--secondary-foreground));
+            font-weight: 500;
+            font-size: 12px;
+            transition: all 0.15s ease;
+        }
+
+        body.modern-mode .dark-toggle:hover,
+        body.modern-mode .style-toggle:hover {
+            background: hsl(var(--accent));
+        }
+
+        body.modern-mode #content {
+            padding: 32px;
+            max-width: 1000px;
+        }
+
+        body.modern-mode .content-box {
+            background: hsl(var(--card));
+            border: 1px solid hsl(var(--border));
+            border-radius: calc(var(--radius) * 2);
+            padding: 32px;
+            box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+        }
+
+        body.modern-mode .content-box::before,
+        body.modern-mode .content-box::after {
+            display: none;
+        }
+
+        /* shadcn Typography */
+        body.modern-mode h2 {
+            font-size: 1.875rem;
+            font-weight: 600;
+            letter-spacing: -0.025em;
+            color: hsl(var(--foreground));
+            margin-bottom: 1rem;
+        }
+
+        body.modern-mode h3 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            letter-spacing: -0.025em;
+            color: hsl(var(--foreground));
+            margin: 1.5rem 0 0.75rem;
+        }
+
+        body.modern-mode h4 {
+            font-size: 1rem;
+            font-weight: 600;
+            color: hsl(var(--foreground));
+        }
+
+        body.modern-mode p {
+            color: hsl(var(--muted-foreground));
+            line-height: 1.625;
+        }
+
+        /* shadcn Links */
+        body.modern-mode a:not(nav a) {
+            color: hsl(var(--foreground));
+            text-decoration: underline;
+            text-underline-offset: 4px;
+            transition: opacity 0.15s;
+        }
+
+        body.modern-mode a:not(nav a):hover {
+            opacity: 0.8;
+        }
+
+        /* shadcn Buttons */
+        body.modern-mode button:not(.dark-toggle):not(.style-toggle) {
+            font-family: inherit;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            white-space: nowrap;
+            font-size: 14px;
+            font-weight: 500;
+            background: hsl(var(--primary));
+            color: hsl(var(--primary-foreground));
+            border: none;
+            border-radius: var(--radius);
+            padding: 8px 16px;
+            cursor: pointer;
+            transition: opacity 0.15s ease;
+            outline: none;
+        }
+
+        body.modern-mode button:not(.dark-toggle):not(.style-toggle):hover {
+            opacity: 0.9;
+        }
+
+        body.modern-mode button:not(.dark-toggle):not(.style-toggle):focus-visible {
+            outline: 2px solid hsl(var(--ring));
+            outline-offset: 2px;
+        }
+
+        body.modern-mode button:not(.dark-toggle):not(.style-toggle):active {
+            opacity: 0.8;
+        }
+
+        /* Secondary/outline button variant */
+        body.modern-mode button.secondary,
+        body.modern-mode .toggle-btn {
+            background: hsl(var(--secondary)) !important;
+            color: hsl(var(--secondary-foreground)) !important;
+            border: 1px solid hsl(var(--border)) !important;
+        }
+
+        body.modern-mode button.secondary:hover,
+        body.modern-mode .toggle-btn:hover {
+            background: hsl(var(--accent)) !important;
+        }
+
+        /* Destructive button */
+        body.modern-mode button[style*="ffcccc"] {
+            background: hsl(0 84.2% 60.2%) !important;
+            color: hsl(0 0% 98%) !important;
+        }
+
+        /* shadcn Inputs */
+        body.modern-mode input[type="range"] {
+            -webkit-appearance: none;
+            appearance: none;
+            background: hsl(var(--secondary));
+            height: 8px;
+            border-radius: 0;
+            cursor: pointer;
+        }
+
+        body.modern-mode input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 16px;
+            height: 16px;
+            border-radius: 0;
+            background: hsl(var(--background));
+            border: 2px solid hsl(var(--primary));
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+
+        body.modern-mode input[type="range"]::-webkit-slider-thumb:hover {
+            transform: scale(1.1);
+        }
+
+        body.modern-mode input[type="text"],
+        body.modern-mode input[type="number"],
+        body.modern-mode textarea {
+            font-family: inherit;
+            background: hsl(var(--background));
+            border: 1px solid hsl(var(--border));
+            border-radius: var(--radius);
+            padding: 8px 12px;
+            font-size: 14px;
+            color: hsl(var(--foreground));
+            transition: border-color 0.15s, box-shadow 0.15s;
+            outline: none;
+        }
+
+        body.modern-mode input[type="text"]:focus,
+        body.modern-mode input[type="number"]:focus,
+        body.modern-mode textarea:focus {
+            border-color: hsl(var(--ring));
+            box-shadow: 0 0 0 2px hsl(var(--ring) / 0.2);
+        }
+
+        body.modern-mode select {
+            font-family: inherit;
+            background: hsl(var(--background));
+            border: 1px solid hsl(var(--border));
+            border-radius: var(--radius);
+            padding: 8px 32px 8px 12px;
+            font-size: 14px;
+            cursor: pointer;
+            color: hsl(var(--foreground));
+            transition: border-color 0.15s;
+            outline: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%2371717a' stroke-width='2'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 10px center;
+            -webkit-appearance: none;
+            appearance: none;
+        }
+
+        body.modern-mode select:focus {
+            border-color: hsl(var(--ring));
+            box-shadow: 0 0 0 2px hsl(var(--ring) / 0.2);
+        }
+
+        /* shadcn Cards */
+        body.modern-mode .quote {
+            background: hsl(var(--card));
+            border: 1px solid hsl(var(--border));
+            border-radius: calc(var(--radius) * 1.5);
+            padding: 20px;
+            margin: 16px 0;
+        }
+
+        body.modern-mode .quote p:first-child {
+            color: hsl(var(--foreground));
+            font-style: italic;
+        }
+
+        body.modern-mode .quote .attribution {
+            color: hsl(var(--muted-foreground));
+            font-size: 14px;
+            margin-top: 12px;
+        }
+
+        /* Canvas containers */
+        body.modern-mode .canvas-container,
+        body.modern-mode .globe-wrapper {
+            border-radius: calc(var(--radius) * 2);
+            overflow: hidden;
+            border: 1px solid hsl(var(--border));
+        }
+
+        /* Panels and sidebars */
+        body.modern-mode .neuron-panel,
+        body.modern-mode .params-panel,
+        body.modern-mode .side-panel > div {
+            background: hsl(var(--card)) !important;
+            border: 1px solid hsl(var(--border)) !important;
+            border-radius: calc(var(--radius) * 1.5) !important;
+        }
+
+        /* Info boxes */
+        body.modern-mode .model-info {
+            background: hsl(var(--muted));
+            border: 1px solid hsl(var(--border));
+            border-radius: calc(var(--radius) * 1.5);
+        }
+
+        body.modern-mode .model-info-header {
+            background: transparent !important;
+            border-bottom: 1px solid hsl(var(--border));
+        }
+
+        /* Tables */
+        body.modern-mode table {
+            border-collapse: collapse;
+            width: 100%;
+        }
+
+        body.modern-mode th,
+        body.modern-mode td {
+            border: 1px solid hsl(var(--border));
+            padding: 8px 12px;
+            text-align: left;
+        }
+
+        body.modern-mode th {
+            background: hsl(var(--muted));
+            font-weight: 600;
+        }
+
+        body.modern-mode tr:hover {
+            background: hsl(var(--muted) / 0.5);
+        }
+
+        /* Scrollbar */
+        body.modern-mode ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+
+        body.modern-mode ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        body.modern-mode ::-webkit-scrollbar-thumb {
+            background: hsl(var(--border));
+            border-radius: 0;
+        }
+
+        body.modern-mode ::-webkit-scrollbar-thumb:hover {
+            background: hsl(var(--muted-foreground));
+        }
+
+        /* Animation */
+        body.modern-mode .content-box {
+            animation: fadeIn 0.2s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        /* Social links */
+        body.modern-mode .social-links a {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            background: hsl(var(--secondary));
+            border: 1px solid hsl(var(--border));
+            border-radius: var(--radius);
+            margin: 0 4px;
+            transition: all 0.15s;
+            text-decoration: none !important;
+        }
+
+        body.modern-mode .social-links a:hover {
+            background: hsl(var(--accent));
+            border-color: hsl(var(--foreground) / 0.2);
+        }
+
+        body.modern-mode .social-links svg {
+            fill: hsl(var(--foreground));
+            width: 18px;
+            height: 18px;
+        }
+
+        /* Badge/Label styles */
+        body.modern-mode .neuron-type-indicator {
+            display: inline-flex;
+            align-items: center;
+            border-radius: 0;
+            padding: 2px 10px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        body.modern-mode .neuron-type-indicator.excitatory {
+            background: hsl(142.1 76.2% 36.3% / 0.1);
+            color: hsl(142.1 76.2% 36.3%);
+        }
+
+        body.modern-mode .neuron-type-indicator.inhibitory {
+            background: hsl(0 84.2% 60.2% / 0.1);
+            color: hsl(0 84.2% 60.2%);
+        }
+
+        /* Separator */
+        body.modern-mode hr {
+            border: none;
+            border-top: 1px solid hsl(var(--border));
+            margin: 24px 0;
+        }
+
+        /* Code blocks */
+        body.modern-mode code {
+            background: hsl(var(--muted));
+            padding: 2px 6px;
+            border-radius: 0;
+            font-size: 13px;
+            font-family: 'SF Mono', 'Fira Code', monospace;
+        }
+
         #content {
             width: 100%;
             max-width: 800px;
             margin: 0 auto;
         }
 
-        /* Brain and Math pages get full width */
+        /* Brain, Math, and Globe pages get full width */
         #content:has(.brain-page),
-        #content:has(.math-page) {
+        #content:has(.math-page),
+        #content:has(.globe-page) {
             max-width: none;
         }
 
@@ -142,6 +602,11 @@
         /* Math page specific overrides */
         .content-box.math-page {
             padding: 10px;
+        }
+
+        /* Globe page specific overrides */
+        .content-box.globe-page {
+            padding: 15px;
         }
 
         .content-box::before {
@@ -225,11 +690,12 @@
         <div class="nav-links">
             <a href="#" onclick="loadTab('intro')" class="active" id="intro-tab">Intro</a>
             <a href="#" onclick="loadTab('telos')" id="telos-tab">Stuff</a>
+            <a href="#" onclick="loadTab('globe')" id="globe-tab">Globe</a>
             <a href="#" onclick="loadTab('brain')" id="brain-tab">Brain</a>
             <a href="#" onclick="loadTab('math')" id="math-tab">Math</a>
-            <a href="#" onclick="loadTab('widgets')" id="widgets-tab">Widgets</a>
         </div>
         <button class="dark-toggle" onclick="toggleDarkMode()" id="dark-toggle">DARK</button>
+        <button class="style-toggle" onclick="toggleStyleMode()" id="style-toggle">MODERN</button>
     </nav>
 
     <div id="content">
@@ -251,15 +717,36 @@
             localStorage.setItem('darkMode', isDark ? 'true' : 'false');
         }
 
+        // Style mode toggle (analog/modern)
+        function toggleStyleMode() {
+            document.body.classList.toggle('modern-mode');
+            const isModern = document.body.classList.contains('modern-mode');
+            const toggle = document.getElementById('style-toggle');
+            toggle.textContent = isModern ? 'ANALOG' : 'MODERN';
+            localStorage.setItem('modernMode', isModern ? 'true' : 'false');
+        }
+
         // Check for saved dark mode preference (default to dark)
         if (localStorage.getItem('darkMode') !== 'false') {
             document.body.classList.add('dark-mode');
             document.getElementById('dark-toggle').textContent = 'LIGHT';
         }
+        
+        // Check for saved style mode preference
+        if (localStorage.getItem('modernMode') === 'true') {
+            document.body.classList.add('modern-mode');
+            document.getElementById('style-toggle').textContent = 'ANALOG';
+        }
 
         async function loadTab(tabName) {
             console.log('loadTab called:', tabName);
             try {
+                // Cleanup previous tab if needed
+                if (window.brainSimulatorCleanup) {
+                    window.brainSimulatorCleanup();
+                    window.brainSimulatorCleanup = null;
+                }
+                
                 // Update active tab styling
                 document.querySelectorAll('nav a').forEach(link => link.classList.remove('active'));
                 document.getElementById(tabName + '-tab').classList.add('active');
@@ -274,10 +761,6 @@
                 const html = await response.text();
                 document.getElementById('content').innerHTML = html;
 
-                // If it's the widgets tab, initialize the widgets
-                if (tabName === 'widgets') {
-                    initializeWidgets();
-                }
 
                 // If it's the brain tab, initialize the brain simulator
                 if (tabName === 'brain') {
@@ -299,6 +782,15 @@
                         initializeMathVisualizer();
                     } catch (e) {
                         console.error('Math init error:', e);
+                    }
+                }
+
+                // If it's the globe tab, initialize the globe
+                if (tabName === 'globe') {
+                    try {
+                        initializeGlobe();
+                    } catch (e) {
+                        console.error('Globe init error:', e);
                     }
                 }
 
@@ -990,6 +1482,40 @@
                         params: { a: 'σ (sigma)', b: 'ρ (rho)', c: 'β (beta)', res: false },
                         generate: null
                     },
+                    digamma: {
+                        name: 'Digamma Function',
+                        equations: 'ψ(z) = d/dz ln(Γ(z))<br>z = x + iy (complex)',
+                        params: { a: 'Scale', b: null, c: null, res: true },
+                        generate: (u, v, a, b, c) => {
+                            // Digamma approximation using asymptotic series
+                            // For real part of digamma(x + iy)
+                            const x = u * a;
+                            const y = v * a;
+                            
+                            // Use reflection and recurrence to handle all values
+                            let realPart = 0;
+                            let px = x, py = y;
+                            
+                            // Shift to positive real part using recurrence
+                            while (px < 5) {
+                                const denom = px * px + py * py;
+                                if (denom > 0.0001) {
+                                    realPart -= px / denom;
+                                }
+                                px += 1;
+                            }
+                            
+                            // Asymptotic expansion for large |z|
+                            const r2 = px * px + py * py;
+                            realPart += 0.5 * Math.log(r2);
+                            realPart -= 0.5 * px / r2;
+                            realPart -= (px * px - py * py) / (12 * r2 * r2);
+                            
+                            return [u, v, realPart * 0.3];
+                        },
+                        uRange: [-3, 3],
+                        vRange: [-3, 3]
+                    },
                     sinc: {
                         name: 'Sinc Function',
                         equations: 'z = A·sin(ωr)/r<br>r = √(x² + y²)',
@@ -1026,8 +1552,66 @@
                         params: { a: 'Max K', b: null, c: null, res: false },
                         generate: null,
                         is2D: true
+                    },
+                    langton: {
+                        name: "Langton's Ant",
+                        equations: 'On white: turn right, flip, move<br>On black: turn left, flip, move',
+                        params: { a: 'Steps/Frame', b: 'Grid Size', c: null, res: false },
+                        generate: null,
+                        is2D: true,
+                        isAnimated: true
                     }
                 };
+                
+                // Langton's Ant state
+                let langtonGrid = null;
+                let langtonAnt = null;
+                let langtonSteps = 0;
+                let langtonGridSize = 150;
+                let langtonStepsPerFrame = 50;
+                
+                function initLangton(gridSize) {
+                    langtonGridSize = gridSize;
+                    langtonGrid = new Uint8Array(gridSize * gridSize);
+                    langtonAnt = {
+                        x: Math.floor(gridSize / 2),
+                        y: Math.floor(gridSize / 2),
+                        dir: 0 // 0=up, 1=right, 2=down, 3=left
+                    };
+                    langtonSteps = 0;
+                }
+                
+                function stepLangton() {
+                    const { x, y, dir } = langtonAnt;
+                    const idx = y * langtonGridSize + x;
+                    const cell = langtonGrid[idx];
+                    
+                    // Turn based on current cell
+                    if (cell === 0) {
+                        // White cell: turn right
+                        langtonAnt.dir = (dir + 1) % 4;
+                    } else {
+                        // Black cell: turn left
+                        langtonAnt.dir = (dir + 3) % 4;
+                    }
+                    
+                    // Flip the cell
+                    langtonGrid[idx] = 1 - cell;
+                    
+                    // Move forward
+                    const dx = [0, 1, 0, -1];
+                    const dy = [-1, 0, 1, 0];
+                    langtonAnt.x += dx[langtonAnt.dir];
+                    langtonAnt.y += dy[langtonAnt.dir];
+                    
+                    // Wrap around edges
+                    if (langtonAnt.x < 0) langtonAnt.x = langtonGridSize - 1;
+                    if (langtonAnt.x >= langtonGridSize) langtonAnt.x = 0;
+                    if (langtonAnt.y < 0) langtonAnt.y = langtonGridSize - 1;
+                    if (langtonAnt.y >= langtonGridSize) langtonAnt.y = 0;
+                    
+                    langtonSteps++;
+                }
                 
                 // Update parameter UI based on surface
                 function updateParamUI(surfaceName) {
@@ -1067,6 +1651,16 @@
                         resGroup.classList.add('hidden');
                     }
                     
+                    // Show reset button for animated surfaces
+                    const resetGroup = document.getElementById('resetGroup');
+                    if (resetGroup) {
+                        if (surface.isAnimated) {
+                            resetGroup.classList.remove('hidden');
+                        } else {
+                            resetGroup.classList.add('hidden');
+                        }
+                    }
+                    
                     // Set special defaults for bifurcation
                     if (surfaceName === 'bifurcation') {
                         document.getElementById('paramA').value = 2.5;
@@ -1087,6 +1681,22 @@
                         document.getElementById('paramA').step = 1;
                         document.getElementById('paramAVal').textContent = '4.0';
                         paramA = 4;
+                    } else if (surfaceName === 'langton') {
+                        document.getElementById('paramA').value = 50;
+                        document.getElementById('paramA').min = 1;
+                        document.getElementById('paramA').max = 500;
+                        document.getElementById('paramA').step = 10;
+                        document.getElementById('paramAVal').textContent = '50';
+                        langtonStepsPerFrame = 50;
+                        
+                        document.getElementById('paramB').value = 150;
+                        document.getElementById('paramB').min = 50;
+                        document.getElementById('paramB').max = 300;
+                        document.getElementById('paramB').step = 10;
+                        document.getElementById('paramBVal').textContent = '150';
+                        
+                        // Initialize Langton's Ant
+                        initLangton(150);
                     } else {
                         // Reset to defaults
                         document.getElementById('paramA').min = 0.1;
@@ -1356,6 +1966,79 @@
                         ctx.fillText('0', margin - 20, height - margin);
                         ctx.fillText(maxK.toFixed(1), margin - 25, margin + 10);
                         
+                    } else if (currentSurface === 'langton') {
+                        // Langton's Ant
+                        if (!langtonGrid) {
+                            initLangton(langtonGridSize);
+                        }
+                        
+                        // Run steps
+                        for (let i = 0; i < langtonStepsPerFrame; i++) {
+                            stepLangton();
+                        }
+                        
+                        // Calculate cell size to fit canvas
+                        const margin = 30;
+                        const availableSize = Math.min(width, height) - 2 * margin;
+                        const cellSize = availableSize / langtonGridSize;
+                        const offsetX = (width - availableSize) / 2;
+                        const offsetY = (height - availableSize) / 2;
+                        
+                        // Draw grid using ImageData for speed
+                        const imageData = ctx.createImageData(Math.ceil(availableSize), Math.ceil(availableSize));
+                        const data = imageData.data;
+                        
+                        for (let y = 0; y < langtonGridSize; y++) {
+                            for (let x = 0; x < langtonGridSize; x++) {
+                                const cell = langtonGrid[y * langtonGridSize + x];
+                                const px = Math.floor(x * cellSize);
+                                const py = Math.floor(y * cellSize);
+                                const pxEnd = Math.floor((x + 1) * cellSize);
+                                const pyEnd = Math.floor((y + 1) * cellSize);
+                                
+                                // Color: white = amber, black = dark
+                                const r = cell === 0 ? 200 : 20;
+                                const g = cell === 0 ? 160 : 15;
+                                const b = cell === 0 ? 60 : 10;
+                                
+                                for (let py2 = py; py2 < pyEnd && py2 < availableSize; py2++) {
+                                    for (let px2 = px; px2 < pxEnd && px2 < availableSize; px2++) {
+                                        const idx = (py2 * Math.ceil(availableSize) + px2) * 4;
+                                        data[idx] = r;
+                                        data[idx + 1] = g;
+                                        data[idx + 2] = b;
+                                        data[idx + 3] = 255;
+                                    }
+                                }
+                            }
+                        }
+                        
+                        // Draw ant position
+                        const antPx = Math.floor(langtonAnt.x * cellSize);
+                        const antPy = Math.floor(langtonAnt.y * cellSize);
+                        const antSize = Math.max(2, Math.floor(cellSize));
+                        for (let py = antPy; py < antPy + antSize && py < availableSize; py++) {
+                            for (let px = antPx; px < antPx + antSize && px < availableSize; px++) {
+                                const idx = (py * Math.ceil(availableSize) + px) * 4;
+                                data[idx] = 255;
+                                data[idx + 1] = 50;
+                                data[idx + 2] = 50;
+                                data[idx + 3] = 255;
+                            }
+                        }
+                        
+                        ctx.putImageData(imageData, offsetX, offsetY);
+                        
+                        // Draw border
+                        ctx.strokeStyle = 'rgba(100, 100, 100, 0.5)';
+                        ctx.lineWidth = 1;
+                        ctx.strokeRect(offsetX, offsetY, availableSize, availableSize);
+                        
+                        // Step counter
+                        ctx.fillStyle = 'rgba(150, 150, 150, 0.8)';
+                        ctx.font = '12px Courier New';
+                        ctx.fillText(`Steps: ${langtonSteps.toLocaleString()}`, offsetX, offsetY - 10);
+                        
                     } else if (currentSurface === 'lorenz') {
                         // Special handling for Lorenz attractor
                         const points = generateLorenz(paramA, paramB, paramC);
@@ -1471,6 +2154,10 @@
                     // Clear cache when surface changes
                     cachedBifurcation = null;
                     cachedArnold = null;
+                    // Initialize Langton if selected
+                    if (currentSurface === 'langton') {
+                        initLangton(langtonGridSize);
+                    }
                 });
                 
                 document.getElementById('paramA').addEventListener('input', (e) => {
@@ -1478,12 +2165,21 @@
                     document.getElementById('paramAVal').textContent = paramA.toFixed(1);
                     cachedBifurcation = null;
                     cachedArnold = null;
+                    if (currentSurface === 'langton') {
+                        langtonStepsPerFrame = Math.floor(paramA);
+                        document.getElementById('paramAVal').textContent = langtonStepsPerFrame;
+                    }
                 });
                 
                 document.getElementById('paramB').addEventListener('input', (e) => {
                     paramB = parseFloat(e.target.value);
                     document.getElementById('paramBVal').textContent = paramB.toFixed(2);
                     cachedBifurcation = null;
+                    if (currentSurface === 'langton') {
+                        const newSize = Math.floor(paramB);
+                        document.getElementById('paramBVal').textContent = newSize;
+                        initLangton(newSize);
+                    }
                 });
                 
                 document.getElementById('paramC').addEventListener('input', (e) => {
@@ -1503,6 +2199,15 @@
                 document.getElementById('showPoints').addEventListener('change', (e) => {
                     showPoints = e.target.checked;
                 });
+                
+                const resetBtn = document.getElementById('resetBtn');
+                if (resetBtn) {
+                    resetBtn.addEventListener('click', () => {
+                        if (currentSurface === 'langton') {
+                            initLangton(langtonGridSize);
+                        }
+                    });
+                }
                 
                 document.getElementById('autoRotate').addEventListener('change', (e) => {
                     autoRotate = e.target.checked;
@@ -2073,8 +2778,8 @@
                     }).join('');
                 }
 
-                setInterval(updateRecordings, 100);
-                setInterval(updateRasterPlot, 50);
+                let recordingInterval = null;
+                let rasterInterval = null;
                 
                 // View toggle handlers
                 const viewCombinedBtn = document.getElementById('viewCombinedBtn');
@@ -2326,10 +3031,335 @@
                 if (canvas && ctx) {
                     ctx.fillStyle = '#0a0a0a';
                     ctx.fillRect(0, 0, canvas.width, canvas.height);
+                    
+                    // Add default neurons
+                    const neuron1 = new Neuron(150, 170);
+                    neuron1.isExcitatory = true;
+                    neuron1.setBehaviorType('CH'); // Chattering - high spiking
+                    neuron1.tonicInput = 8; // Give it tonic input to make it spike
+                    neurons.push(neuron1);
+                    
+                    const neuron2 = new Neuron(300, 170);
+                    neuron2.isExcitatory = true;
+                    neuron2.setBehaviorType('RS'); // Regular spiking
+                    neurons.push(neuron2);
+                    
+                    const neuron3 = new Neuron(450, 170);
+                    neuron3.isExcitatory = false;
+                    neuron3.setBehaviorType('FS'); // Fast spiking inhibitory
+                    neurons.push(neuron3);
+                    
+                    // Connect them: 1 -> 2 -> 3
+                    connections.push(new Connection(neuron1, neuron2));
+                    connections.push(new Connection(neuron2, neuron3));
+                    
+                    // Start the recording and raster update intervals
+                    recordingInterval = setInterval(updateRecordings, 100);
+                    rasterInterval = setInterval(updateRasterPlot, 50);
+                    
                     animate();
+                    
+                    // Store cleanup function for when leaving the page
+                    window.brainSimulatorCleanup = () => {
+                        if (animationId) {
+                            cancelAnimationFrame(animationId);
+                            animationId = null;
+                        }
+                        clearInterval(recordingInterval);
+                        clearInterval(rasterInterval);
+                        neurons.length = 0;
+                        connections.length = 0;
+                    };
                 }
                 
             }, 50);
+        };
+
+        // Globe initializer
+        const initializeGlobe = function() {
+            setTimeout(() => {
+                const canvas = document.getElementById('globeCanvas');
+                if (!canvas) {
+                    console.error('Globe canvas not found');
+                    return;
+                }
+                
+                // Use full window dimensions
+                let width = window.innerWidth;
+                let height = window.innerHeight;
+                canvas.width = width;
+                canvas.height = height;
+                
+                console.log('Globe canvas dimensions:', width, height);
+                
+                // Load Three.js dynamically
+                function loadThreeJS(callback) {
+                    if (window.THREE && window.THREE.OrbitControls) {
+                        console.log('Three.js already loaded');
+                        callback();
+                        return;
+                    }
+                    if (window.THREE) {
+                        // Three.js loaded but not OrbitControls
+                        console.log('Loading OrbitControls...');
+                        const controlsScript = document.createElement('script');
+                        controlsScript.src = 'https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js';
+                        controlsScript.onload = callback;
+                        document.head.appendChild(controlsScript);
+                        return;
+                    }
+                    console.log('Loading Three.js...');
+                    const script = document.createElement('script');
+                    script.src = 'https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js';
+                    script.onload = () => {
+                        console.log('Three.js loaded, loading OrbitControls...');
+                        // Load OrbitControls
+                        const controlsScript = document.createElement('script');
+                        controlsScript.src = 'https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js';
+                        controlsScript.onload = () => {
+                            console.log('OrbitControls loaded');
+                            callback();
+                        };
+                        document.head.appendChild(controlsScript);
+                    };
+                    document.head.appendChild(script);
+                }
+                
+                loadThreeJS(() => initGlobeScene());
+                
+                function initGlobeScene() {
+                console.log('Initializing globe scene...');
+                // Three.js setup
+                const scene = new THREE.Scene();
+                scene.background = new THREE.Color(0x000011);
+                
+                const camera = new THREE.PerspectiveCamera(45, canvas.width / canvas.height, 0.1, 1000);
+                camera.position.z = 3;
+                
+                const renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true });
+                renderer.setSize(canvas.width, canvas.height);
+                renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+                
+                // Orbit controls
+                const controls = new THREE.OrbitControls(camera, renderer.domElement);
+                controls.enableDamping = true;
+                controls.dampingFactor = 0.05;
+                controls.minDistance = 1.5;
+                controls.maxDistance = 10;
+                controls.enablePan = false;
+                
+                // Create Earth - high resolution sphere
+                const geometry = new THREE.SphereGeometry(1, 128, 128);
+                
+                // Load high-res texture from NASA Blue Marble
+                const textureLoader = new THREE.TextureLoader();
+                const earthTexture = textureLoader.load(
+                    'https://unpkg.com/three-globe/example/img/earth-blue-marble.jpg',
+                    (texture) => { 
+                        console.log('Earth texture loaded');
+                        // Enable anisotropic filtering for better quality at angles
+                        texture.anisotropy = renderer.capabilities.getMaxAnisotropy();
+                        renderer.render(scene, camera); 
+                    },
+                    undefined,
+                    (err) => { console.error('Texture load error:', err); }
+                );
+                
+                const material = new THREE.MeshPhongMaterial({
+                    map: earthTexture,
+                    bumpScale: 0.05,
+                    shininess: 5,
+                });
+                
+                const earth = new THREE.Mesh(geometry, material);
+                scene.add(earth);
+                
+                // Add atmosphere glow
+                const atmosphereGeom = new THREE.SphereGeometry(1.02, 64, 64);
+                const atmosphereMat = new THREE.MeshBasicMaterial({
+                    color: 0x4488ff,
+                    transparent: true,
+                    opacity: 0.1,
+                    side: THREE.BackSide
+                });
+                const atmosphere = new THREE.Mesh(atmosphereGeom, atmosphereMat);
+                scene.add(atmosphere);
+                
+                // Lighting
+                const ambientLight = new THREE.AmbientLight(0x333333);
+                scene.add(ambientLight);
+                
+                const sunLight = new THREE.DirectionalLight(0xffffff, 1.5);
+                sunLight.position.set(5, 3, 5);
+                scene.add(sunLight);
+                
+                // Stars background
+                const starsGeometry = new THREE.BufferGeometry();
+                const starPositions = [];
+                for (let i = 0; i < 2000; i++) {
+                    const r = 100;
+                    const theta = Math.random() * Math.PI * 2;
+                    const phi = Math.acos(2 * Math.random() - 1);
+                    starPositions.push(
+                        r * Math.sin(phi) * Math.cos(theta),
+                        r * Math.sin(phi) * Math.sin(theta),
+                        r * Math.cos(phi)
+                    );
+                }
+                starsGeometry.setAttribute('position', new THREE.Float32BufferAttribute(starPositions, 3));
+                const starsMaterial = new THREE.PointsMaterial({ color: 0xffffff, size: 0.5 });
+                const stars = new THREE.Points(starsGeometry, starsMaterial);
+                scene.add(stars);
+                
+                // Predefined pins - add your locations here
+                const pins = [
+                    { title: "Boston, Massachusetts", note: "Home (for now)", lat: 42.3601, lng: -71.0589 },
+                    { title: "Chapel Hill, NC", note: "Birthplace", lat: 35.9132, lng: -79.0558 },
+                    { title: "Hershey, PA", note: "High School", lat: 40.2854, lng: -76.6505 },
+                    { title: "Black Rock City, NV", note: "Burning Man 2x", lat: 40.7864, lng: -119.2065 },
+                    { title: "Landmannalaugar, Iceland", note: "Beautiful painted mountains", lat: 63.9930, lng: -19.0617 },
+                    { title: "Lake Como, Italy", note: "Nice place", lat: 46.0160, lng: 9.2572 },
+                    { title: "San Jose, Costa Rica", note: "Volcanic sand and rainforests with monkeys", lat: 9.9281, lng: -84.0907 },
+                    { title: "Madrid, Spain", note: "Cured meats and fast trains", lat: 40.4168, lng: -3.7038 },
+                    { title: "Rovinj, Croatia", note: "Clear and harmless jelly fish", lat: 45.0812, lng: 13.6387 }
+                ];
+                
+                const pinMeshes = [];
+                const raycaster = new THREE.Raycaster();
+                const mouse = new THREE.Vector2();
+                
+                // Convert lat/lng to 3D position
+                function latLngToVector3(lat, lng, radius = 1.01) {
+                    const phi = (90 - lat) * (Math.PI / 180);
+                    const theta = (lng + 180) * (Math.PI / 180);
+                    return new THREE.Vector3(
+                        -radius * Math.sin(phi) * Math.cos(theta),
+                        radius * Math.cos(phi),
+                        radius * Math.sin(phi) * Math.sin(theta)
+                    );
+                }
+                
+                // Create pin mesh - teardrop/pin shape
+                function createPinMesh(lat, lng, color = 0xff3333) {
+                    const group = new THREE.Group();
+                    
+                    // Pin head (small sphere) - on top, away from globe
+                    const headGeom = new THREE.SphereGeometry(0.012, 12, 12);
+                    const headMat = new THREE.MeshBasicMaterial({ color: color });
+                    const head = new THREE.Mesh(headGeom, headMat);
+                    head.position.y = 0.025;
+                    
+                    // Pin stem (thin cone pointing down into globe)
+                    const stemGeom = new THREE.ConeGeometry(0.004, 0.025, 8);
+                    const stemMat = new THREE.MeshBasicMaterial({ color: 0xcccccc });
+                    const stem = new THREE.Mesh(stemGeom, stemMat);
+                    stem.position.y = 0.0125;
+                    
+                    group.add(head);
+                    group.add(stem);
+                    
+                    // Position and orient the pin - pointing outward from globe center
+                    const pos = latLngToVector3(lat, lng, 1.0);
+                    group.position.copy(pos);
+                    group.lookAt(new THREE.Vector3(0, 0, 0));
+                    group.rotateX(-Math.PI / 2);
+                    
+                    return group;
+                }
+                
+                // Create all pins
+                function renderPins() {
+                    pins.forEach((pin, i) => {
+                        const mesh = createPinMesh(pin.lat, pin.lng, 0xff4444);
+                        scene.add(mesh);
+                        pinMeshes.push({ mesh, data: pin });
+                    });
+                }
+                
+                // Show pin modal
+                function showPinModal(pin) {
+                    const modal = document.getElementById('pinModal');
+                    if (modal) {
+                        document.getElementById('modalTitle').textContent = pin.title;
+                        document.getElementById('modalNote').textContent = pin.note;
+                        modal.classList.add('visible');
+                    }
+                }
+                
+                // Close modal
+                const closeBtn = document.getElementById('closeModal');
+                if (closeBtn) {
+                    closeBtn.addEventListener('click', () => {
+                        document.getElementById('pinModal').classList.remove('visible');
+                    });
+                }
+                
+                // Click handler for pins
+                canvas.addEventListener('click', (event) => {
+                    const rect = canvas.getBoundingClientRect();
+                    mouse.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
+                    mouse.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
+                    
+                    raycaster.setFromCamera(mouse, camera);
+                    
+                    // Check if clicked on a pin
+                    const allPinMeshes = pinMeshes.flatMap(pm => pm.mesh.children);
+                    const pinIntersects = raycaster.intersectObjects(allPinMeshes);
+                    if (pinIntersects.length > 0) {
+                        const clickedMesh = pinIntersects[0].object.parent;
+                        const pinData = pinMeshes.find(pm => pm.mesh === clickedMesh);
+                        if (pinData) {
+                            showPinModal(pinData.data);
+                        }
+                    }
+                });
+                
+                // Close modal on background click
+                const pinModal = document.getElementById('pinModal');
+                if (pinModal) {
+                    pinModal.addEventListener('click', (e) => {
+                        if (e.target.id === 'pinModal') {
+                            e.target.classList.remove('visible');
+                        }
+                    });
+                }
+                
+                // Render pins
+                renderPins();
+                
+                // Handle resize - use full window
+                function onResize() {
+                    const w = window.innerWidth;
+                    const h = window.innerHeight;
+                    canvas.width = w;
+                    canvas.height = h;
+                    camera.aspect = w / h;
+                    camera.updateProjectionMatrix();
+                    renderer.setSize(w, h);
+                }
+                window.addEventListener('resize', onResize);
+                // Call resize immediately to ensure proper sizing
+                onResize();
+                
+                // Animation loop
+                let animationId;
+                function animate() {
+                    animationId = requestAnimationFrame(animate);
+                    controls.update();
+                    renderer.render(scene, camera);
+                }
+                console.log('Starting globe animation');
+                animate();
+                
+                // Cleanup on tab change
+                const originalLoadTab = window.loadTabCleanup || (() => {});
+                window.loadTabCleanup = () => {
+                    if (animationId) cancelAnimationFrame(animationId);
+                    originalLoadTab();
+                };
+                
+                } // end initGlobeScene
+            }, 100);
         };
 
         // Load intro tab by default

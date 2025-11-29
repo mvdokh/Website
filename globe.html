@@ -1,0 +1,103 @@
+<div class="globe-fullscreen">
+    <canvas id="globeCanvas"></canvas>
+    
+    <!-- Pin Modal -->
+    <div class="pin-modal" id="pinModal">
+        <div class="pin-modal-content">
+            <span class="pin-modal-close" id="closeModal">&times;</span>
+            <h3 id="modalTitle">Location</h3>
+            <p id="modalNote">Note about this location...</p>
+        </div>
+    </div>
+
+    <style>
+        .globe-fullscreen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: 0;
+            background: #000;
+        }
+        
+        #globeCanvas {
+            width: 100%;
+            height: 100%;
+            display: block;
+        }
+        
+        /* Keep nav above globe */
+        nav {
+            position: relative;
+            z-index: 100;
+        }
+        
+        #content:has(.globe-fullscreen) {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            padding: 0;
+            margin: 0;
+        }
+        
+        #content:has(.globe-fullscreen) .content-box {
+            background: transparent;
+            border: none;
+            padding: 0;
+        }
+        
+        /* Modal styles */
+        .pin-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.6);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .pin-modal.visible {
+            display: flex;
+        }
+        
+        .pin-modal-content {
+            background: var(--content-bg);
+            border: 3px outset var(--nav-border);
+            padding: 20px;
+            max-width: 350px;
+            width: 90%;
+            position: relative;
+            font-family: "Courier New", monospace;
+        }
+        
+        .pin-modal-close {
+            position: absolute;
+            top: 8px;
+            right: 12px;
+            font-size: 24px;
+            cursor: pointer;
+            color: var(--text-color);
+        }
+        
+        .pin-modal-close:hover {
+            color: var(--link-color);
+        }
+        
+        .pin-modal h3 {
+            margin-bottom: 12px;
+            color: var(--link-color);
+        }
+        
+        .pin-modal p {
+            line-height: 1.5;
+        }
+    </style>
+</div>
+

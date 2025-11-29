@@ -633,9 +633,11 @@
             
             <label>Tonic Current: <span class="rate-value" id="rateValue">0</span> pA</label>
             <input type="range" id="basalRateSlider" min="0" max="20" value="0" step="0.5">
+            <p class="param-info">Constant input current. Higher values cause more spontaneous firing.</p>
             
             <label>Synaptic Weight: <span class="rate-value" id="weightValue">1.0</span>x</label>
             <input type="range" id="weightSlider" min="0.1" max="3" value="1" step="0.1">
+            <p class="param-info">Multiplier for outgoing synaptic strength to connected neurons.</p>
             
             <button id="deleteNeuronBtn" style="background: #ffcccc;">Delete</button>
             <button id="closePanel">Close</button>
