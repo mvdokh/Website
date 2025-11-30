@@ -1363,198 +1363,318 @@
                 let cachedBifurcationParams = null;
                 let cachedArnold = null;
                 let cachedArnoldParams = null;
+                let cachedMandelbrot = null;
+                let cachedMandelbrotParams = null;
+                let cachedJulia = null;
+                let cachedJuliaParams = null;
+                let cachedHenon = null;
+                let cachedHenonParams = null;
+                let cachedDoublePendulum = null;
+                let cachedDoublePendulumParams = null;
+                let cachedSierpinski = null;
+                let cachedSierpinskiParams = null;
                 let paramC = 1.0;
                 let resolution = 30;
                 let showWireframe = true;
                 let showPoints = false;
                 
-                // Surface equations
+                // Category definitions
+                const categories = {
+                    chaos: { name: 'Chaos & Dynamics', class: 'category-chaos' },
+                    topology: { name: 'Topology', class: 'category-topology' },
+                    geometry: { name: 'Geometry', class: 'category-geometry' },
+                    functions: { name: 'Functions & Waves', class: 'category-functions' },
+                    fractals: { name: 'Fractals', class: 'category-fractals' },
+                    cellular: { name: 'Cellular Automata', class: 'category-cellular' }
+                };
+                
+                // Surface equations - organized by category
                 const surfaces = {
-                    torus: {
-                        name: 'Torus',
-                        equations: 'x = (R + r·cos(v))·cos(u)<br>y = (R + r·cos(v))·sin(u)<br>z = r·sin(v)',
-                        params: { a: 'Major Radius (R)', b: 'Minor Radius (r)', c: null, res: true },
-                        generate: (u, v, a, b, c) => {
-                            return [
-                                (a + b * Math.cos(v)) * Math.cos(u),
-                                (a + b * Math.cos(v)) * Math.sin(u),
-                                b * Math.sin(v)
-                            ];
-                        },
-                        uRange: [0, 2 * Math.PI],
-                        vRange: [0, 2 * Math.PI]
-                    },
-                    sphere: {
-                        name: 'Sphere',
-                        equations: 'x = r·sin(v)·cos(u)<br>y = r·sin(v)·sin(u)<br>z = r·cos(v)',
-                        params: { a: 'Radius (r)', b: null, c: null, res: true },
-                        generate: (u, v, a, b, c) => {
-                            return [
-                                a * Math.sin(v) * Math.cos(u),
-                                a * Math.sin(v) * Math.sin(u),
-                                a * Math.cos(v)
-                            ];
-                        },
-                        uRange: [0, 2 * Math.PI],
-                        vRange: [0, Math.PI]
-                    },
-                    mobius: {
-                        name: 'Mobius Strip',
-                        equations: 'x = (1 + s·cos(u/2))·cos(u)<br>y = (1 + s·cos(u/2))·sin(u)<br>z = s·sin(u/2)',
-                        params: { a: 'Size', b: 'Width', c: null, res: true },
-                        generate: (u, v, a, b, c) => {
-                            return [
-                                (a + (v * b) * Math.cos(u / 2)) * Math.cos(u),
-                                (a + (v * b) * Math.cos(u / 2)) * Math.sin(u),
-                                (v * b) * Math.sin(u / 2)
-                            ];
-                        },
-                        uRange: [0, 2 * Math.PI],
-                        vRange: [-1, 1]
-                    },
-                    klein: {
-                        name: 'Klein Bottle',
-                        equations: 'Immersion in 3D<br>(self-intersecting)',
-                        params: { a: 'Scale', b: null, c: null, res: true },
-                        generate: (u, v, a, b, c) => {
-                            const r = a * 0.5;
-                            let x, y, z;
-                            if (u < Math.PI) {
-                                x = 3 * Math.cos(u) * (1 + Math.sin(u)) + 2 * (1 - Math.cos(u) / 2) * Math.cos(u) * Math.cos(v);
-                                z = -8 * Math.sin(u) - 2 * (1 - Math.cos(u) / 2) * Math.sin(u) * Math.cos(v);
-                            } else {
-                                x = 3 * Math.cos(u) * (1 + Math.sin(u)) + 2 * (1 - Math.cos(u) / 2) * Math.cos(v + Math.PI);
-                                z = -8 * Math.sin(u);
-                            }
-                            y = -2 * (1 - Math.cos(u) / 2) * Math.sin(v);
-                            return [x * r * 0.15, y * r, z * r * 0.15];
-                        },
-                        uRange: [0, 2 * Math.PI],
-                        vRange: [0, 2 * Math.PI]
-                    },
-                    trefoil: {
-                        name: 'Trefoil Knot',
-                        equations: 'x = sin(t) + 2·sin(2t)<br>y = cos(t) - 2·cos(2t)<br>z = -sin(3t)',
-                        params: { a: 'Scale', b: 'Tube Radius', c: null, res: true },
-                        generate: (u, v, a, b, c) => {
-                            const t = u;
-                            const r = b * 0.3;
-                            const x = Math.sin(t) + 2 * Math.sin(2 * t);
-                            const y = Math.cos(t) - 2 * Math.cos(2 * t);
-                            const z = -Math.sin(3 * t);
-                            return [
-                                (x + r * Math.cos(v)) * a * 0.5,
-                                (y + r * Math.sin(v)) * a * 0.5,
-                                z * a * 0.5
-                            ];
-                        },
-                        uRange: [0, 2 * Math.PI],
-                        vRange: [0, 2 * Math.PI]
-                    },
-                    saddle: {
-                        name: 'Saddle',
-                        equations: 'z = a·x² - b·y²',
-                        params: { a: 'X Curvature', b: 'Y Curvature', c: null, res: true },
-                        generate: (u, v, a, b, c) => {
-                            return [u, v, a * 0.3 * (u * u - b * v * v)];
-                        },
-                        uRange: [-2, 2],
-                        vRange: [-2, 2]
-                    },
-                    helix: {
-                        name: 'Double Helix',
-                        equations: 'x = r·cos(ωt), y = r·sin(ωt), z = t<br>(two intertwined)',
-                        params: { a: 'Radius', b: 'Pitch', c: 'Twist Rate', res: false },
-                        generate: (u, v, a, b, c) => {
-                            const offset = v < 0.5 ? 0 : Math.PI;
-                            return [
-                                a * Math.cos(u * c + offset),
-                                a * Math.sin(u * c + offset),
-                                u * b * 0.3
-                            ];
-                        },
-                        uRange: [-4, 4],
-                        vRange: [0, 1]
-                    },
+                    // ═══════════════════════════════════════════════════
+                    // CHAOS & DYNAMICAL SYSTEMS
+                    // ═══════════════════════════════════════════════════
                     lorenz: {
                         name: 'Lorenz Attractor',
+                        category: 'chaos',
                         equations: 'dx/dt = σ(y-x)<br>dy/dt = x(ρ-z)-y<br>dz/dt = xy - βz',
                         params: { a: 'σ (sigma)', b: 'ρ (rho)', c: 'β (beta)', res: false },
                         generate: null
                     },
-                    digamma: {
-                        name: 'Digamma Function',
-                        equations: 'ψ(z) = d/dz ln(Γ(z))<br>z = x + iy (complex)',
-                        params: { a: 'Scale', b: null, c: null, res: true },
-                        generate: (u, v, a, b, c) => {
-                            // Digamma approximation using asymptotic series
-                            // For real part of digamma(x + iy)
-                            const x = u * a;
-                            const y = v * a;
-                            
-                            // Use reflection and recurrence to handle all values
-                            let realPart = 0;
-                            let px = x, py = y;
-                            
-                            // Shift to positive real part using recurrence
-                            while (px < 5) {
-                                const denom = px * px + py * py;
-                                if (denom > 0.0001) {
-                                    realPart -= px / denom;
-                                }
-                                px += 1;
-                            }
-                            
-                            // Asymptotic expansion for large |z|
-                            const r2 = px * px + py * py;
-                            realPart += 0.5 * Math.log(r2);
-                            realPart -= 0.5 * px / r2;
-                            realPart -= (px * px - py * py) / (12 * r2 * r2);
-                            
-                            return [u, v, realPart * 0.3];
-                        },
-                        uRange: [-3, 3],
-                        vRange: [-3, 3]
-                    },
-                    sinc: {
-                        name: 'Sinc Function',
-                        equations: 'z = A·sin(ωr)/r<br>r = √(x² + y²)',
-                        params: { a: 'Amplitude', b: null, c: 'Frequency', res: true },
-                        generate: (u, v, a, b, c) => {
-                            const r = Math.sqrt(u * u + v * v) * c + 0.001;
-                            return [u, v, a * Math.sin(r * 3) / r];
-                        },
-                        uRange: [-3, 3],
-                        vRange: [-3, 3]
-                    },
-                    wave: {
-                        name: 'Wave Interference',
-                        equations: 'z = sin(ωr₁) + sin(ωr₂)<br>Two point sources',
-                        params: { a: 'Amplitude', b: null, c: 'Frequency', res: true },
-                        generate: (u, v, a, b, c) => {
-                            const r1 = Math.sqrt((u - 1) * (u - 1) + v * v) * c * 2;
-                            const r2 = Math.sqrt((u + 1) * (u + 1) + v * v) * c * 2;
-                            return [u, v, a * 0.3 * (Math.sin(r1) + Math.sin(r2))];
-                        },
-                        uRange: [-3, 3],
-                        vRange: [-3, 3]
+                    rossler: {
+                        name: 'Rössler Attractor',
+                        category: 'chaos',
+                        equations: 'dx/dt = -y - z<br>dy/dt = x + ay<br>dz/dt = b + z(x - c)',
+                        params: { a: 'a', b: 'b', c: 'c', res: false },
+                        generate: null
                     },
                     bifurcation: {
                         name: 'Bifurcation Diagram',
+                        category: 'chaos',
                         equations: 'x_{n+1} = r·x_n·(1 - x_n)<br>Logistic map',
                         params: { a: 'r min', b: 'r max', c: null, res: false },
-                        generate: null,
-                        is2D: true
+                        generate: null, is2D: true
                     },
                     arnold: {
                         name: 'Arnold Tongues',
+                        category: 'chaos',
                         equations: 'θ_{n+1} = θ_n + Ω - (K/2π)·sin(2πθ_n)<br>Circle map',
                         params: { a: 'Max K', b: null, c: null, res: false },
-                        generate: null,
-                        is2D: true
+                        generate: null, is2D: true
                     },
+                    henon: {
+                        name: 'Hénon Map',
+                        category: 'chaos',
+                        equations: 'x_{n+1} = 1 - ax_n² + y_n<br>y_{n+1} = bx_n',
+                        params: { a: 'a', b: 'b', c: null, res: false },
+                        generate: null, is2D: true
+                    },
+                    doublePendulum: {
+                        name: 'Double Pendulum Phase',
+                        category: 'chaos',
+                        equations: 'θ₁, θ₂ phase space<br>Chaotic motion',
+                        params: { a: 'Energy', b: 'Mass Ratio', c: null, res: false },
+                        generate: null, is2D: true
+                    },
+                    
+                    // ═══════════════════════════════════════════════════
+                    // TOPOLOGY
+                    // ═══════════════════════════════════════════════════
+                    torus: {
+                        name: 'Torus',
+                        category: 'topology',
+                        equations: 'x = (R + r·cos(v))·cos(u)<br>y = (R + r·cos(v))·sin(u)<br>z = r·sin(v)',
+                        params: { a: 'Major Radius (R)', b: 'Minor Radius (r)', c: null, res: true },
+                        generate: (u, v, a, b, c) => [(a + b * Math.cos(v)) * Math.cos(u), (a + b * Math.cos(v)) * Math.sin(u), b * Math.sin(v)],
+                        uRange: [0, 2 * Math.PI], vRange: [0, 2 * Math.PI]
+                    },
+                    mobius: {
+                        name: 'Möbius Strip',
+                        category: 'topology',
+                        equations: 'x = (1 + s·cos(u/2))·cos(u)<br>y = (1 + s·cos(u/2))·sin(u)<br>z = s·sin(u/2)',
+                        params: { a: 'Size', b: 'Width', c: null, res: true },
+                        generate: (u, v, a, b, c) => [(a + (v * b) * Math.cos(u / 2)) * Math.cos(u), (a + (v * b) * Math.cos(u / 2)) * Math.sin(u), (v * b) * Math.sin(u / 2)],
+                        uRange: [0, 2 * Math.PI], vRange: [-1, 1]
+                    },
+                    klein: {
+                        name: 'Klein Bottle',
+                        category: 'topology',
+                        equations: 'Immersion in 3D<br>(self-intersecting)',
+                        params: { a: 'Scale', b: null, c: null, res: true },
+                        generate: (u, v, a, b, c) => { const r = a * 0.5; let x, y, z; if (u < Math.PI) { x = 3 * Math.cos(u) * (1 + Math.sin(u)) + 2 * (1 - Math.cos(u) / 2) * Math.cos(u) * Math.cos(v); z = -8 * Math.sin(u) - 2 * (1 - Math.cos(u) / 2) * Math.sin(u) * Math.cos(v); } else { x = 3 * Math.cos(u) * (1 + Math.sin(u)) + 2 * (1 - Math.cos(u) / 2) * Math.cos(v + Math.PI); z = -8 * Math.sin(u); } y = -2 * (1 - Math.cos(u) / 2) * Math.sin(v); return [x * r * 0.15, y * r, z * r * 0.15]; },
+                        uRange: [0, 2 * Math.PI], vRange: [0, 2 * Math.PI]
+                    },
+                    trefoil: {
+                        name: 'Trefoil Knot',
+                        category: 'topology',
+                        equations: 'x = sin(t) + 2·sin(2t)<br>y = cos(t) - 2·cos(2t)<br>z = -sin(3t)',
+                        params: { a: 'Scale', b: 'Tube Radius', c: null, res: true },
+                        generate: (u, v, a, b, c) => { const r = b * 0.3; const x = Math.sin(u) + 2 * Math.sin(2 * u); const y = Math.cos(u) - 2 * Math.cos(2 * u); const z = -Math.sin(3 * u); return [(x + r * Math.cos(v)) * a * 0.5, (y + r * Math.sin(v)) * a * 0.5, z * a * 0.5]; },
+                        uRange: [0, 2 * Math.PI], vRange: [0, 2 * Math.PI]
+                    },
+                    crosscap: {
+                        name: 'Cross-Cap',
+                        category: 'topology',
+                        equations: 'Non-orientable surface<br>RP² immersion',
+                        params: { a: 'Scale', b: null, c: null, res: true },
+                        generate: (u, v, a, b, c) => {
+                            const x = a * Math.cos(u) * Math.sin(2 * v) * 0.5;
+                            const y = a * Math.sin(u) * Math.sin(2 * v) * 0.5;
+                            const z = a * (Math.cos(v) * Math.cos(v) - Math.cos(u) * Math.cos(u) * Math.sin(v) * Math.sin(v)) * 0.5;
+                            return [x, y, z];
+                        },
+                        uRange: [0, 2 * Math.PI], vRange: [0, Math.PI / 2]
+                    },
+                    boysSurface: {
+                        name: "Boy's Surface",
+                        category: 'topology',
+                        equations: 'RP² immersion<br>without singularities',
+                        params: { a: 'Scale', b: null, c: null, res: true },
+                        generate: (u, v, a, b, c) => {
+                            const sqrt2 = Math.SQRT2;
+                            const denom = 2 - sqrt2 * Math.sin(3 * u) * Math.sin(2 * v);
+                            const x = a * (Math.cos(2 * u) * Math.cos(v) * Math.cos(v) + sqrt2 * Math.cos(u) * Math.sin(2 * v)) / denom * 0.5;
+                            const y = a * (Math.sin(2 * u) * Math.cos(v) * Math.cos(v) + sqrt2 * Math.sin(u) * Math.sin(2 * v)) / denom * 0.5;
+                            const z = a * 3 * Math.cos(v) * Math.cos(v) / denom * 0.5 - 0.75;
+                            return [x, y, z];
+                        },
+                        uRange: [0, Math.PI], vRange: [0, Math.PI / 2]
+                    },
+                    
+                    // ═══════════════════════════════════════════════════
+                    // GEOMETRY
+                    // ═══════════════════════════════════════════════════
+                    sphere: {
+                        name: 'Sphere',
+                        category: 'geometry',
+                        equations: 'x = r·sin(v)·cos(u)<br>y = r·sin(v)·sin(u)<br>z = r·cos(v)',
+                        params: { a: 'Radius (r)', b: null, c: null, res: true },
+                        generate: (u, v, a, b, c) => [a * Math.sin(v) * Math.cos(u), a * Math.sin(v) * Math.sin(u), a * Math.cos(v)],
+                        uRange: [0, 2 * Math.PI], vRange: [0, Math.PI]
+                    },
+                    saddle: {
+                        name: 'Hyperbolic Paraboloid',
+                        category: 'geometry',
+                        equations: 'z = a·x² - b·y²',
+                        params: { a: 'X Curvature', b: 'Y Curvature', c: null, res: true },
+                        generate: (u, v, a, b, c) => [u, v, a * 0.3 * (u * u - b * v * v)],
+                        uRange: [-2, 2], vRange: [-2, 2]
+                    },
+                    helix: {
+                        name: 'Double Helix',
+                        category: 'geometry',
+                        equations: 'x = r·cos(ωt), y = r·sin(ωt), z = t<br>(two intertwined)',
+                        params: { a: 'Radius', b: 'Pitch', c: 'Twist Rate', res: false },
+                        generate: (u, v, a, b, c) => { const offset = v < 0.5 ? 0 : Math.PI; return [a * Math.cos(u * c + offset), a * Math.sin(u * c + offset), u * b * 0.3]; },
+                        uRange: [-4, 4], vRange: [0, 1]
+                    },
+                    hyperboloid: {
+                        name: 'Hyperboloid',
+                        category: 'geometry',
+                        equations: 'x²/a² + y²/b² - z²/c² = 1<br>One sheet',
+                        params: { a: 'a', b: 'b', c: 'c', res: true },
+                        generate: (u, v, a, b, c) => {
+                            const s = a * Math.cosh(v * 0.5);
+                            return [s * Math.cos(u) * 0.5, s * Math.sin(u) * 0.5, b * Math.sinh(v * 0.5) * c * 0.3];
+                        },
+                        uRange: [0, 2 * Math.PI], vRange: [-2, 2]
+                    },
+                    catenoid: {
+                        name: 'Catenoid',
+                        category: 'geometry',
+                        equations: 'x = c·cosh(v/c)·cos(u)<br>y = c·cosh(v/c)·sin(u)<br>z = v',
+                        params: { a: 'Scale', b: null, c: null, res: true },
+                        generate: (u, v, a, b, c) => {
+                            const cc = a * 0.5;
+                            return [cc * Math.cosh(v * 0.5) * Math.cos(u), cc * Math.cosh(v * 0.5) * Math.sin(u), v * 0.5];
+                        },
+                        uRange: [0, 2 * Math.PI], vRange: [-2, 2]
+                    },
+                    enneper: {
+                        name: 'Enneper Surface',
+                        category: 'geometry',
+                        equations: 'Minimal surface<br>Self-intersecting',
+                        params: { a: 'Scale', b: null, c: null, res: true },
+                        generate: (u, v, a, b, c) => {
+                            const s = a * 0.3;
+                            return [s * (u - u*u*u/3 + u*v*v), s * (v - v*v*v/3 + v*u*u), s * (u*u - v*v)];
+                        },
+                        uRange: [-1.5, 1.5], vRange: [-1.5, 1.5]
+                    },
+                    dini: {
+                        name: "Dini's Surface",
+                        category: 'geometry',
+                        equations: 'Pseudosphere<br>Constant negative curvature',
+                        params: { a: 'a', b: 'b', c: null, res: true },
+                        generate: (u, v, a, b, c) => {
+                            const aa = a * 0.5, bb = b * 0.3;
+                            return [aa * Math.cos(u) * Math.sin(v), aa * Math.sin(u) * Math.sin(v), aa * (Math.cos(v) + Math.log(Math.tan(v/2 + 0.01))) + bb * u];
+                        },
+                        uRange: [0, 4 * Math.PI], vRange: [0.1, 2]
+                    },
+                    
+                    // ═══════════════════════════════════════════════════
+                    // FUNCTIONS & WAVES
+                    // ═══════════════════════════════════════════════════
+                    sinc: {
+                        name: 'Sinc Function',
+                        category: 'functions',
+                        equations: 'z = A·sin(ωr)/r<br>r = √(x² + y²)',
+                        params: { a: 'Amplitude', b: null, c: 'Frequency', res: true },
+                        generate: (u, v, a, b, c) => { const r = Math.sqrt(u * u + v * v) * c + 0.001; return [u, v, a * Math.sin(r * 3) / r]; },
+                        uRange: [-3, 3], vRange: [-3, 3]
+                    },
+                    wave: {
+                        name: 'Wave Interference',
+                        category: 'functions',
+                        equations: 'z = sin(ωr₁) + sin(ωr₂)<br>Two point sources',
+                        params: { a: 'Amplitude', b: null, c: 'Frequency', res: true },
+                        generate: (u, v, a, b, c) => { const r1 = Math.sqrt((u - 1) * (u - 1) + v * v) * c * 2; const r2 = Math.sqrt((u + 1) * (u + 1) + v * v) * c * 2; return [u, v, a * 0.3 * (Math.sin(r1) + Math.sin(r2))]; },
+                        uRange: [-3, 3], vRange: [-3, 3]
+                    },
+                    gaussian: {
+                        name: 'Gaussian Surface',
+                        category: 'functions',
+                        equations: 'z = A·exp(-(x² + y²)/2σ²)<br>Normal distribution',
+                        params: { a: 'Amplitude', b: 'Sigma', c: null, res: true },
+                        generate: (u, v, a, b, c) => {
+                            const sigma = b * 0.5 + 0.3;
+                            return [u, v, a * Math.exp(-(u*u + v*v) / (2 * sigma * sigma))];
+                        },
+                        uRange: [-3, 3], vRange: [-3, 3]
+                    },
+                    bessel: {
+                        name: 'Bessel Function',
+                        category: 'functions',
+                        equations: 'z = J₀(r)<br>Bessel function of first kind',
+                        params: { a: 'Amplitude', b: null, c: 'Frequency', res: true },
+                        generate: (u, v, a, b, c) => {
+                            const r = Math.sqrt(u * u + v * v) * c * 1.5 + 0.001;
+                            let j0 = 1, term = 1;
+                            for (let k = 1; k < 10; k++) { term *= -r * r / (4 * k * k); j0 += term; }
+                            return [u, v, a * j0];
+                        },
+                        uRange: [-3, 3], vRange: [-3, 3]
+                    },
+                    sphericalHarmonic: {
+                        name: 'Spherical Harmonics',
+                        category: 'functions',
+                        equations: 'Y_l^m(θ, φ)<br>Angular momentum eigenfunctions',
+                        params: { a: 'l (degree)', b: 'm (order)', c: null, res: true },
+                        generate: (u, v, a, b, c) => {
+                            const l = Math.floor(a * 2);
+                            const m = Math.floor(b * l);
+                            const r = 1 + 0.3 * Math.cos(l * v) * Math.cos(m * u);
+                            return [r * Math.sin(v) * Math.cos(u), r * Math.sin(v) * Math.sin(u), r * Math.cos(v)];
+                        },
+                        uRange: [0, 2 * Math.PI], vRange: [0, Math.PI]
+                    },
+                    digamma: {
+                        name: 'Digamma Function',
+                        category: 'functions',
+                        equations: 'ψ(z) = d/dz ln(Γ(z))<br>z = x + iy (complex)',
+                        params: { a: 'Scale', b: null, c: null, res: true },
+                        generate: (u, v, a, b, c) => {
+                            const x = u * a, y = v * a;
+                            let realPart = 0, px = x, py = y;
+                            while (px < 5) { const denom = px * px + py * py; if (denom > 0.0001) realPart -= px / denom; px += 1; }
+                            const r2 = px * px + py * py;
+                            realPart += 0.5 * Math.log(r2) - 0.5 * px / r2 - (px * px - py * py) / (12 * r2 * r2);
+                            return [u, v, realPart * 0.3];
+                        },
+                        uRange: [-3, 3], vRange: [-3, 3]
+                    },
+                    
+                    // ═══════════════════════════════════════════════════
+                    // FRACTALS
+                    // ═══════════════════════════════════════════════════
+                    mandelbrot: {
+                        name: 'Mandelbrot Set',
+                        category: 'fractals',
+                        equations: 'z_{n+1} = z_n² + c<br>|z| < 2 for all n',
+                        params: { a: 'Zoom', b: 'Center X', c: 'Center Y', res: false },
+                        generate: null, is2D: true
+                    },
+                    julia: {
+                        name: 'Julia Set',
+                        category: 'fractals',
+                        equations: 'z_{n+1} = z_n² + c<br>Fixed c parameter',
+                        params: { a: 'c real', b: 'c imag', c: null, res: false },
+                        generate: null, is2D: true
+                    },
+                    sierpinski: {
+                        name: 'Sierpinski Triangle',
+                        category: 'fractals',
+                        equations: 'Recursive subdivision<br>Fractal dimension ≈ 1.585',
+                        params: { a: 'Depth', b: null, c: null, res: false },
+                        generate: null, is2D: true
+                    },
+                    
+                    // ═══════════════════════════════════════════════════
+                    // CELLULAR AUTOMATA
+                    // ═══════════════════════════════════════════════════
                     langton: {
                         name: "Langton's Ant",
+                        category: 'cellular',
                         equations: 'On white: turn right, flip, move<br>On black: turn left, flip, move',
                         params: { a: 'Steps/Frame', b: 'Grid Size', c: null, res: false },
                         generate: null,
@@ -1623,6 +1743,14 @@
                     const paramBGroup = document.getElementById('paramBGroup');
                     const paramCGroup = document.getElementById('paramCGroup');
                     const resGroup = document.getElementById('resGroup');
+                    const categoryBadge = document.getElementById('categoryBadge');
+                    
+                    // Update category badge
+                    if (categoryBadge && surface.category) {
+                        const cat = categories[surface.category];
+                        categoryBadge.textContent = cat.name;
+                        categoryBadge.className = 'category-badge ' + cat.class;
+                    }
                     
                     if (params.a) {
                         paramAGroup.classList.remove('hidden');
@@ -1661,49 +1789,47 @@
                         }
                     }
                     
-                    // Set special defaults for bifurcation
+                    // Reset sliders to defaults
+                    document.getElementById('paramA').min = 0.1; document.getElementById('paramA').max = 5; document.getElementById('paramA').step = 0.1;
+                    document.getElementById('paramB').min = 0.1; document.getElementById('paramB').max = 2; document.getElementById('paramB').step = 0.05;
+                    document.getElementById('paramC').min = 0.1; document.getElementById('paramC').max = 5; document.getElementById('paramC').step = 0.1;
+                    
+                    // Set special defaults for each surface type
                     if (surfaceName === 'bifurcation') {
-                        document.getElementById('paramA').value = 2.5;
-                        document.getElementById('paramA').min = 0;
-                        document.getElementById('paramA').max = 4;
-                        document.getElementById('paramAVal').textContent = '2.5';
-                        paramA = 2.5;
-                        
-                        document.getElementById('paramB').value = 4;
-                        document.getElementById('paramB').min = 0;
-                        document.getElementById('paramB').max = 4;
-                        document.getElementById('paramBVal').textContent = '4.0';
-                        paramB = 4;
+                        document.getElementById('paramA').value = 2.5; document.getElementById('paramA').min = 0; document.getElementById('paramA').max = 4; document.getElementById('paramAVal').textContent = '2.5'; paramA = 2.5;
+                        document.getElementById('paramB').value = 4; document.getElementById('paramB').min = 0; document.getElementById('paramB').max = 4; document.getElementById('paramBVal').textContent = '4.0'; paramB = 4;
                     } else if (surfaceName === 'arnold') {
-                        document.getElementById('paramA').value = 4;
-                        document.getElementById('paramA').min = 1;
-                        document.getElementById('paramA').max = 20;
-                        document.getElementById('paramA').step = 1;
-                        document.getElementById('paramAVal').textContent = '4.0';
-                        paramA = 4;
+                        document.getElementById('paramA').value = 4; document.getElementById('paramA').min = 1; document.getElementById('paramA').max = 20; document.getElementById('paramA').step = 1; document.getElementById('paramAVal').textContent = '4.0'; paramA = 4;
+                    } else if (surfaceName === 'rossler') {
+                        document.getElementById('paramA').value = 0.2; document.getElementById('paramA').min = 0.1; document.getElementById('paramA').max = 0.5; document.getElementById('paramA').step = 0.01; document.getElementById('paramAVal').textContent = '0.2'; paramA = 0.2;
+                        document.getElementById('paramB').value = 0.2; document.getElementById('paramB').min = 0.1; document.getElementById('paramB').max = 0.5; document.getElementById('paramB').step = 0.01; document.getElementById('paramBVal').textContent = '0.2'; paramB = 0.2;
+                        document.getElementById('paramC').value = 5.7; document.getElementById('paramC').min = 4; document.getElementById('paramC').max = 10; document.getElementById('paramC').step = 0.1; document.getElementById('paramCVal').textContent = '5.7'; paramC = 5.7;
+                    } else if (surfaceName === 'henon') {
+                        document.getElementById('paramA').value = 1.4; document.getElementById('paramA').min = 1; document.getElementById('paramA').max = 2; document.getElementById('paramA').step = 0.01; document.getElementById('paramAVal').textContent = '1.4'; paramA = 1.4;
+                        document.getElementById('paramB').value = 0.3; document.getElementById('paramB').min = 0.1; document.getElementById('paramB').max = 0.5; document.getElementById('paramB').step = 0.01; document.getElementById('paramBVal').textContent = '0.3'; paramB = 0.3;
+                    } else if (surfaceName === 'doublePendulum') {
+                        document.getElementById('paramA').value = 2; document.getElementById('paramA').min = 1; document.getElementById('paramA').max = 5; document.getElementById('paramA').step = 0.1; document.getElementById('paramAVal').textContent = '2.0'; paramA = 2;
+                        document.getElementById('paramB').value = 1; document.getElementById('paramB').min = 0.5; document.getElementById('paramB').max = 2; document.getElementById('paramB').step = 0.1; document.getElementById('paramBVal').textContent = '1.0'; paramB = 1;
+                    } else if (surfaceName === 'mandelbrot') {
+                        document.getElementById('paramA').value = 1; document.getElementById('paramA').min = 0.1; document.getElementById('paramA').max = 5; document.getElementById('paramA').step = 0.1; document.getElementById('paramAVal').textContent = '1.0'; paramA = 1;
+                        document.getElementById('paramB').value = 0; document.getElementById('paramB').min = -2; document.getElementById('paramB').max = 2; document.getElementById('paramB').step = 0.1; document.getElementById('paramBVal').textContent = '0.0'; paramB = 0;
+                        document.getElementById('paramC').value = 0; document.getElementById('paramC').min = -2; document.getElementById('paramC').max = 2; document.getElementById('paramC').step = 0.1; document.getElementById('paramCVal').textContent = '0.0'; paramC = 0;
+                    } else if (surfaceName === 'julia') {
+                        document.getElementById('paramA').value = -0.7; document.getElementById('paramA').min = -1.5; document.getElementById('paramA').max = 1.5; document.getElementById('paramA').step = 0.01; document.getElementById('paramAVal').textContent = '-0.7'; paramA = -0.7;
+                        document.getElementById('paramB').value = 0.27; document.getElementById('paramB').min = -1.5; document.getElementById('paramB').max = 1.5; document.getElementById('paramB').step = 0.01; document.getElementById('paramBVal').textContent = '0.27'; paramB = 0.27;
+                    } else if (surfaceName === 'sierpinski') {
+                        document.getElementById('paramA').value = 7; document.getElementById('paramA').min = 3; document.getElementById('paramA').max = 10; document.getElementById('paramA').step = 1; document.getElementById('paramAVal').textContent = '7'; paramA = 7;
+                    } else if (surfaceName === 'sphericalHarmonic') {
+                        document.getElementById('paramA').value = 2; document.getElementById('paramA').min = 1; document.getElementById('paramA').max = 5; document.getElementById('paramA').step = 1; document.getElementById('paramAVal').textContent = '2'; paramA = 2;
+                        document.getElementById('paramB').value = 1; document.getElementById('paramB').min = 0; document.getElementById('paramB').max = 4; document.getElementById('paramB').step = 1; document.getElementById('paramBVal').textContent = '1'; paramB = 1;
                     } else if (surfaceName === 'langton') {
-                        document.getElementById('paramA').value = 50;
-                        document.getElementById('paramA').min = 1;
-                        document.getElementById('paramA').max = 500;
-                        document.getElementById('paramA').step = 10;
-                        document.getElementById('paramAVal').textContent = '50';
-                        langtonStepsPerFrame = 50;
-                        
-                        document.getElementById('paramB').value = 150;
-                        document.getElementById('paramB').min = 50;
-                        document.getElementById('paramB').max = 300;
-                        document.getElementById('paramB').step = 10;
-                        document.getElementById('paramBVal').textContent = '150';
-                        
-                        // Initialize Langton's Ant
+                        document.getElementById('paramA').value = 50; document.getElementById('paramA').min = 1; document.getElementById('paramA').max = 500; document.getElementById('paramA').step = 10; document.getElementById('paramAVal').textContent = '50'; langtonStepsPerFrame = 50;
+                        document.getElementById('paramB').value = 150; document.getElementById('paramB').min = 50; document.getElementById('paramB').max = 300; document.getElementById('paramB').step = 10; document.getElementById('paramBVal').textContent = '150';
                         initLangton(150);
-                    } else {
-                        // Reset to defaults
-                        document.getElementById('paramA').min = 0.1;
-                        document.getElementById('paramA').max = 5;
-                        document.getElementById('paramB').min = 0.1;
-                        document.getElementById('paramB').max = 2;
                     }
+                    
+                    // Clear caches when switching
+                    cachedMandelbrot = null; cachedJulia = null; cachedHenon = null; cachedDoublePendulum = null; cachedSierpinski = null;
                 }
                 
                 // Initial UI update
@@ -1730,6 +1856,172 @@
                         }
                     }
                     return points;
+                }
+                
+                // Generate Rössler attractor points
+                function generateRossler(a, b, c) {
+                    const points = [];
+                    let x = 0.1, y = 0.1, z = 0.1;
+                    const dt = 0.02;
+                    for (let i = 0; i < 8000; i++) {
+                        const dx = -y - z;
+                        const dy = x + a * y;
+                        const dz = b + z * (x - c);
+                        x += dx * dt; y += dy * dt; z += dz * dt;
+                        if (i > 200) points.push([x * 0.08, y * 0.08, z * 0.03 - 0.5]);
+                    }
+                    return points;
+                }
+                
+                // Generate Hénon map
+                function generateHenonImageData(a, b, plotWidth, plotHeight) {
+                    const imageData = ctx.createImageData(plotWidth, plotHeight);
+                    const data = imageData.data;
+                    const iterations = 50000;
+                    let x = 0, y = 0;
+                    for (let i = 0; i < iterations; i++) {
+                        const xNew = 1 - a * x * x + y;
+                        const yNew = b * x;
+                        x = xNew; y = yNew;
+                        if (i > 100 && Math.abs(x) < 2 && Math.abs(y) < 1) {
+                            const px = Math.floor((x + 2) / 4 * plotWidth);
+                            const py = Math.floor((1 - y) / 2 * plotHeight);
+                            if (px >= 0 && px < plotWidth && py >= 0 && py < plotHeight) {
+                                const idx = (py * plotWidth + px) * 4;
+                                const rgb = hslToRgb((200 + i % 60) / 360, 0.7, 0.5);
+                                data[idx] = rgb[0]; data[idx + 1] = rgb[1]; data[idx + 2] = rgb[2]; data[idx + 3] = 255;
+                            }
+                        }
+                    }
+                    return imageData;
+                }
+                
+                // Generate Double Pendulum phase space
+                function generateDoublePendulumImageData(energy, massRatio, plotWidth, plotHeight) {
+                    const imageData = ctx.createImageData(plotWidth, plotHeight);
+                    const data = imageData.data;
+                    const g = 9.81, l1 = 1, l2 = 1, m1 = 1, m2 = massRatio;
+                    const dt = 0.02;
+                    for (let traj = 0; traj < 8; traj++) {
+                        let th1 = Math.PI - 0.1 + traj * 0.02, th2 = Math.PI - 0.1 - traj * 0.02;
+                        let w1 = energy * 0.5, w2 = -energy * 0.3;
+                        const hue = (traj * 45) % 360;
+                        for (let i = 0; i < 2000; i++) {
+                            const denom = 2 * m1 + m2 - m2 * Math.cos(2 * th1 - 2 * th2);
+                            const a1 = (-g * (2 * m1 + m2) * Math.sin(th1) - m2 * g * Math.sin(th1 - 2 * th2) - 2 * Math.sin(th1 - th2) * m2 * (w2 * w2 * l2 + w1 * w1 * l1 * Math.cos(th1 - th2))) / (l1 * denom);
+                            const a2 = (2 * Math.sin(th1 - th2) * (w1 * w1 * l1 * (m1 + m2) + g * (m1 + m2) * Math.cos(th1) + w2 * w2 * l2 * m2 * Math.cos(th1 - th2))) / (l2 * denom);
+                            w1 += a1 * dt; w2 += a2 * dt; th1 += w1 * dt; th2 += w2 * dt;
+                            const px = Math.floor((th1 % (2 * Math.PI) + Math.PI) / (2 * Math.PI) * plotWidth);
+                            const py = Math.floor((th2 % (2 * Math.PI) + Math.PI) / (2 * Math.PI) * plotHeight);
+                            if (px >= 0 && px < plotWidth && py >= 0 && py < plotHeight) {
+                                const idx = (py * plotWidth + px) * 4;
+                                const rgb = hslToRgb(hue / 360, 0.8, 0.55);
+                                data[idx] = rgb[0]; data[idx + 1] = rgb[1]; data[idx + 2] = rgb[2]; data[idx + 3] = 200;
+                            }
+                        }
+                    }
+                    return imageData;
+                }
+                
+                // Generate Mandelbrot set
+                function generateMandelbrotImageData(zoom, cx, cy, plotWidth, plotHeight) {
+                    const imageData = ctx.createImageData(plotWidth, plotHeight);
+                    const data = imageData.data;
+                    const maxIter = 100;
+                    const scale = 3 / zoom;
+                    for (let px = 0; px < plotWidth; px++) {
+                        for (let py = 0; py < plotHeight; py++) {
+                            const x0 = (px / plotWidth - 0.5) * scale + cx - 0.5;
+                            const y0 = (py / plotHeight - 0.5) * scale + cy;
+                            let x = 0, y = 0, iter = 0;
+                            while (x * x + y * y <= 4 && iter < maxIter) {
+                                const xTemp = x * x - y * y + x0;
+                                y = 2 * x * y + y0;
+                                x = xTemp;
+                                iter++;
+                            }
+                            const idx = (py * plotWidth + px) * 4;
+                            if (iter === maxIter) {
+                                data[idx] = 0; data[idx + 1] = 0; data[idx + 2] = 0; data[idx + 3] = 255;
+                            } else {
+                                const hue = (iter / maxIter * 360 + 200) % 360;
+                                const rgb = hslToRgb(hue / 360, 0.9, 0.5);
+                                data[idx] = rgb[0]; data[idx + 1] = rgb[1]; data[idx + 2] = rgb[2]; data[idx + 3] = 255;
+                            }
+                        }
+                    }
+                    return imageData;
+                }
+                
+                // Generate Julia set
+                function generateJuliaImageData(cReal, cImag, plotWidth, plotHeight) {
+                    const imageData = ctx.createImageData(plotWidth, plotHeight);
+                    const data = imageData.data;
+                    const maxIter = 100;
+                    for (let px = 0; px < plotWidth; px++) {
+                        for (let py = 0; py < plotHeight; py++) {
+                            let x = (px / plotWidth - 0.5) * 3.5;
+                            let y = (py / plotHeight - 0.5) * 3.5;
+                            let iter = 0;
+                            while (x * x + y * y <= 4 && iter < maxIter) {
+                                const xTemp = x * x - y * y + cReal;
+                                y = 2 * x * y + cImag;
+                                x = xTemp;
+                                iter++;
+                            }
+                            const idx = (py * plotWidth + px) * 4;
+                            if (iter === maxIter) {
+                                data[idx] = 0; data[idx + 1] = 0; data[idx + 2] = 0; data[idx + 3] = 255;
+                            } else {
+                                const hue = (iter / maxIter * 360 + 280) % 360;
+                                const rgb = hslToRgb(hue / 360, 0.85, 0.55);
+                                data[idx] = rgb[0]; data[idx + 1] = rgb[1]; data[idx + 2] = rgb[2]; data[idx + 3] = 255;
+                            }
+                        }
+                    }
+                    return imageData;
+                }
+                
+                // Generate Sierpinski triangle
+                function generateSierpinskiImageData(depth, plotWidth, plotHeight) {
+                    const imageData = ctx.createImageData(plotWidth, plotHeight);
+                    const data = imageData.data;
+                    // Fill background
+                    for (let i = 0; i < data.length; i += 4) {
+                        data[i] = 10; data[i + 1] = 10; data[i + 2] = 10; data[i + 3] = 255;
+                    }
+                    function drawTriangle(x1, y1, x2, y2, x3, y3, d, hue) {
+                        if (d === 0) {
+                            const minX = Math.max(0, Math.floor(Math.min(x1, x2, x3)));
+                            const maxX = Math.min(plotWidth - 1, Math.ceil(Math.max(x1, x2, x3)));
+                            const minY = Math.max(0, Math.floor(Math.min(y1, y2, y3)));
+                            const maxY = Math.min(plotHeight - 1, Math.ceil(Math.max(y1, y2, y3)));
+                            for (let py = minY; py <= maxY; py++) {
+                                for (let px = minX; px <= maxX; px++) {
+                                    const d1 = (px - x2) * (y1 - y2) - (x1 - x2) * (py - y2);
+                                    const d2 = (px - x3) * (y2 - y3) - (x2 - x3) * (py - y3);
+                                    const d3 = (px - x1) * (y3 - y1) - (x3 - x1) * (py - y1);
+                                    const hasNeg = (d1 < 0) || (d2 < 0) || (d3 < 0);
+                                    const hasPos = (d1 > 0) || (d2 > 0) || (d3 > 0);
+                                    if (!(hasNeg && hasPos)) {
+                                        const idx = (py * plotWidth + px) * 4;
+                                        const rgb = hslToRgb(hue / 360, 0.7, 0.55);
+                                        data[idx] = rgb[0]; data[idx + 1] = rgb[1]; data[idx + 2] = rgb[2];
+                                    }
+                                }
+                            }
+                            return;
+                        }
+                        const mx1 = (x1 + x2) / 2, my1 = (y1 + y2) / 2;
+                        const mx2 = (x2 + x3) / 2, my2 = (y2 + y3) / 2;
+                        const mx3 = (x3 + x1) / 2, my3 = (y3 + y1) / 2;
+                        drawTriangle(x1, y1, mx1, my1, mx3, my3, d - 1, hue);
+                        drawTriangle(mx1, my1, x2, y2, mx2, my2, d - 1, (hue + 40) % 360);
+                        drawTriangle(mx3, my3, mx2, my2, x3, y3, d - 1, (hue + 80) % 360);
+                    }
+                    const margin = 20;
+                    drawTriangle(plotWidth / 2, margin, margin, plotHeight - margin, plotWidth - margin, plotHeight - margin, Math.floor(depth), 160);
+                    return imageData;
                 }
                 
                 // Generate bifurcation diagram points
@@ -2039,6 +2331,82 @@
                         ctx.font = '12px Courier New';
                         ctx.fillText(`Steps: ${langtonSteps.toLocaleString()}`, offsetX, offsetY - 10);
                         
+                    } else if (currentSurface === 'henon') {
+                        const margin = 50;
+                        const plotWidth = Math.floor(width - 2 * margin);
+                        const plotHeight = Math.floor(height - 2 * margin);
+                        const cacheKey = `${paramA}-${paramB}-${plotWidth}-${plotHeight}`;
+                        if (!cachedHenon || cachedHenonParams !== cacheKey) {
+                            cachedHenon = generateHenonImageData(paramA, paramB, plotWidth, plotHeight);
+                            cachedHenonParams = cacheKey;
+                        }
+                        ctx.putImageData(cachedHenon, margin, margin);
+                        ctx.strokeStyle = 'rgba(100, 100, 100, 0.5)'; ctx.lineWidth = 1;
+                        ctx.beginPath(); ctx.moveTo(margin, height - margin); ctx.lineTo(width - margin, height - margin);
+                        ctx.moveTo(margin, height - margin); ctx.lineTo(margin, margin); ctx.stroke();
+                        ctx.fillStyle = 'rgba(150, 150, 150, 0.8)'; ctx.font = '12px Courier New';
+                        ctx.fillText('x', width - margin + 10, height - margin); ctx.fillText('y', margin - 5, margin - 10);
+                        
+                    } else if (currentSurface === 'doublePendulum') {
+                        const margin = 50;
+                        const plotWidth = Math.floor(width - 2 * margin);
+                        const plotHeight = Math.floor(height - 2 * margin);
+                        const cacheKey = `${paramA}-${paramB}-${plotWidth}-${plotHeight}`;
+                        if (!cachedDoublePendulum || cachedDoublePendulumParams !== cacheKey) {
+                            cachedDoublePendulum = generateDoublePendulumImageData(paramA, paramB, plotWidth, plotHeight);
+                            cachedDoublePendulumParams = cacheKey;
+                        }
+                        ctx.putImageData(cachedDoublePendulum, margin, margin);
+                        ctx.strokeStyle = 'rgba(100, 100, 100, 0.5)'; ctx.lineWidth = 1;
+                        ctx.beginPath(); ctx.moveTo(margin, height - margin); ctx.lineTo(width - margin, height - margin);
+                        ctx.moveTo(margin, height - margin); ctx.lineTo(margin, margin); ctx.stroke();
+                        ctx.fillStyle = 'rgba(150, 150, 150, 0.8)'; ctx.font = '12px Courier New';
+                        ctx.fillText('θ₁', width - margin + 10, height - margin); ctx.fillText('θ₂', margin - 5, margin - 10);
+                        
+                    } else if (currentSurface === 'mandelbrot') {
+                        const margin = 50;
+                        const plotWidth = Math.floor(width - 2 * margin);
+                        const plotHeight = Math.floor(height - 2 * margin);
+                        const cacheKey = `${paramA}-${paramB}-${paramC}-${plotWidth}-${plotHeight}`;
+                        if (!cachedMandelbrot || cachedMandelbrotParams !== cacheKey) {
+                            cachedMandelbrot = generateMandelbrotImageData(paramA, paramB, paramC, plotWidth, plotHeight);
+                            cachedMandelbrotParams = cacheKey;
+                        }
+                        ctx.putImageData(cachedMandelbrot, margin, margin);
+                        ctx.strokeStyle = 'rgba(100, 100, 100, 0.5)'; ctx.lineWidth = 1;
+                        ctx.beginPath(); ctx.moveTo(margin, height - margin); ctx.lineTo(width - margin, height - margin);
+                        ctx.moveTo(margin, height - margin); ctx.lineTo(margin, margin); ctx.stroke();
+                        ctx.fillStyle = 'rgba(150, 150, 150, 0.8)'; ctx.font = '12px Courier New';
+                        ctx.fillText('Re', width - margin + 10, height - margin); ctx.fillText('Im', margin - 5, margin - 10);
+                        
+                    } else if (currentSurface === 'julia') {
+                        const margin = 50;
+                        const plotWidth = Math.floor(width - 2 * margin);
+                        const plotHeight = Math.floor(height - 2 * margin);
+                        const cacheKey = `${paramA}-${paramB}-${plotWidth}-${plotHeight}`;
+                        if (!cachedJulia || cachedJuliaParams !== cacheKey) {
+                            cachedJulia = generateJuliaImageData(paramA, paramB, plotWidth, plotHeight);
+                            cachedJuliaParams = cacheKey;
+                        }
+                        ctx.putImageData(cachedJulia, margin, margin);
+                        ctx.strokeStyle = 'rgba(100, 100, 100, 0.5)'; ctx.lineWidth = 1;
+                        ctx.beginPath(); ctx.moveTo(margin, height - margin); ctx.lineTo(width - margin, height - margin);
+                        ctx.moveTo(margin, height - margin); ctx.lineTo(margin, margin); ctx.stroke();
+                        ctx.fillStyle = 'rgba(150, 150, 150, 0.8)'; ctx.font = '12px Courier New';
+                        ctx.fillText('Re', width - margin + 10, height - margin); ctx.fillText('Im', margin - 5, margin - 10);
+                        ctx.fillText('c = ' + paramA.toFixed(2) + ' + ' + paramB.toFixed(2) + 'i', margin, margin - 10);
+                        
+                    } else if (currentSurface === 'sierpinski') {
+                        const margin = 50;
+                        const plotWidth = Math.floor(width - 2 * margin);
+                        const plotHeight = Math.floor(height - 2 * margin);
+                        const cacheKey = `${paramA}-${plotWidth}-${plotHeight}`;
+                        if (!cachedSierpinski || cachedSierpinskiParams !== cacheKey) {
+                            cachedSierpinski = generateSierpinskiImageData(paramA, plotWidth, plotHeight);
+                            cachedSierpinskiParams = cacheKey;
+                        }
+                        ctx.putImageData(cachedSierpinski, margin, margin);
+                        
                     } else if (currentSurface === 'lorenz') {
                         // Special handling for Lorenz attractor
                         const points = generateLorenz(paramA, paramB, paramC);
@@ -2055,7 +2423,25 @@
                             else ctx.lineTo(p[0], p[1]);
                         });
                         ctx.stroke();
-                    } else {
+                        
+                    } else if (currentSurface === 'rossler') {
+                        // Special handling for Rössler attractor
+                        const points = generateRossler(paramA, paramB, paramC);
+                        const transformed = points.map(p => {
+                            const rotated = rotatePoint(p, rotationX, rotationY);
+                            return project(rotated);
+                        });
+                        
+                        ctx.strokeStyle = 'rgba(100, 200, 150, 0.8)'; // teal
+                        ctx.lineWidth = 1;
+                        ctx.beginPath();
+                        transformed.forEach((p, i) => {
+                            if (i === 0) ctx.moveTo(p[0], p[1]);
+                            else ctx.lineTo(p[0], p[1]);
+                        });
+                        ctx.stroke();
+                        
+                    } else if (surface && surface.generate) {
                         // Generate surface mesh
                         const [uMin, uMax] = surface.uRange;
                         const [vMin, vMax] = surface.vRange;
@@ -2084,6 +2470,13 @@
                             }
                         }
                         
+                        // Color scheme based on category
+                        const cat = surface.category;
+                        let baseHue = 45; // default amber
+                        if (cat === 'topology') baseHue = 200; // blue
+                        else if (cat === 'geometry') baseHue = 120; // green
+                        else if (cat === 'functions') baseHue = 35; // orange
+                        
                         // Draw wireframe
                         if (showWireframe) {
                             edges.forEach(([i, j]) => {
@@ -2091,8 +2484,7 @@
                                 const p2 = points[j];
                                 const avgZ = (p1[2] + p2[2]) / 2;
                                 const alpha = Math.max(0.2, Math.min(0.9, 0.5 + avgZ * 0.3));
-                                // Vintage amber/green color scheme
-                                const hue = 45 + avgZ * 25; // amber to green range
+                                const hue = baseHue + avgZ * 25;
                                 ctx.strokeStyle = `hsla(${hue}, 70%, 50%, ${alpha})`;
                                 ctx.lineWidth = 1;
                                 ctx.beginPath();
@@ -2106,7 +2498,7 @@
                         if (showPoints) {
                             points.forEach(p => {
                                 const alpha = Math.max(0.4, Math.min(1, 0.6 + p[2] * 0.2));
-                                ctx.fillStyle = `rgba(220, 180, 100, ${alpha})`; // vintage amber
+                                ctx.fillStyle = `hsla(${baseHue}, 60%, 60%, ${alpha})`;
                                 ctx.beginPath();
                                 ctx.arc(p[0], p[1], 2, 0, Math.PI * 2);
                                 ctx.fill();

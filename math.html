@@ -65,6 +65,18 @@
             box-shadow: inset 2px 2px 3px rgba(0,0,0,0.2);
         }
 
+        .controls-row select optgroup {
+            font-weight: bold;
+            font-style: normal;
+            padding: 5px 0;
+            color: #666;
+        }
+
+        .controls-row select option {
+            font-weight: normal;
+            padding-left: 10px;
+        }
+
         body.dark-mode .controls-row select {
             background: linear-gradient(180deg, #4a4a4a 0%, #3a3a3a 100%);
             border-color: #555;
@@ -73,6 +85,10 @@
             background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='4'%3E%3Cpath d='M0 0l4 4 4-4z' fill='%23aaa'/%3E%3C/svg%3E");
             background-repeat: no-repeat;
             background-position: right 6px center;
+        }
+
+        body.dark-mode .controls-row select optgroup {
+            color: #8ba;
         }
 
         .main-area {
@@ -163,6 +179,24 @@
             font-family: "Courier New", monospace;
         }
 
+        .category-badge {
+            display: inline-block;
+            font-size: 9px;
+            padding: 2px 6px;
+            border-radius: 3px;
+            margin-bottom: 5px;
+            font-family: "Courier New", monospace;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .category-chaos { background: #4a2c5a; color: #d8b4e8; }
+        .category-topology { background: #2c4a5a; color: #b4d8e8; }
+        .category-geometry { background: #4a5a2c; color: #d8e8b4; }
+        .category-functions { background: #5a4a2c; color: #e8d8b4; }
+        .category-fractals { background: #5a2c4a; color: #e8b4d8; }
+        .category-cellular { background: #5a5a2c; color: #e8e8b4; }
+
         .view-controls {
             margin-top: 15px;
             padding-top: 10px;
@@ -202,19 +236,47 @@
             <div class="controls-row">
                 <label>Surface:</label>
                 <select id="surfaceSelect">
-                    <option value="lorenz" selected>Lorenz Attractor</option>
-                    <option value="digamma">Digamma Function</option>
-                    <option value="bifurcation">Bifurcation Diagram</option>
-                    <option value="arnold">Arnold Tongues</option>
-                    <option value="sinc">Sinc Function</option>
-                    <option value="wave">Wave Interference</option>
-                    <option value="torus">Torus</option>
-                    <option value="sphere">Sphere</option>
-                    <option value="mobius">Mobius Strip</option>
-                    <option value="klein">Klein Bottle</option>
-                    <option value="trefoil">Trefoil Knot</option>
-                    <option value="saddle">Saddle (Hyperbolic Paraboloid)</option>
-                    <option value="helix">Double Helix</option>
+                    <optgroup label="⌘ Chaos & Dynamics">
+                        <option value="lorenz" selected>Lorenz Attractor</option>
+                        <option value="rossler">Rössler Attractor</option>
+                        <option value="bifurcation">Bifurcation Diagram</option>
+                        <option value="arnold">Arnold Tongues</option>
+                        <option value="henon">Hénon Map</option>
+                        <option value="doublePendulum">Double Pendulum Phase</option>
+                    </optgroup>
+                    <optgroup label="◎ Topology">
+                        <option value="torus">Torus</option>
+                        <option value="mobius">Möbius Strip</option>
+                        <option value="klein">Klein Bottle</option>
+                        <option value="trefoil">Trefoil Knot</option>
+                        <option value="crosscap">Cross-Cap</option>
+                        <option value="boysSurface">Boy's Surface</option>
+                    </optgroup>
+                    <optgroup label="△ Geometry">
+                        <option value="sphere">Sphere</option>
+                        <option value="saddle">Hyperbolic Paraboloid</option>
+                        <option value="helix">Double Helix</option>
+                        <option value="hyperboloid">Hyperboloid</option>
+                        <option value="catenoid">Catenoid</option>
+                        <option value="enneper">Enneper Surface</option>
+                        <option value="dini">Dini's Surface</option>
+                    </optgroup>
+                    <optgroup label="∿ Functions & Waves">
+                        <option value="sinc">Sinc Function</option>
+                        <option value="wave">Wave Interference</option>
+                        <option value="gaussian">Gaussian Surface</option>
+                        <option value="bessel">Bessel Function</option>
+                        <option value="sphericalHarmonic">Spherical Harmonics</option>
+                        <option value="digamma">Digamma Function</option>
+                    </optgroup>
+                    <optgroup label="❋ Fractals">
+                        <option value="mandelbrot">Mandelbrot Set</option>
+                        <option value="julia">Julia Set</option>
+                        <option value="sierpinski">Sierpinski Triangle</option>
+                    </optgroup>
+                    <optgroup label="⚙ Cellular Automata">
+                        <option value="langton">Langton's Ant</option>
+                    </optgroup>
                 </select>
             </div>
         </div>
@@ -226,6 +288,7 @@
 
             <div class="params-panel">
                 <h4>Parameters</h4>
+                <div id="categoryBadge" class="category-badge category-chaos">Chaos & Dynamics</div>
                 
                 <div class="param-group" id="paramAGroup">
                     <label><span id="paramALabel">Major Radius (R)</span>: <span class="param-value" id="paramAVal">1.0</span></label>
@@ -275,4 +338,3 @@
         </div>
     </div>
 </div>
-
